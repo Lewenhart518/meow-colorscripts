@@ -5,7 +5,8 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 - [Required](#Required)
 - [available languages](#Languages)
 - [Installation](#installation)  
-- [Configuration](#configuration)  
+- [Configuration](#configuration)
+- [Update](#Update)
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
 - [Author](#author)  
@@ -42,6 +43,22 @@ This allows you to:
 ✅ **Choose cat size** (small, normal, large)  
 ✅ **Enable visual effects** (bold, colors)  
 ✅ **Automatically run `ansi-meow` when opening a terminal**  
+
+## Update
+first time:
+go to the meow-colorscripts directory and run this:
+```bash 
+chmod +x update.sh
+```
+```bash 
+./update.sh
+```
+second and subsequent times:
+go to the meow-colorscripts directory and run this:
+```bash 
+./update.sh
+```
+
 ## View Available Cats
 List all available cat designs:  
 ```bash  
