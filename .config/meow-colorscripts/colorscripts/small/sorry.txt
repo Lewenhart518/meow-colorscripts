@@ -1,3 +1,0 @@
-Sorry! This feature is still in development. If you've already chosen a size other than the normal one, try running setup.sh.
-
-¡Lo siento! aun esta funcion esta en desarrollo si ya elejiste otro tamaño que no es el normal prueba ejecutando setup.sh
