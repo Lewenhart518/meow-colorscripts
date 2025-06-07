@@ -4,6 +4,7 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 ## 📌 Index  
 - [Required](#Required)
 - [available languages](#Languages)
+- [available themes](#Themes)
 - [Installation](#installation)  
 - [Configuration](#configuration)
 - [Update](#Update)
@@ -19,6 +20,18 @@ https://www.nerdfonts.com/
 ## Languages
 The languages ​​currently available are:
 English and Spanish
+
+## Themes
+
+This project uses the [Nord Theme](https://github.com/nordtheme),
+[Catppuccin](https://github.com/catppuccin/catppuccin), and 
+[Everforest](https://github.com/sainnhe/everforest) color schemes.
+
+- **Nord Theme**: A clean, elegant arctic color scheme developed by [Sven Greb](https://www.nordtheme.com). You can find more information in his [official repository](https://github.com/nordtheme).
+- **Catppuccin**: A community-based pastel theme with four variants (Latte, Frappé, Macchiato, and Mocha), designed for a harmonious visual experience. More details in his [official repository](https://github.com/catppuccin/catppuccin).
+- **Everforest**: A soft, low-contrast theme optimized to reduce eye strain. Explore their ports in their [official repository](https://github.com/sainnhe/everforest).
+
+Thanks to their respective creators and communities for developing these amazing themes.
 
 ## Installation   
 To install `meow-colorscripts`, run:  
