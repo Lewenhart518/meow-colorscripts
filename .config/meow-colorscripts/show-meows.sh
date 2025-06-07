@@ -5,7 +5,7 @@ LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 else
-    MEOW_PATH="$HOME/PROJECT:meows-colorscripts/.config/meow-colorscripts/colorscripts/normal"
+    MEOW_PATH="$HOME/.config/meow-colorscripts/colorscripts/normal"
 fi
 
 if [ -f "$LANG_FILE" ]; then
