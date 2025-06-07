@@ -1,10 +1,8 @@
 #!/bin/bash
 
 INSTALL_DIR="$HOME/.config/meow-colorscripts"
+LOCAL_REPO="$HOME/meow-colorscripts"
 CONFIG_FILE="$INSTALL_DIR/meow.conf"
-
-# Crear el directorio de configuración antes de escribir archivos
-mkdir -p "$INSTALL_DIR"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'  # Frost
@@ -33,14 +31,12 @@ if [ "$LANGUAGE" == "es" ]; then
     MSG_GIT_ERROR="${RED}󰅟 Error: 'git' no está instalado. Por favor, instálalo e intenta de nuevo.${NC}"
     MSG_CONFIG="${CYAN}󰙔 Creando archivo de configuración...${NC}"
     MSG_SETUP_PROMPT="${YELLOW}󱝄 ¿Quieres abrir la configuración ahora?${NC}"
-    MSG_UPDATE_PROMPT="${YELLOW}󰄛 Se ha detectado una instalación previa. ¿Qué deseas hacer?${NC}"
 else
     MSG_INSTALL="${GREEN}󰄛 Preparing the cat magic 󰄛 ...${NC}"
     MSG_COMPLETE="${GREEN}󱝁 Installation complete! Type 'ansi-meow' to see the cats, 'meow-colorscripts-setup' to change settings, or 'meows-names' to view available cat designs 󱝁 ${NC}"
     MSG_GIT_ERROR="${RED}󰅟 Error: 'git' is not installed. Please install it and try again.${NC}"
     MSG_CONFIG="${CYAN}󰙔 Creating configuration file...${NC}"
     MSG_SETUP_PROMPT="${YELLOW}󱝄 Do you want to open setup now?${NC}"
-    MSG_UPDATE_PROMPT="${YELLOW}󰄛 A previous installation was detected. What do you want to do?${NC}"
 fi
 
 echo -ne "$MSG_INSTALL"
@@ -54,40 +50,30 @@ if ! command -v git &> /dev/null; then
 fi
 
 # Comprobar si el repositorio ya está instalado
-if [ -d "$INSTALL_DIR/.git" ]; then
-    echo -e "\n$MSG_UPDATE_PROMPT"
-    echo -e "1) ${GREEN}Actualizar instalación (git pull)${NC}"
-    echo -e "2) ${RED}Limpiar y reinstalar${NC}"
-    echo -e "3) ${YELLOW}Cancelar${NC}"
-    read -p "Selecciona una opción [1-3]: " UPDATE_OPTION
-
-    case "$UPDATE_OPTION" in
-        1) 
-            echo -e "${CYAN}󰠮 Actualizando instalación...${NC}"
-            git -C "$INSTALL_DIR" pull
-            ;;
-        2) 
-            echo -e "${RED}󰆴 Eliminando instalación anterior...${NC}"
-            rm -rf "$INSTALL_DIR"
-            mkdir -p "$INSTALL_DIR"
-            echo -e "${CYAN}󰠮 Clonando nueva versión...${NC}"
-            git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR"
-            ;;
-        3) 
-            echo -e "${YELLOW} Instalación cancelada.${NC}"
-            exit 0
-            ;;
-    esac
+if [ -d "$LOCAL_REPO/.git" ]; then
+    echo -e "${CYAN}󰠮 Actualizando ansi-meow...${NC}"
+    git -C "$LOCAL_REPO" pull
 else
-    echo -e "${CYAN}󰠮 Cloning repository...${NC}"
-    git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR"
+    echo -e "${CYAN}󰄛 Clonando ansi-meow...${NC}"
+    rm -rf "$LOCAL_REPO"
+    git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO"
 fi
 
-# Crear directorios y copiar archivos
+# Mover `.config` desde `~/meow-colorscripts/` a `~/.config/meow-colorscripts`
+mkdir -p "$INSTALL_DIR"
+mv "$LOCAL_REPO/.config" "$INSTALL_DIR"
+
+# Crear directorios y copiar archivos si existen
 mkdir -p "$INSTALL_DIR/small" "$INSTALL_DIR/normal" "$INSTALL_DIR/large"
-cp -r "$INSTALL_DIR/colorscripts/small/"*.txt "$INSTALL_DIR/small"
-cp -r "$INSTALL_DIR/colorscripts/normal/"*.txt "$INSTALL_DIR/normal"
-cp -r "$INSTALL_DIR/colorscripts/large/"*.txt "$INSTALL_DIR/large"
+
+if [ -d "$INSTALL_DIR/colorscripts" ]; then
+    cp -r "$INSTALL_DIR/colorscripts/small/"*.txt "$INSTALL_DIR/small"
+    cp -r "$INSTALL_DIR/colorscripts/normal/"*.txt "$INSTALL_DIR/normal"
+    cp -r "$INSTALL_DIR/colorscripts/large/"*.txt "$INSTALL_DIR/large"
+else
+    echo -e "${RED}󰅟 Error: No se encontraron los archivos de colorscripts.${NC}"
+    exit 1
+fi
 
 # Dar permisos de ejecución a setup.sh
 chmod +x "$INSTALL_DIR/setup.sh"
@@ -99,15 +85,6 @@ if [ ! -f "$CONFIG_FILE" ]; then
     echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
     echo -e " ${WHITE}Configuración creada en $CONFIG_FILE${NC}"
 fi
-
-# Detectar la shell del usuario
-USER_SHELL=$(basename "$SHELL")
-
-# Alias para accesibilidad
-echo "alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'" >> ~/.${USER_SHELL}rc
-echo "alias meow-colorscripts-setup='bash $INSTALL_DIR/setup.sh'" >> ~/.${USER_SHELL}rc
-echo "alias meows-names='ls -1 $INSTALL_DIR/\$(grep MEOW_PATH $CONFIG_FILE | cut -d'=' -f2) | sed \"s/\.txt//g\"'" >> ~/.${USER_SHELL}rc
-echo "meows-show() { cat $INSTALL_DIR/\$(grep MEOW_PATH $CONFIG_FILE | cut -d'=' -f2)/\$1.txt; }" >> ~/.${USER_SHELL}rc
 
 # Finalizando instalación
 echo -ne "${CYAN}󱁖 Finalizando la instalación 󱁖 ${NC}"
