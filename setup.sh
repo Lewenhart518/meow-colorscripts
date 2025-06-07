@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
+SHELL_CONFIG="$HOME/.bashrc"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -78,4 +79,16 @@ echo "MEOW_TYPE=$MEOW_TYPE" > "$CONFIG_FILE"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
 
 echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
-echo -e "󰚝 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+
+# 🐾 Preguntar si se quiere ejecutar ansi-meow al abrir la terminal
+echo -e "\n${CYAN}󰄛 ¿Quieres que ansi-meow se ejecute al abrir la terminal?${NC}"
+echo -e "1) Sí"
+echo -e "2) No"
+read -p "Selecciona una opción [1-2]: " AUTO_RUN_OPTION
+
+if [ "$AUTO_RUN_OPTION" == "1" ]; then
+    echo -e "\n${GREEN} Añadiendo ansi-meow al inicio de la terminal.${NC}"
+    echo "bash ~/.config/meow-colorscripts/show-meows.sh" >> "$SHELL_CONFIG"
+    echo -e "${WHITE}📁 Se ha actualizado $SHELL_CONFIG.${NC}"
+fi
