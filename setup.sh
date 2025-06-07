@@ -10,23 +10,31 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
-# 🐾 Preguntar por el tema
-echo -e "${CYAN}󰄛 ¿Qué tema de ansi-meow quieres usar?${NC}"
-echo -e "1) ${GREEN}Nord${NC}"
-echo -e "2) ${CYAN}Catpuccin${NC}"
-echo -e "3) ${YELLOW}Everforest${NC}"
-echo -e "4) ${WHITE}Sin color (nocolor)${NC}"
-echo -e "5) ${RED}Normal${NC}"
-echo -e "6) ${GREEN}ASCII${NC}"
-read -p "Selecciona una opción [1-6]: " THEME_OPTION
+# 🐾 Preguntar por el estilo
+echo -e "${CYAN}󰄛 ¿Qué estilo de meow-colorscripts quieres usar?${NC}"
+echo -e "1) ${WHITE}Normal${NC}"
+echo -e "2) ${WHITE}Sin color${NC}"
+echo -e "3) ${CYAN}Con tema (Nord, Catpuccin, Everforest)${NC}"
+echo -e "4) ${GREEN}ASCII (Con color o sin color, luego Símbolos o Bloques)${NC}"
+read -p "Selecciona una opción [1-4]: " STYLE_OPTION
 
-case "$THEME_OPTION" in
-    1) MEOW_THEME="nord" ;;
-    2) MEOW_THEME="catpuccin" ;;
-    3) MEOW_THEME="everforest" ;;
-    4) MEOW_THEME="nocolor" ;;
-    5) MEOW_THEME="normal" ;;
-    6) 
+case "$STYLE_OPTION" in
+    1) MEOW_THEME="normal" ;;
+    2) MEOW_THEME="nocolor" ;;
+    3) 
+        echo -e "\n${CYAN}󰄛 ¿Qué tema quieres usar?${NC}"
+        echo -e "1) ${GREEN}Nord${NC}"
+        echo -e "2) ${CYAN}Catpuccin${NC}"
+        echo -e "3) ${YELLOW}Everforest${NC}"
+        read -p "Selecciona una opción [1-3]: " THEME_OPTION
+        case "$THEME_OPTION" in
+            1) MEOW_THEME="nord" ;;
+            2) MEOW_THEME="catpuccin" ;;
+            3) MEOW_THEME="everforest" ;;
+            *) MEOW_THEME="normal" ;;
+        esac
+        ;;
+    4) 
         echo -e "\n${CYAN}󰄛 ¿Quieres ASCII con color o sin color?${NC}"
         echo -e "1) ${GREEN}Con color (ascii-color)${NC}"
         echo -e "2) ${WHITE}Sin color (ascii)${NC}"
@@ -74,11 +82,10 @@ echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
 
 # 🐾 Preguntar si se quiere ejecutar ansi-meow al abrir la terminal
 echo -e "\n${CYAN}󰄛 ¿Quieres que ansi-meow se ejecute al abrir la terminal?${NC}"
-echo -e "1) Sí"
-echo -e "2) No"
-read -p "Selecciona una opción [1-2]: " AUTO_RUN_OPTION
+echo -e "[s/n] en español | [y/n] en inglés"
+read -p "Selecciona una opción: " AUTO_RUN_OPTION
 
-if [ "$AUTO_RUN_OPTION" == "1" ]; then
+if [[ "$AUTO_RUN_OPTION" =~ ^[sSyY]$ ]]; then
     echo -e "\n${GREEN} Añadiendo ansi-meow al inicio de la terminal.${NC}"
     echo "bash ~/.config/meow-colorscripts/show-meows.sh" >> "$HOME/.bashrc"
     echo -e "${WHITE}📁 Se ha actualizado ~/.bashrc.${NC}"
