@@ -4,27 +4,23 @@ CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
 # Colores Nord Aurora
-GREEN='\033[38;2;94;129;172m'  # Frost
-RED='\033[38;2;191;97;106m'     # Aurora Red
-YELLOW='\033[38;2;235;203;139m' # Aurora Yellow
-CYAN='\033[38;2;143;188;187m'   # Aurora Cyan
-WHITE='\033[38;2;216;222;233m'  # Snow Storm
-NC='\033[0m'                    # No Color
+GREEN='\033[38;2;94;129;172m'
+RED='\033[38;2;191;97;106m'
+YELLOW='\033[38;2;235;203;139m'
+CYAN='\033[38;2;143;188;187m'
+WHITE='\033[38;2;216;222;233m'
+NC='\033[0m'
 
 # Frases felinas de carga 🐾
 LOADING_MSGS_ES=(
     "🐾 Ajustando las almohadillas"
     "🐱 Configurando el ronroneo"
     "🐈 Moviendo las patitas"
-    "🐾 Preparando la siesta"
-    "🐱 Activando modo felino"
 )
 LOADING_MSGS_EN=(
     "🐾 Adjusting the paw pads"
     "🐱 Setting up the purring mode"
     "🐈 Moving the paws"
-    "🐾 Preparing the catnap"
-    "🐱 Enabling feline mode"
 )
 
 # Crear el directorio si no existe
@@ -102,3 +98,4 @@ if [ "$STARTUP_OPTION" == "1" ]; then
 fi
 
 echo -e "\n${WHITE} Configuración completa! Escribe 'ansi-meow' para ver los gatos.${NC}"
+
