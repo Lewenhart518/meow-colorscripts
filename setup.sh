@@ -1,11 +1,10 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.config"
-LOCAL_REPO="$HOME/meow-colorscripts"
-SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
+CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
+LANG_FILE="$HOME/.config/meow-colorscripts/lang"
+MEOW_SCRIPT="$HOME/.config/meow-colorscripts/show-meows.sh"
 
-# Nord Aurora Colors
+# Colores Nord Aurora
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 YELLOW='\033[38;2;235;203;139m'
@@ -14,23 +13,33 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 # Frases felinas de carga 🐾
-LOADING_MSGS_ES=("🐾 Los gatos se están estirando" "🐱 Acomodando las almohadillas" "🐈 Ronroneo en proceso")
-LOADING_MSGS_EN=("🐾 The cats are stretching" "🐱 Adjusting the paw pads" "🐈 Purring in progress")
+LOADING_MSGS_ES=(
+    "🐾 Ajustando las almohadillas"
+    "🐱 Configurando el ronroneo"
+    "🐈 Moviendo las patitas"
+)
+LOADING_MSGS_EN=(
+    "🐾 Adjusting the paw pads"
+    "🐱 Setting up the purring mode"
+    "🐈 Moving the paws"
+)
 
-# 🐾 Detectar idioma y guardarlo en archivo
-echo -e "${CYAN} Select your language:${NC}"
-echo -e "1) English"
-echo -e "2) Español"
-read -p "Choose an option [1-2]: " LANG_OPTION
+# Crear el directorio si no existe
+mkdir -p "$HOME/.config/meow-colorscripts"
 
-LANGUAGE="en"
-if [ "$LANG_OPTION" == "2" ]; then
-    LANGUAGE="es"
+# Eliminar configuración previa y crear nuevo archivo
+rm -f "$CONFIG_FILE"
+echo "MEOW_PATH=normal" > "$CONFIG_FILE"
+echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
+
+# Leer idioma desde `install.sh`
+if [ -f "$LANG_FILE" ]; then
+    LANGUAGE=$(cat "$LANG_FILE")
+else
+    LANGUAGE="en"
 fi
 
-echo "$LANGUAGE" > "$LANG_FILE"
-
-# 🐾 Animaciones de carga
+# Animaciones felinas con carga progresiva
 for i in {1..3}; do 
     LOADING_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
     if [ "$LANGUAGE" == "en" ]; then
@@ -41,53 +50,71 @@ for i in {1..3}; do
     echo -e "${YELLOW}${NC}"
 done
 
-# 🐾 Mover `meow-colorscripts/` dentro de `.config/`
-echo -e "${GREEN}󰄛 Moviendo configuración de meow-colorscripts...${NC}"
-sleep 1
-
-if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
-    mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
-    echo -e "${GREEN} Configuración movida correctamente.${NC}"
+if [ "$LANGUAGE" == "es" ]; then
+    echo -e "${GREEN}󰄛 ¡Bienvenido al setup de ansi-meow! 󰄛${NC}"
+    echo -e "\n${CYAN}󰲏 Elige el tamaño de los gatos ANSI:${NC}"
+    echo -e "${YELLOW}1) Pequeño (en desarrollo)${NC}"
+    echo -e "${GREEN}2) Normal${NC}"
+    echo -e "${RED}3) Grande (en desarrollo)${NC}"
+    read -p "Selecciona una opción [1-3]: " SIZE_OPTION
 else
-    echo -e "${RED}󰅟 Error: No se encontró la carpeta ~/meow-colorscripts/.config/meow-colorscripts/.${NC}"
-    exit 1
+    echo -e "${GREEN}󰄛 Welcome to ansi-meow setup! 󰄛${NC}"
+    echo -e "\n${CYAN}󰲏 Choose ANSI cat size:${NC}"
+    echo -e "${YELLOW}1) Small (in development)${NC}"
+    echo -e "${GREEN}2) Normal${NC}"
+    echo -e "${RED}3) Large (in development)${NC}"
+    read -p "Select an option [1-3]: " SIZE_OPTION
 fi
 
-# 🐾 Detectar shell y agregar alias
+case $SIZE_OPTION in
+    1) MEOW_PATH="small" ;;
+    2) MEOW_PATH="normal" ;;
+    3) MEOW_PATH="large" ;;
+    *) MEOW_PATH="normal" ;;
+esac
+
+sed -i "s/^MEOW_PATH=.*/MEOW_PATH=$MEOW_PATH/" "$CONFIG_FILE"
+
+if [ "$LANGUAGE" == "es" ]; then
+    echo -e "\n${CYAN}󰠮 ¿Quieres activar efectos visuales (negrita y colores)?${NC}"
+    echo -e "${GREEN}1) Sí${NC}"
+    echo -e "${RED}2) No${NC}"
+    read -p "Selecciona una opción [1-2]: " EFFECTS_OPTION
+else
+    echo -e "\n${CYAN}󰠮 Do you want to enable visual effects (bold and colors)?${NC}"
+    echo -e "${GREEN}1) Yes${NC}"
+    echo -e "${RED}2) No${NC}"
+    read -p "Select an option [1-2]: " EFFECTS_OPTION
+fi
+
+if [ "$EFFECTS_OPTION" == "1" ]; then
+    sed -i "s/^MEOW_EFFECTS=.*/MEOW_EFFECTS=enabled/" "$CONFIG_FILE"
+else
+    sed -i "s/^MEOW_EFFECTS=.*/MEOW_EFFECTS=disabled/" "$CONFIG_FILE"
+fi
+
+# Detectar la shell del usuario
 USER_SHELL=$(basename "$SHELL")
-ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
 
-echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
-sleep 1
-
-if [[ "$USER_SHELL" == "bash" ]]; then
-    echo "$ALIAS_CMD" >> "$HOME/.bashrc"
-    echo -e "${GREEN} Alias agregado en ~/.bashrc.${NC}"
-elif [[ "$USER_SHELL" == "zsh" ]]; then
-    echo "$ALIAS_CMD" >> "$HOME/.zshrc"
-    echo -e "${GREEN} Alias agregado en ~/.zshrc.${NC}"
-elif [[ "$USER_SHELL" == "fish" ]]; then
-    echo "$ALIAS_CMD" >> "$HOME/.config/fish/config.fish"
-    echo -e "${GREEN} Alias agregado en ~/.config/fish/config.fish.${NC}"
+if [ "$LANGUAGE" == "es" ]; then
+    echo -e "\n${YELLOW}󱝁 ¿Quieres que ansi-meow se muestre al iniciar la terminal?${NC}"
+    echo -e "${GREEN}1) Sí${NC}"
+    echo -e "${RED}2) No${NC}"
+    read -p "Selecciona una opción [1-2]: " STARTUP_OPTION
 else
-    echo -e "${RED}󰅟 No se pudo detectar tu shell. Agrega manualmente este alias:${NC}"
-    echo -e "${WHITE}$ALIAS_CMD${NC}"
+    echo -e "\n${YELLOW}󱝁 Do you want ansi-meow to display at terminal startup?${NC}"
+    echo -e "${GREEN}1) Yes${NC}"
+    echo -e "${RED}2) No${NC}"
+    read -p "Select an option [1-2]: " STARTUP_OPTION
 fi
 
-# 🐾 Preguntar si ejecutar configuración
-echo -e "\n${CYAN}󱝄 ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "1) ${GREEN}Sí${NC}"
-echo -e "2) ${RED}No${NC}"
-read -p "Selecciona una opción [1-2]: " SETUP_OPTION
-
-if [ "$SETUP_OPTION" == "1" ]; then
-    if [ -f "$SETUP_SCRIPT" ]; then
-        echo -e "${CYAN}󰄛 Abriendo configuración...${NC}"
-        bash "$SETUP_SCRIPT"
-    else
-        echo -e "${RED}󰅟 Error: No se encontró setup.sh en ~/meow-colorscripts/.${NC}"
-    fi
+if [ "$STARTUP_OPTION" == "1" ]; then
+    case "$USER_SHELL" in
+        "bash") echo "$MEOW_SCRIPT" >> ~/.bashrc ;;
+        "zsh") echo "$MEOW_SCRIPT" >> ~/.zshrc ;;
+        "fish") echo "$MEOW_SCRIPT" >> ~/.config/fish/config.fish ;;
+    esac
 fi
 
-echo -e "\n${GREEN} Instalación completada exitosamente. ¡Listo para usar ansi-meow!${NC}"
+echo -e "\n${WHITE} Configuración completa! Escribe 'ansi-meow' para ver los gatos.${NC}"
 echo -e "📁 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${NC}"
