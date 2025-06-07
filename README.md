@@ -2,7 +2,7 @@
 Customize your terminal with cat-themed ANSI art! 🎨🔥  
 
 ## 📌 Index  
-- [Installation](#installation)  
+- [Installation](#🔹 Installation )  
 - [Configuration](#configuration)  
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
