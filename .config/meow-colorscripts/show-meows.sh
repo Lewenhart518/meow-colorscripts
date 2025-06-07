@@ -19,22 +19,21 @@ else
     exit 1
 fi
 
-# 🐾 Verificar existencia de archivos
-SCRIPT_PATH="$SCRIPTS_DIR/$MEOW_TYPE/$MEOW_SIZE.sh"
+# 🐾 Construcción de ruta correcta
+SCRIPT_PATH="$SCRIPTS_DIR/$MEOW_THEME/$MEOW_SIZE"
 
-if [[ ! -f "$SCRIPT_PATH" ]]; then
-    echo -e "${RED}󰅟 Error: No se encontró $MEOW_SIZE.sh en $SCRIPTS_DIR/$MEOW_TYPE/.${NC}"
-    echo -e "${WHITE}Verifica la estructura y asegúrate de que el archivo existe.${NC}"
+if [[ ! -d "$SCRIPT_PATH" ]]; then
+    echo -e "${RED}󰅟 Error: No se encontró la carpeta $SCRIPT_PATH.${NC}"
+    echo -e "${WHITE}Verifica la estructura y asegúrate de que los archivos existen.${NC}"
     exit 1
 fi
 
-# 🐾 Ejecutar el colorscript correspondiente
+# 🐾 Mostrar los archivos `.txt` de la carpeta seleccionada
 echo -e "\n${CYAN}╭╴󰣇 ⋆.˚✮ Leonardo ✮˚.⋆ ~/meow-colorscripts 󰫢 ${NC}"
 echo -e "╰─|ansi-meow"
-bash "$SCRIPT_PATH"
+cat "$SCRIPT_PATH"/*.txt
 
-# 🐾 Generar archivo de nombres de gatos
+# 🐾 Generar lista de nombres de gatos
 NAMES_FILE="$HOME/.config/meow-colorscripts/names.txt"
-
-ls "$SCRIPTS_DIR/$MEOW_TYPE/" | grep ".sh" | sed 's/.sh//' > "$NAMES_FILE"
+ls "$SCRIPT_PATH" | grep ".txt" | sed 's/.txt//' > "$NAMES_FILE"
 echo -e "${GREEN} Archivo de nombres generado correctamente: ${WHITE}$NAMES_FILE${NC}"
