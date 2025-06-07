@@ -7,7 +7,7 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
 - [Author](#author)
-- [Required](Required)
+- [Required](#Required)
 
 ## 🔹 Installation  
 To install `meow-colorscripts`, run:  
