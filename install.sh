@@ -1,9 +1,9 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.config/meow-colorscripts"
+INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$INSTALL_DIR/lang"
+LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -54,31 +54,14 @@ else
     exit 1
 fi
 
-# 🐾 Mover `show-meows.sh` y `colorscripts/`
-if [ -f "$LOCAL_REPO/show-meows.sh" ]; then
-    mv "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/" &> /dev/null
-    echo -e "${GREEN} show-meows.sh movido correctamente.${NC}"
-else
-    echo -e "${RED}󰅟 Error: No se encontró show-meows.sh en ~/meow-colorscripts/.${NC}"
-    exit 1
-fi
-
-if [ -d "$LOCAL_REPO/colorscripts" ]; then
-    mv "$LOCAL_REPO/colorscripts" "$INSTALL_DIR/" &> /dev/null
-    echo -e "${GREEN} colorscripts/ movido correctamente.${NC}"
-else
-    echo -e "${RED}󰅟 Error: No se encontró colorscripts/ en ~/meow-colorscripts/.${NC}"
-    exit 1
-fi
-
 # 🐾 Detectar shell y agregar alias
 USER_SHELL=$(basename "$SHELL")
-ALIAS_CMD="alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'"
+ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
 
 echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
 sleep 1
 
-if [ -f "$INSTALL_DIR/show-meows.sh" ]; then
+if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
     case "$USER_SHELL" in
         "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
         "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
