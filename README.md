@@ -2,13 +2,13 @@
 Customize your terminal with cat-themed ANSI art! 🎨🔥  
 
 ## 📌 Index  
-- [Installation](#🔹 Installation )  
+- [Installation](#🔹Installation)  
 - [Configuration](#configuration)  
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
 - [Author](#author)  
 
-## 🔹 Installation  
+## 🔹Installation  
 To install `meow-colorscripts`, run:  
 ```bash  
 git clone git@github.com:Lewenhart518/meow-colorscripts.git  
@@ -17,7 +17,7 @@ chmod +x install.sh
 ./install.sh  
 ```  
 This will set everything up automatically.  
-## 🔹 Configuration  
+## 🔹Configuration  
 Customize your setup using:  
 ```bash  
 meow-colorscripts-setup  
