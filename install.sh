@@ -12,6 +12,7 @@ CYAN='\033[38;2;143;188;187m'   # Aurora Cyan
 WHITE='\033[38;2;216;222;233m'  # Snow Storm
 NC='\033[0m'                    # No Color
 
+# Detectar idioma del usuario
 echo -e "${CYAN} Select your language:${NC}"
 echo -e "1) English"
 echo -e "2) Español"
@@ -25,6 +26,7 @@ fi
 
 echo "LANGUAGE=$LANGUAGE" > "$INSTALL_DIR/lang"
 
+# Definir mensajes en cada idioma
 if [ "$LANGUAGE" == "es" ]; then
     MSG_INSTALL="${GREEN}󰄛 Preparando la magia felina 󰄛 ...${NC}"
     MSG_COMPLETE="${GREEN}󱝁 Instalación completa! Escribe 'ansi-meow' para ver los gatos, 'meow-colorscripts-setup' para cambiar ajustes, o 'meows-names' para ver la lista de gatos disponibles 󱝁 ${NC}"
@@ -49,7 +51,7 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# Comprobar si el repositorio ya está instalado
+# Manejo inteligente del repositorio
 if [ -d "$LOCAL_REPO/.git" ]; then
     echo -e "${CYAN}󰠮 Actualizando ansi-meow...${NC}"
     git -C "$LOCAL_REPO" pull
@@ -86,7 +88,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     echo -e " ${WHITE}Configuración creada en $CONFIG_FILE${NC}"
 fi
 
-# Finalizando instalación
+# Finalizando instalación con animaciones
 echo -ne "${CYAN}󱁖 Finalizando la instalación 󱁖 ${NC}"
 for i in {1..5}; do echo -ne "."; sleep 0.5; done
 echo -e " ${YELLOW}${NC}"
