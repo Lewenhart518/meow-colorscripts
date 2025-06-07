@@ -3,6 +3,9 @@
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
+# Crear el directorio si no existe
+mkdir -p "$HOME/.config/meow-colorscripts"
+
 # Leer idioma
 if [ -f "$LANG_FILE" ]; then
     source "$LANG_FILE"
@@ -36,6 +39,12 @@ fi
 
 echo "$MSG_SETUP"
 
+# Crear archivo de configuración si no existe
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "MEOW_PATH=normal" > "$CONFIG_FILE"
+    echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
+fi
+
 # Selección de tamaño de gatos
 echo -e "\n$MSG_SIZE"
 echo "$MSG_OPTION1"
@@ -51,7 +60,7 @@ case $SIZE_OPTION in
 esac
 
 # Guardar configuración en meow.conf
-echo "MEOW_PATH=$MEOW_PATH" > "$CONFIG_FILE"
+sed -i "s/^MEOW_PATH=.*/MEOW_PATH=$MEOW_PATH/" "$CONFIG_FILE"
 
 # Activar efectos visuales
 echo -e "\n$MSG_EFFECTS"
@@ -60,9 +69,9 @@ echo "$MSG_NO"
 read -p "Select an option [1-2]: " EFFECTS_OPTION
 
 if [ "$EFFECTS_OPTION" == "1" ]; then
-    echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
+    sed -i "s/^MEOW_EFFECTS=.*/MEOW_EFFECTS=enabled/" "$CONFIG_FILE"
 else
-    echo "MEOW_EFFECTS=disabled" >> "$CONFIG_FILE"
+    sed -i "s/^MEOW_EFFECTS=.*/MEOW_EFFECTS=disabled/" "$CONFIG_FILE"
 fi
 
 # Detectar la shell del usuario
