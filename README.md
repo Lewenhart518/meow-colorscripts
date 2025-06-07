@@ -6,7 +6,8 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 - [Configuration](#configuration)  
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
-- [Author](#author)  
+- [Author](#author)
+- [Required](Required)
 
 ## 🔹 Installation  
 To install `meow-colorscripts`, run:  
@@ -48,3 +49,5 @@ This will show the ANSI art for **"Raspi"**.
 ## 🚀 Author  
 Created by **Lewenhart518** 🐱🔥  
 Follow me on GitHub: [Lewenhart518](https://github.com/Lewenhart518)  
+
+## 🔹 Required
