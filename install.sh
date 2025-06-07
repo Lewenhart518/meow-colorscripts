@@ -13,8 +13,8 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 # Frases felinas de carga 🐾
-LOADING_MSGS_ES=("🐾 Los gatos se están estirando" "🐱 Acomodando las almohadillas" "🐈 Ronroneo en proceso")
-LOADING_MSGS_EN=("🐾 The cats are stretching" "🐱 Adjusting the paw pads" "🐈 Purring in progress")
+LOADING_MSGS_ES=("󰏩 Los gatos se están estirando" "󰄛 Acomodando las almohadillas" " Ronroneo en proceso")
+LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting the paw pads" " Purring in progress")
 
 # 🐾 Detectar idioma
 echo -e "${CYAN} Select your language:${NC}"
@@ -72,7 +72,7 @@ else
 fi
 
 # 🐾 Preguntar si ejecutar configuración
-echo -e "\n${CYAN}󱝄 ¿Quieres abrir la configuración ahora?${NC}"
+echo -e "\n${CYAN} ¿Quieres abrir la configuración ahora?${NC}"
 echo -e "1) ${GREEN}Sí${NC}"
 echo -e "2) ${RED}No${NC}"
 read -p "Selecciona una opción [1-2]: " SETUP_OPTION
