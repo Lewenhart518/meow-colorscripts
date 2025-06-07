@@ -3,6 +3,9 @@
 INSTALL_DIR="$HOME/.config/meow-colorscripts"
 CONFIG_FILE="$INSTALL_DIR/meow.conf"
 
+# Crear el directorio antes de escribir archivos
+mkdir -p "$INSTALL_DIR"
+
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'  # Frost
 RED='\033[38;2;191;97;106m'     # Aurora Red
@@ -11,7 +14,7 @@ CYAN='\033[38;2;143;188;187m'   # Aurora Cyan
 WHITE='\033[38;2;216;222;233m'  # Snow Storm
 NC='\033[0m'                    # No Color
 
-echo -e "${CYAN}  Select your language:${NC}"
+echo -e "${CYAN} Select your language:${NC}"
 echo -e "1) English"
 echo -e "2) Español"
 read -p "Choose an option [1-2]: " LANG_OPTION
@@ -38,8 +41,8 @@ else
     MSG_SETUP_PROMPT="${YELLOW}󱝄 Do you want to open setup now?${NC}"
 fi
 
-echo -n "$MSG_INSTALL"
-for i in {1..5}; do echo -n "."; sleep 0.5; done
+echo -ne "$MSG_INSTALL"
+for i in {1..5}; do echo -ne "."; sleep 0.5; done
 echo -e " ${YELLOW}${NC}"
 
 # Verificar si git está instalado
@@ -53,53 +56,45 @@ echo -e "${CYAN}󰠮 Cloning repository...${NC}"
 git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR" || { echo -e "${RED}Error cloning repository.${NC}"; exit 1; }
 
 # Crear directorios y copiar archivos
-mkdir -p "$INSTALL_DIR/small" "$INSTALL_DIR/normal" "$INSTALL_DIR/large" > /dev/null 2>&1
-cp -r "$INSTALL_DIR/colorscripts/small/"*.txt "$INSTALL_DIR/small" > /dev/null 2>&1
-cp -r "$INSTALL_DIR/colorscripts/normal/"*.txt "$INSTALL_DIR/normal" > /dev/null 2>&1
-cp -r "$INSTALL_DIR/colorscripts/large/"*.txt "$INSTALL_DIR/large" > /dev/null 2>&1
+mkdir -p "$INSTALL_DIR/small" "$INSTALL_DIR/normal" "$INSTALL_DIR/large"
+cp -r "$INSTALL_DIR/colorscripts/small/"*.txt "$INSTALL_DIR/small"
+cp -r "$INSTALL_DIR/colorscripts/normal/"*.txt "$INSTALL_DIR/normal"
+cp -r "$INSTALL_DIR/colorscripts/large/"*.txt "$INSTALL_DIR/large"
 
 # Dar permisos de ejecución a setup.sh
 chmod +x "$INSTALL_DIR/setup.sh"
 
 # Crear archivo de configuración si no existe
 echo -e "$MSG_CONFIG"
-mkdir -p "$INSTALL_DIR"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "MEOW_PATH=normal" > "$CONFIG_FILE"
     echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
-    echo " ${WHITE}Configuración creada en $CONFIG_FILE${NC}"
+    echo -e " ${WHITE}Configuración creada en $CONFIG_FILE${NC}"
 fi
 
 # Detectar la shell del usuario
 USER_SHELL=$(basename "$SHELL")
 
 # Alias para accesibilidad
-echo "alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'" >> ~/.${USER_SHELL}rc 2>/dev/null
-echo "alias meow-colorscripts-setup='bash $INSTALL_DIR/setup.sh'" >> ~/.${USER_SHELL}rc 2>/dev/null
-echo "alias meows-names='ls -1 $INSTALL_DIR/\$(grep MEOW_PATH $CONFIG_FILE | cut -d'=' -f2) | sed \"s/\.txt//g\"'" >> ~/.${USER_SHELL}rc 2>/dev/null
-echo "meows-show() { cat $INSTALL_DIR/\$(grep MEOW_PATH $CONFIG_FILE | cut -d'=' -f2)/\$1.txt; }" >> ~/.${USER_SHELL}rc 2>/dev/null
+echo "alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'" >> ~/.${USER_SHELL}rc
+echo "alias meow-colorscripts-setup='bash $INSTALL_DIR/setup.sh'" >> ~/.${USER_SHELL}rc
+echo "alias meows-names='ls -1 $INSTALL_DIR/\$(grep MEOW_PATH $CONFIG_FILE | cut -d'=' -f2) | sed \"s/\.txt//g\"'" >> ~/.${USER_SHELL}rc
+echo "meows-show() { cat $INSTALL_DIR/\$(grep MEOW_PATH $CONFIG_FILE | cut -d'=' -f2)/\$1.txt; }" >> ~/.${USER_SHELL}rc
 
 # Finalizando instalación
-if [ "$LANGUAGE" == "es" ]; then
-    MSG_FINALIZING="${CYAN}󱁖 Finalizando la instalación 󱁖 ${NC}"
-else
-    MSG_FINALIZING="${CYAN}󱁖 Finalizing installation 󱁖 ${NC}"
-fi
-
-echo -n "$MSG_FINALIZING"
-for i in {1..5}; do echo -n "."; sleep 0.5; done
+echo -ne "${CYAN}󱁖 Finalizando la instalación 󱁖 ${NC}"
+for i in {1..5}; do echo -ne "."; sleep 0.5; done
 echo -e " ${YELLOW}${NC}"
 
 echo -e "$MSG_COMPLETE"
 
 # Preguntar si ejecutar setup.sh
 echo -e "\n$MSG_SETUP_PROMPT"
-echo "1) ${GREEN}Sí${NC}"
-echo "2) ${RED}No${NC}"
+echo -e "1) ${GREEN}Sí${NC}"
+echo -e "2) ${RED}No${NC}"
 read -p "Selecciona una opción [1-2]: " SETUP_OPTION
 
 if [ "$SETUP_OPTION" == "1" ]; then
     echo -e "${CYAN}󰄛 Ejecutando configuración...${NC}"
     bash "$INSTALL_DIR/setup.sh"
 fi
-
