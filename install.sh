@@ -3,7 +3,7 @@
 INSTALL_DIR="$HOME/.config/meow-colorscripts"
 CONFIG_FILE="$INSTALL_DIR/meow.conf"
 
-# Crear el directorio antes de escribir archivos
+# Crear el directorio de configuración antes de escribir archivos
 mkdir -p "$INSTALL_DIR"
 
 # Nord Aurora Colors
@@ -33,12 +33,14 @@ if [ "$LANGUAGE" == "es" ]; then
     MSG_GIT_ERROR="${RED}󰅟 Error: 'git' no está instalado. Por favor, instálalo e intenta de nuevo.${NC}"
     MSG_CONFIG="${CYAN}󰙔 Creando archivo de configuración...${NC}"
     MSG_SETUP_PROMPT="${YELLOW}󱝄 ¿Quieres abrir la configuración ahora?${NC}"
+    MSG_UPDATE_PROMPT="${YELLOW}󰄛 Se ha detectado una instalación previa. ¿Qué deseas hacer?${NC}"
 else
     MSG_INSTALL="${GREEN}󰄛 Preparing the cat magic 󰄛 ...${NC}"
     MSG_COMPLETE="${GREEN}󱝁 Installation complete! Type 'ansi-meow' to see the cats, 'meow-colorscripts-setup' to change settings, or 'meows-names' to view available cat designs 󱝁 ${NC}"
     MSG_GIT_ERROR="${RED}󰅟 Error: 'git' is not installed. Please install it and try again.${NC}"
     MSG_CONFIG="${CYAN}󰙔 Creating configuration file...${NC}"
     MSG_SETUP_PROMPT="${YELLOW}󱝄 Do you want to open setup now?${NC}"
+    MSG_UPDATE_PROMPT="${YELLOW}󰄛 A previous installation was detected. What do you want to do?${NC}"
 fi
 
 echo -ne "$MSG_INSTALL"
@@ -51,9 +53,35 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# Clonar el repositorio
-echo -e "${CYAN}󰠮 Cloning repository...${NC}"
-git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR" || { echo -e "${RED}Error cloning repository.${NC}"; exit 1; }
+# Comprobar si el repositorio ya está instalado
+if [ -d "$INSTALL_DIR/.git" ]; then
+    echo -e "\n$MSG_UPDATE_PROMPT"
+    echo -e "1) ${GREEN}Actualizar instalación (git pull)${NC}"
+    echo -e "2) ${RED}Limpiar y reinstalar${NC}"
+    echo -e "3) ${YELLOW}Cancelar${NC}"
+    read -p "Selecciona una opción [1-3]: " UPDATE_OPTION
+
+    case "$UPDATE_OPTION" in
+        1) 
+            echo -e "${CYAN}󰠮 Actualizando instalación...${NC}"
+            git -C "$INSTALL_DIR" pull
+            ;;
+        2) 
+            echo -e "${RED}󰆴 Eliminando instalación anterior...${NC}"
+            rm -rf "$INSTALL_DIR"
+            mkdir -p "$INSTALL_DIR"
+            echo -e "${CYAN}󰠮 Clonando nueva versión...${NC}"
+            git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR"
+            ;;
+        3) 
+            echo -e "${YELLOW} Instalación cancelada.${NC}"
+            exit 0
+            ;;
+    esac
+else
+    echo -e "${CYAN}󰠮 Cloning repository...${NC}"
+    git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR"
+fi
 
 # Crear directorios y copiar archivos
 mkdir -p "$INSTALL_DIR/small" "$INSTALL_DIR/normal" "$INSTALL_DIR/large"
