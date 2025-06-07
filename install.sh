@@ -17,13 +17,12 @@ LOADING_MSGS_ES=("󰏩 Los gatos se están estirando" "󰄛 Acomodando las almoh
 LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting the paw pads" " Purring in progress")
 
 # 🐾 Detectar idioma y guardarlo en archivo dentro de la carpeta correcta
-echo -e "${CYAN} Select your language:${NC}"
-echo -e "1) English"
-echo -e "2) Español"
-read -p "Choose an option [1-2]: " LANG_OPTION
+echo -e "${CYAN} Selecciona tu idioma:${NC}"
+echo -e "[y/n] Inglés | [s/n] Español"
+read -p "Selecciona una opción: " LANG_OPTION
 
 LANGUAGE="en"
-if [ "$LANG_OPTION" == "2" ]; then
+if [[ "$LANG_OPTION" =~ ^[sS]$ ]]; then
     LANGUAGE="es"
 fi
 
@@ -73,11 +72,10 @@ fi
 
 # 🐾 Preguntar si ejecutar configuración
 echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "1) ${GREEN}Sí${NC}"
-echo -e "2) ${RED}No${NC}"
-read -p "Selecciona una opción [1-2]: " SETUP_OPTION
+echo -e "[y/n] Inglés | [s/n] Español"
+read -p "Selecciona una opción: " SETUP_OPTION
 
-if [ "$SETUP_OPTION" == "1" ]; then
+if [[ "$SETUP_OPTION" =~ ^[sSyY]$ ]]; then
     if [ -f "$SETUP_SCRIPT" ]; then
         echo -e "${CYAN}󰄛 Abriendo configuración...${NC}"
         bash "$SETUP_SCRIPT"
