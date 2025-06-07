@@ -6,6 +6,11 @@ LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 # Crear el directorio si no existe
 mkdir -p "$HOME/.config/meow-colorscripts"
 
+# Eliminar configuración previa y crear nuevo archivo
+rm -f "$CONFIG_FILE"
+echo "MEOW_PATH=normal" > "$CONFIG_FILE"
+echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
+
 # Leer idioma
 if [ -f "$LANG_FILE" ]; then
     source "$LANG_FILE"
@@ -38,12 +43,6 @@ else
 fi
 
 echo "$MSG_SETUP"
-
-# Crear archivo de configuración si no existe
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "MEOW_PATH=normal" > "$CONFIG_FILE"
-    echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
-fi
 
 # Selección de tamaño de gatos
 echo -e "\n$MSG_SIZE"
@@ -92,4 +91,3 @@ if [ "$STARTUP_OPTION" == "1" ]; then
 fi
 
 echo -e "\n\e[1m$MSG_DONE\e[0m"
-
