@@ -14,7 +14,7 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 You need Nerd Fonts to display it correctly.
 https://www.nerdfonts.com/
 
-## Lenguages
+## Languages
 The languages ​​currently available are:
 English and Spanish
 
