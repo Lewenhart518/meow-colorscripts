@@ -3,6 +3,7 @@
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
+LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -16,7 +17,7 @@ NC='\033[0m'
 LOADING_MSGS_ES=("🐾 Los gatos se están estirando" "🐱 Acomodando las almohadillas" "🐈 Ronroneo en proceso")
 LOADING_MSGS_EN=("🐾 The cats are stretching" "🐱 Adjusting the paw pads" "🐈 Purring in progress")
 
-# 🐾 Detectar idioma
+# 🐾 Detectar idioma y guardarlo en archivo
 echo -e "${CYAN} Select your language:${NC}"
 echo -e "1) English"
 echo -e "2) Español"
@@ -26,6 +27,10 @@ LANGUAGE="en"
 if [ "$LANG_OPTION" == "2" ]; then
     LANGUAGE="es"
 fi
+
+# Guardar el idioma en el archivo
+mkdir -p "$(dirname "$LANG_FILE")"
+echo "$LANGUAGE" > "$LANG_FILE"
 
 # 🐾 Animaciones de carga
 for i in {1..3}; do 
