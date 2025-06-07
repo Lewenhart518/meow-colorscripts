@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 # 🐱 meow-colorscripts  
 Customize your terminal with cat-themed ANSI art! 🎨🔥  
 
