@@ -3,6 +3,7 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 
 ## 📌 Index  
 - [Required](#Required)
+- [available languages](#Languages)
 - [Installation](#installation)  
 - [Configuration](#configuration)  
 - [View Available Cats](#view-available-cats)  
@@ -12,6 +13,10 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 ## Required
 You need Nerd Fonts to display it correctly.
 https://www.nerdfonts.com/
+
+## Lenguages
+The languages ​​currently available are:
+English and Spanish
 
 ## Installation   
 To install `meow-colorscripts`, run:  
