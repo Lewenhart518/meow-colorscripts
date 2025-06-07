@@ -1,21 +1,50 @@
 #!/bin/bash
-CONFIG_FILE="$HOME/.config/meow-colorscripts/config"
-LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
+CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
+COLORSCRIPTS_DIR="$HOME/.config/meow-colorscripts/colorscripts"
+
+# Colores Nord Aurora
+GREEN='\033[38;2;94;129;172m'
+RED='\033[38;2;191;97;106m'
+YELLOW='\033[38;2;235;203;139m'
+CYAN='\033[38;2;143;188;187m'
+WHITE='\033[38;2;216;222;233m'
+NC='\033[0m'
+
+# 🐾 Cargar configuración
 if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 else
-    MEOW_PATH="$HOME/.config/meow-colorscripts/colorscripts/normal"
+    echo -e "${RED}󰅟 No se encontró el archivo de configuración, usando valores predeterminados.${NC}"
+    MEOW_TYPE="normal"
+    MEOW_SIZE="normal"
 fi
 
-if [ -f "$LANG_FILE" ]; then
-    source "$LANG_FILE"
+# 🐾 Validar que `MEOW_TYPE` es una opción válida
+VALID_TYPES=("ascii-color" "ascii" "catpuccin" "everforest" "nocolor" "nord" "normal")
+if [[ ! " ${VALID_TYPES[@]} " =~ " ${MEOW_TYPE} " ]]; then
+    echo -e "${RED}󰅟 Error: Tipo inválido en la configuración (${MEOW_TYPE}). Usando 'normal'.${NC}"
+    MEOW_TYPE="normal"
+fi
+
+# 🐾 Validar tamaño o tipo según el `MEOW_TYPE`
+if [[ "$MEOW_TYPE" == "ascii" || "$MEOW_TYPE" == "ascii-color" ]]; then
+    VALID_SIZES=("keyboard-symbols" "block")
 else
-    LANGUAGE="en"
+    VALID_SIZES=("small" "normal" "large")
 fi
 
-MEOW_ARRAY=("$MEOW_PATH"/*.txt)
-RANDOM_MEOW="${MEOW_ARRAY[RANDOM % ${#MEOW_ARRAY[@]}]}"
+if [[ ! " ${VALID_SIZES[@]} " =~ " ${MEOW_SIZE} " ]]; then
+    echo -e "${RED}󰅟 Error: Tamaño/tipo inválido (${MEOW_SIZE}). Usando 'normal'.${NC}"
+    MEOW_SIZE="normal"
+fi
 
-bash "$RANDOM_MEOW"
+# 🐾 Ruta final del colorscript
+FINAL_SCRIPT="$COLORSCRIPTS_DIR/$MEOW_TYPE/$MEOW_SIZE.sh"
 
+# 🐾 Verificar si el colorscript existe antes de ejecutarlo
+if [ -f "$FINAL_SCRIPT" ]; then
+    bash "$FINAL_SCRIPT"
+else
+    echo -e "${RED}󰅟 Error: No se encontró $MEOW_SIZE.sh en $COLORSCRIPTS_DIR/$MEOW_TYPE/.${NC}"
+fi
