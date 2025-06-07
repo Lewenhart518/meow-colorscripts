@@ -2,6 +2,7 @@
 
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
+MEOW_SCRIPT="$HOME/.config/meow-colorscripts/meow-colorscripts/show-meows.sh"
 
 # Colores Nord Aurora
 GREEN='\033[38;2;94;129;172m'
@@ -86,16 +87,4 @@ USER_SHELL=$(basename "$SHELL")
 # Configuración de inicio automático
 echo -e "\n${YELLOW}󱝁 ¿Quieres que ansi-meow se muestre al iniciar la terminal?${NC}"
 echo -e "${GREEN}1) Sí${NC}"
-echo -e "${RED}2) No${NC}"
-read -p "Selecciona una opción [1-2]: " STARTUP_OPTION
-
-if [ "$STARTUP_OPTION" == "1" ]; then
-    case "$USER_SHELL" in
-        "bash") echo "ansi-meow" >> ~/.bashrc ;;
-        "zsh") echo "ansi-meow" >> ~/.zshrc ;;
-        "fish") echo "ansi-meow" >> ~/.config/fish/config.fish ;;
-    esac
-fi
-
-echo -e "\n${WHITE} Configuración completa! Escribe 'ansi-meow' para ver los gatos.${NC}"
-
+echo -e "${RED}2
