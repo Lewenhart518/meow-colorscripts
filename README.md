@@ -22,7 +22,7 @@ English and Spanish
 ## Installation   
 To install `meow-colorscripts`, run:  
 ```bash  
-git clone git@github.com:Lewenhart518/meow-colorscripts.git
+git clone https://github.com/Lewenhart518/meow-colorscripts.git
 ```
 ```bash
 cd meow-colorscripts
