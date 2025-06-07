@@ -12,6 +12,9 @@ CYAN='\033[38;2;143;188;187m'   # Aurora Cyan
 WHITE='\033[38;2;216;222;233m'  # Snow Storm
 NC='\033[0m'                    # No Color
 
+# Crear la carpeta de configuración antes de escribir cualquier archivo
+mkdir -p "$INSTALL_DIR"
+
 # Detectar idioma del usuario
 echo -e "${CYAN} Select your language:${NC}"
 echo -e "1) English"
@@ -65,43 +68,5 @@ fi
 mkdir -p "$INSTALL_DIR"
 mv "$LOCAL_REPO/.config" "$INSTALL_DIR"
 
-# Crear directorios y copiar archivos si existen
-mkdir -p "$INSTALL_DIR/small" "$INSTALL_DIR/normal" "$INSTALL_DIR/large"
-
-if [ -d "$INSTALL_DIR/colorscripts" ]; then
-    cp -r "$INSTALL_DIR/colorscripts/small/"*.txt "$INSTALL_DIR/small"
-    cp -r "$INSTALL_DIR/colorscripts/normal/"*.txt "$INSTALL_DIR/normal"
-    cp -r "$INSTALL_DIR/colorscripts/large/"*.txt "$INSTALL_DIR/large"
-else
-    echo -e "${RED}󰅟 Error: No se encontraron los archivos de colorscripts.${NC}"
-    exit 1
-fi
-
-# Dar permisos de ejecución a setup.sh
-chmod +x "$INSTALL_DIR/setup.sh"
-
-# Crear archivo de configuración si no existe
-echo -e "$MSG_CONFIG"
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "MEOW_PATH=normal" > "$CONFIG_FILE"
-    echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
-    echo -e " ${WHITE}Configuración creada en $CONFIG_FILE${NC}"
-fi
-
-# Finalizando instalación con animaciones
-echo -ne "${CYAN}󱁖 Finalizando la instalación 󱁖 ${NC}"
-for i in {1..5}; do echo -ne "."; sleep 0.5; done
-echo -e " ${YELLOW}${NC}"
-
-echo -e "$MSG_COMPLETE"
-
-# Preguntar si ejecutar setup.sh
-echo -e "\n$MSG_SETUP_PROMPT"
-echo -e "1) ${GREEN}Sí${NC}"
-echo -e "2) ${RED}No${NC}"
-read -p "Selecciona una opción [1-2]: " SETUP_OPTION
-
-if [ "$SETUP_OPTION" == "1" ]; then
-    echo -e "${CYAN}󰄛 Ejecutando configuración...${NC}"
-    bash "$INSTALL_DIR/setup.sh"
-fi
+# Crear directorios y copiar archivos solo si existen
+mkdir -p "$INSTALL
