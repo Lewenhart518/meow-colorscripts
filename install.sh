@@ -1,6 +1,7 @@
 #!/bin/bash
 
 INSTALL_DIR="$HOME/.config/meow-colorscripts"
+CONFIG_FILE="$INSTALL_DIR/meow.conf"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'  # Frost
@@ -25,14 +26,14 @@ echo "LANGUAGE=$LANGUAGE" > "$INSTALL_DIR/lang"
 
 if [ "$LANGUAGE" == "es" ]; then
     MSG_INSTALL="${GREEN}󰄛 Preparando la magia felina 󰄛 ...${NC}"
-    MSG_SETUP="${WHITE}Bienvenido al setup de ansi-meow${NC}"
     MSG_COMPLETE="${GREEN}󱝁 Instalación completa! Escribe 'ansi-meow' para ver los gatos, 'meow-colorscripts-setup' para cambiar ajustes, o 'meows-names' para ver la lista de gatos disponibles 󱝁 ${NC}"
     MSG_GIT_ERROR="${RED}󰅟 Error: 'git' no está instalado. Por favor, instálalo e intenta de nuevo.${NC}"
+    MSG_CONFIG="${CYAN}󰙔 Creando archivo de configuración...${NC}"
 else
     MSG_INSTALL="${GREEN}󰄛 Preparing the cat magic 󰄛 ...${NC}"
-    MSG_SETUP="${WHITE}Welcome to ansi-meow setup${NC}"
     MSG_COMPLETE="${GREEN}󱝁 Installation complete! Type 'ansi-meow' to see the cats, 'meow-colorscripts-setup' to change settings, or 'meows-names' to view available cat designs 󱝁 ${NC}"
     MSG_GIT_ERROR="${RED}󰅟 Error: 'git' is not installed. Please install it and try again.${NC}"
+    MSG_CONFIG="${CYAN}󰙔 Creating configuration file...${NC}"
 fi
 
 echo -n "$MSG_INSTALL"
@@ -55,16 +56,24 @@ cp -r "$INSTALL_DIR/colorscripts/small/"*.txt "$INSTALL_DIR/small" > /dev/null 2
 cp -r "$INSTALL_DIR/colorscripts/normal/"*.txt "$INSTALL_DIR/normal" > /dev/null 2>&1
 cp -r "$INSTALL_DIR/colorscripts/large/"*.txt "$INSTALL_DIR/large" > /dev/null 2>&1
 
-chmod +x "$INSTALL_DIR/meow-show.sh" "$INSTALL_DIR/setup.sh" > /dev/null 2>&1
+chmod +x "$INSTALL_DIR/show-meows.sh" "$INSTALL_DIR/setup.sh" > /dev/null 2>&1
+
+# Crear archivo de configuración si no existe
+echo -e "$MSG_CONFIG"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "MEOW_PATH=normal" > "$CONFIG_FILE"
+    echo "MEOW_EFFECTS=enabled" >> "$CONFIG_FILE"
+    echo " ${WHITE}Configuración creada en $CONFIG_FILE${NC}"
+fi
 
 # Detectar la shell del usuario
 USER_SHELL=$(basename "$SHELL")
 
-# Alias de ansi-meow y setup
-echo "alias ansi-meow='bash $INSTALL_DIR/meow-show.sh'" >> ~/.${USER_SHELL}rc 2>/dev/null
+# Alias para accesibilidad
+echo "alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'" >> ~/.${USER_SHELL}rc 2>/dev/null
 echo "alias meow-colorscripts-setup='bash $INSTALL_DIR/setup.sh'" >> ~/.${USER_SHELL}rc 2>/dev/null
-echo "alias meows-names='ls -1 $INSTALL_DIR/\$(cat $INSTALL_DIR/config | grep MEOW_PATH | cut -d'=' -f2) | sed \"s/\.txt//g\"'" >> ~/.${USER_SHELL}rc 2>/dev/null
-echo "meows-show() { cat $INSTALL_DIR/\$(cat $INSTALL_DIR/config | grep MEOW_PATH | cut -d'=' -f2)/\$1.txt; }" >> ~/.${USER_SHELL}rc 2>/dev/null
+echo "alias meows-names='ls -1 $INSTALL_DIR/\$(cat $CONFIG_FILE | grep MEOW_PATH | cut -d'=' -f2) | sed \"s/\.txt//g\"'" >> ~/.${USER_SHELL}rc 2>/dev/null
+echo "meows-show() { cat $INSTALL_DIR/\$(cat $CONFIG_FILE | grep MEOW_PATH | cut -d'=' -f2)/\$1.txt; }" >> ~/.${USER_SHELL}rc 2>/dev/null
 
 # Finalizando instalación
 if [ "$LANGUAGE" == "es" ]; then
