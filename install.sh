@@ -1,9 +1,9 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.config"
+INSTALL_DIR="$HOME/.config/meow-colorscripts"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
+LANG_FILE="$INSTALL_DIR/lang"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -28,8 +28,7 @@ if [ "$LANG_OPTION" == "2" ]; then
     LANGUAGE="es"
 fi
 
-# Guardar el idioma en el archivo
-mkdir -p "$(dirname "$LANG_FILE")"
+mkdir -p "$INSTALL_DIR"
 echo "$LANGUAGE" > "$LANG_FILE"
 
 # 🐾 Animaciones de carga
@@ -55,25 +54,39 @@ else
     exit 1
 fi
 
+# 🐾 Mover `show-meows.sh` y `colorscripts/`
+if [ -f "$LOCAL_REPO/show-meows.sh" ]; then
+    mv "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/" &> /dev/null
+    echo -e "${GREEN} show-meows.sh movido correctamente.${NC}"
+else
+    echo -e "${RED}󰅟 Error: No se encontró show-meows.sh en ~/meow-colorscripts/.${NC}"
+    exit 1
+fi
+
+if [ -d "$LOCAL_REPO/colorscripts" ]; then
+    mv "$LOCAL_REPO/colorscripts" "$INSTALL_DIR/" &> /dev/null
+    echo -e "${GREEN} colorscripts/ movido correctamente.${NC}"
+else
+    echo -e "${RED}󰅟 Error: No se encontró colorscripts/ en ~/meow-colorscripts/.${NC}"
+    exit 1
+fi
+
 # 🐾 Detectar shell y agregar alias
 USER_SHELL=$(basename "$SHELL")
-ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
+ALIAS_CMD="alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'"
 
 echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
 sleep 1
 
-if [[ "$USER_SHELL" == "bash" ]]; then
-    echo "$ALIAS_CMD" >> "$HOME/.bashrc"
-    echo -e "${GREEN} Alias agregado en ~/.bashrc.${NC}"
-elif [[ "$USER_SHELL" == "zsh" ]]; then
-    echo "$ALIAS_CMD" >> "$HOME/.zshrc"
-    echo -e "${GREEN} Alias agregado en ~/.zshrc.${NC}"
-elif [[ "$USER_SHELL" == "fish" ]]; then
-    echo "$ALIAS_CMD" >> "$HOME/.config/fish/config.fish"
-    echo -e "${GREEN} Alias agregado en ~/.config/fish/config.fish.${NC}"
+if [ -f "$INSTALL_DIR/show-meows.sh" ]; then
+    case "$USER_SHELL" in
+        "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
+        "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
+        "fish") echo "$ALIAS_CMD" >> "$HOME/.config/fish/config.fish" ;;
+    esac
+    echo -e "${GREEN} Alias agregado correctamente.${NC}"
 else
-    echo -e "${RED}󰅟 No se pudo detectar tu shell. Agrega manualmente este alias:${NC}"
-    echo -e "${WHITE}$ALIAS_CMD${NC}"
+    echo -e "${RED}󰅟 Error: No se encontró show-meows.sh en ~/.config/meow-colorscripts/.${NC}"
 fi
 
 # 🐾 Preguntar si ejecutar configuración
