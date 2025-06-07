@@ -21,9 +21,9 @@ fi
 if [ "$LANGUAGE" == "es" ]; then
     MSG_SETUP="󰄛 ¡Bienvenido al setup de ansi-meow! 󰄛"
     MSG_SIZE="󰲏 Elige el tamaño de los gatos ANSI:"
-    MSG_OPTION1="1) Pequeño"
+    MSG_OPTION1="1) Pequeño (en desarrollo)"
     MSG_OPTION2="2) Normal"
-    MSG_OPTION3="3) Grande"
+    MSG_OPTION3="3) Grande (en desarrollo)"
     MSG_EFFECTS="󰠮 ¿Quieres activar efectos visuales (negrita y colores)?"
     MSG_STARTUP="󱝁 ¿Quieres que ansi-meow se muestre al iniciar la terminal?"
     MSG_YES="1) Sí"
@@ -32,9 +32,9 @@ if [ "$LANGUAGE" == "es" ]; then
 else
     MSG_SETUP="󰄛 Welcome to ansi-meow setup! 󰄛"
     MSG_SIZE="󰲏 Choose the size of ANSI cats:"
-    MSG_OPTION1="1) Small"
+    MSG_OPTION1="1) Small (in development)"
     MSG_OPTION2="2) Normal"
-    MSG_OPTION3="3) Large"
+    MSG_OPTION3="3) Large (in development)"
     MSG_EFFECTS="󰠮 Do you want to enable visual effects (bold and colors)?"
     MSG_STARTUP="󱝁 Do you want ansi-meow to run automatically when opening the terminal?"
     MSG_YES="1) Yes"
