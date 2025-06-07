@@ -115,4 +115,3 @@ if [ "$SETUP_OPTION" == "1" ]; then
     echo -e "${CYAN}󰄛 Ejecutando configuración...${NC}"
     bash "$INSTALL_DIR/setup.sh"
 fi
-
