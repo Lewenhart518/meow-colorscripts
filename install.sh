@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.config/meow-colorscripts"
+INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 
@@ -38,38 +38,21 @@ for i in {1..3}; do
     echo -e "${YELLOW}${NC}"
 done
 
-# 🐾 Mover `.config/` a la ubicación correcta
+# 🐾 Mover `meow-colorscripts/` dentro de `.config/`
 echo -e "${GREEN}󰄛 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
 
-if [ -d "$LOCAL_REPO/.config" ]; then
-    mv "$LOCAL_REPO/.config" "$INSTALL_DIR" &> /dev/null
+if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
+    mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
     echo -e "${GREEN} Configuración movida correctamente.${NC}"
 else
-    echo -e "${RED}󰅟 Error: No se encontró la carpeta de configuración en ~/meow-colorscripts/.config/.${NC}"
-    exit 1
-fi
-
-# 🐾 Mover `show-meows.sh` y `colorscripts/`
-if [ -f "$LOCAL_REPO/show-meows.sh" ]; then
-    mv "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/" &> /dev/null
-    echo -e "${GREEN} show-meows.sh movido correctamente.${NC}"
-else
-    echo -e "${RED}󰅟 Error: No se encontró show-meows.sh en ~/meow-colorscripts/.${NC}"
-    exit 1
-fi
-
-if [ -d "$LOCAL_REPO/colorscripts" ]; then
-    mv "$LOCAL_REPO/colorscripts" "$INSTALL_DIR/" &> /dev/null
-    echo -e "${GREEN} colorscripts/ movido correctamente.${NC}"
-else
-    echo -e "${RED}󰅟 Error: No se encontró colorscripts/ en ~/meow-colorscripts/.${NC}"
+    echo -e "${RED}󰅟 Error: No se encontró la carpeta ~/meow-colorscripts/.config/meow-colorscripts/.${NC}"
     exit 1
 fi
 
 # 🐾 Detectar shell y agregar alias
 USER_SHELL=$(basename "$SHELL")
-ALIAS_CMD="alias ansi-meow='bash $INSTALL_DIR/show-meows.sh'"
+ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
 
 echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
 sleep 1
