@@ -69,4 +69,4 @@ mkdir -p "$INSTALL_DIR"
 mv "$LOCAL_REPO/.config" "$INSTALL_DIR"
 
 # Crear directorios y copiar archivos solo si existen
-mkdir -p "$INSTALL
+mkdir -p "$INSTALL_DIR"
