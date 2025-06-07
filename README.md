@@ -21,9 +21,15 @@ English and Spanish
 ## Installation   
 To install `meow-colorscripts`, run:  
 ```bash  
-git clone git@github.com:Lewenhart518/meow-colorscripts.git  
-cd meow-colorscripts  
-chmod +x install.sh  
+git clone git@github.com:Lewenhart518/meow-colorscripts.git
+```
+```bash
+cd meow-colorscripts
+```
+```bash 
+chmod +x install.sh
+```
+```bash  
 ./install.sh  
 ```  
 This will set everything up automatically.  
