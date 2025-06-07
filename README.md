@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # 🐱 meow-colorscripts  
 Customize your terminal with cat-themed ANSI art! 🎨🔥  
 
@@ -53,3 +54,5 @@ This will show the ANSI art for **"Raspi"**.
 ## Author  
 Created by **Lewenhart518** 🐱🔥  
 Follow me on GitHub: [Lewenhart518](https://github.com/Lewenhart518)  
+=======
+>>>>>>> Stashed changes
