@@ -78,4 +78,4 @@ echo "MEOW_TYPE=$MEOW_TYPE" > "$CONFIG_FILE"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
 
 echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
-echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+echo -e "󰚝 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
