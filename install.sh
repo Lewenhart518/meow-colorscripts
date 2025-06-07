@@ -13,22 +13,19 @@ NC='\033[0m'                    # No Color
 
 # Frases felinas para efectos de carga 🐾
 LOADING_MSGS_ES=(
-    "󰏩 Los gatos se están estirando"
-    "󰄛 Acomodando las almohadillas"
-    " Ronroneo en proceso"
-    "󰏩 Sacudiendo las patitas"
-    "󰄛 Listo para una siesta elegante"
+    "🐾 Los gatos se están estirando"
+    "🐱 Acomodando las almohadillas"
+    "🐈 Ronroneo en proceso"
+    "🐾 Sacudiendo las patitas"
+    "🐱 Listo para una siesta elegante"
 )
 LOADING_MSGS_EN=(
-    "󰏩 The cats are stretching"
-    "󰄛 Adjusting the paw pads"
-    " Purring in progress"
-    "󰏩 Shaking the paws"
-    "󰄛 Ready for a stylish catnap"
+    "🐾 The cats are stretching"
+    "🐱 Adjusting the paw pads"
+    "🐈 Purring in progress"
+    "🐾 Shaking the paws"
+    "🐱 Ready for a stylish catnap"
 )
-
-# Crear la carpeta de configuración antes de escribir cualquier archivo
-mkdir -p "$INSTALL_DIR"
 
 # Detectar idioma del usuario
 echo -e "${CYAN} Select your language:${NC}"
@@ -57,13 +54,13 @@ done
 
 echo -e "${GREEN}󰄛 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
-mv "$LOCAL_REPO/.config" "$INSTALL_DIR" &> /dev/null
 
-# Confirmar si la configuración se movió correctamente
-if [ -d "$INSTALL_DIR/colorscripts" ]; then
+# **Verificar que .config existe antes de moverlo**
+if [ -d "$LOCAL_REPO/.config" ]; then
+    mv "$LOCAL_REPO/.config" "$INSTALL_DIR" &> /dev/null
     echo -e "${GREEN} La configuración ha sido movida exitosamente.${NC}"
 else
-    echo -e "${RED}󰅟 Error: No se encontró la carpeta de configuración.${NC}"
+    echo -e "${RED}󰅟 Error: No se encontró la carpeta de configuración en ~/meow-colorscripts/.config/.${NC}"
     exit 1
 fi
 
@@ -79,3 +76,4 @@ if [ "$SETUP_OPTION" == "1" ]; then
 fi
 
 echo -e "${GREEN}󱝁 Configuración completada exitosamente. ¡Listo para usar ansi-meow!${NC}"
+
