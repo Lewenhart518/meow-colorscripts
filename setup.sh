@@ -116,5 +116,5 @@ if [[ "$AUTO_RUN_OPTION" == "1" ]]; then
             ;;
     esac
     echo -e "${GREEN} ansi-meow ahora se ejecutará al abrir la terminal.${NC}"
-    echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias/comando!${NC}"
+    echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias  ${NC}"
 fi
