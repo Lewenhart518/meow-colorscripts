@@ -1,73 +1,83 @@
 #!/bin/bash
 # ========================================================
-# show-meows.sh
+# show-meows.sh - Muestra un gato ASCII (meow) de meow-colorscripts
 # ========================================================
-# Este script muestra el arte ANSI de un gato (meow) seleccionado,
-# basándose en la configuración guardada en ~/.config/meow-colorscripts/meow.conf.
-# Se espera que los archivos de arte se encuentren en:
-#   $HOME/.config/meow-colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
-# Si no se encuentra ningún archivo .txt en dicho directorio,
-# se mostrará un mensaje de error personalizado ubicado en:
-#   $HOME/.config/meow-colorscripts/colorscripts/error.txt
+# Este script lee la configuración almacenada en 
+#   $HOME/.config/meow-colorscripts/meow.conf
+# y utiliza las variables MEOW_THEME y MEOW_SIZE para determinar
+# la carpeta donde se encuentran los archivos de arte.
 #
-# Uso:
-#   meow-show [nombre]
+# Si se le pasa un parámetro (e.g., meow-show gato1), intentará mostrar
+# el archivo gato1.txt; si no, mostrará un arte aleatorio.
+#  
+# También lee el idioma desde $HOME/.config/meow-colorscripts/lang.
+# Si el idioma es "es" se mostrará en español, de lo contrario en inglés.
 # ========================================================
 
-# Colores para mensajes
-GREEN='\033[38;2;94;129;172m'
-RED='\033[38;2;191;97;106m'
-CYAN='\033[38;2;143;188;187m'
-NC='\033[0m'
+# Ubicación de la configuración
+CONFIG_DIR="$HOME/.config/meow-colorscripts"
+CONFIG_FILE="$CONFIG_DIR/meow.conf"
 
-# Cargar la configuración
-CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
-if [ -f "$CONFIG_FILE" ]; then
-    source "$CONFIG_FILE"
-else
-    echo -e " ${RED}Error: Archivo de configuración no encontrado. Ejecuta 'meow-colorscripts-setup' primero.${NC}"
+# Verificar que exista la configuración
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Configuration file not found."
+    echo "Please run 'meow-colorscripts-setup' first."
+    exit 1
+fi
+# Cargar la configuración (asegúrate de que meow.conf esté en formato KEY=VALUE)
+source "$CONFIG_FILE"
+
+# Verificar que MEOW_THEME y MEOW_SIZE estén definidas
+if [ -z "$MEOW_THEME" ] || [ -z "$MEOW_SIZE" ]; then
+    echo "MEOW_THEME or MEOW_SIZE is empty."
+    echo "Please run 'meow-colorscripts-setup' to configure."
     exit 1
 fi
 
-# Valores por defecto, en caso de que no estén definidos
-: ${MEOW_THEME:="normal"}
-: ${MEOW_SIZE:="normal"}
+# Determinar el idioma (por defecto inglés)
+LANGUAGE="en"
+LANG_FILE="$CONFIG_DIR/lang"
+if [ -f "$LANG_FILE" ]; then
+    LANGUAGE=$(cat "$LANG_FILE")
+fi
 
-# Definir la ruta del directorio de arte ANSI
-ART_DIR="$HOME/.config/meow-colorscripts/$MEOW_THEME/$MEOW_SIZE"
-
-# Si el directorio de arte no existe, muestra un error y se sale.
+# Definir la carpeta donde se encuentran los artes ASCII
+ART_DIR="$CONFIG_DIR/$MEOW_THEME/$MEOW_SIZE"
 if [ ! -d "$ART_DIR" ]; then
-    echo -e " ${RED}Error: No se encontró el directorio de arte ($ART_DIR).${NC}"
-    exit 1
-fi
-
-# Verificar si existen archivos .txt en $ART_DIR
-TXT_COUNT=$(find "$ART_DIR" -maxdepth 1 -type f -name "*.txt" | wc -l)
-if [ "$TXT_COUNT" -eq 0 ]; then
-    ERROR_FILE="$HOME/.config/meow-colorscripts/colorscripts/error.txt"
-    if [ -f "$ERROR_FILE" ]; then
-        cat "$ERROR_FILE"
+    if [ "$LANGUAGE" = "es" ]; then
+        echo "No se encontró la carpeta de arte: $ART_DIR"
     else
-        echo -e " ${RED}Error: No se encontraron archivos .txt y tampoco se pudo localizar $ERROR_FILE.${NC}"
+        echo "Art directory not found: $ART_DIR"
     fi
     exit 1
 fi
 
-# Validar la entrada: se espera al menos un parámetro con el nombre del gato
-if [ "$#" -eq 0 ]; then
-    echo -e " ${CYAN}No se proporcionó el nombre de un gato.${NC}"
-    echo -e " ${CYAN}Utiliza 'meows-names' para ver los nombres disponibles.${NC}"
-    exit 1
-fi
-
-# Obtener el nombre del gato y construir la ruta al archivo
-CAT_NAME="$1"
-FILE="$ART_DIR/$CAT_NAME.txt"
-
-if [ -f "$FILE" ]; then
-    cat "$FILE"
+# Mostrar el arte solicitado o uno aleatorio
+if [ -n "$1" ]; then
+    # Si se pasa un parámetro, se busca el arte con ese nombre (sin la extensión .txt)
+    ART_FILE="$ART_DIR/$1.txt"
+    if [ -f "$ART_FILE" ]; then
+        cat "$ART_FILE"
+    else
+        if [ "$LANGUAGE" = "es" ]; then
+            echo "No se encontró el arte para '$1'."
+        else
+            echo "Art for '$1' not found."
+        fi
+        exit 1
+    fi
 else
-    echo -e " ${RED}Error: No se encontró el arte para el gato '$CAT_NAME' en $ART_DIR.${NC}"
-    exit 1
+    # Si no se pasa parámetro, se elige un archivo aleatorio del directorio
+    FILES=("$ART_DIR"/*.txt)
+    if [ ${#FILES[@]} -eq 0 ]; then
+        if [ "$LANGUAGE" = "es" ]; then
+            echo "No hay arte disponible en: $ART_DIR"
+        else
+            echo "No art available in: $ART_DIR"
+        fi
+        exit 1
+    fi
+    RANDOM_FILE=${FILES[RANDOM % ${#FILES[@]}]}
+    cat "$RANDOM_FILE"
 fi
+
