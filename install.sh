@@ -5,7 +5,7 @@ LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
-# 🐾 Asegurar que la carpeta de configuración existe
+# 🐾  Asegurar que la carpeta de configuración existe
 mkdir -p "$HOME/.config/meow-colorscripts"
 touch "$LANG_FILE"
 
@@ -17,11 +17,11 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
-# 🐾 Selección de idioma
-echo -e "${CYAN} Select your language:${NC}"
+# 🐾  Selección de idioma
+echo -e "${CYAN} Select your language:${NC}"
 echo -e "1) Español"
 echo -e "2) English"
-read -p "Choose an option [1/2]: " LANG_OPTION
+read -p "󰏩 Choose an option [1/2]: " LANG_OPTION
 
 LANGUAGE="en"
 if [[ "$LANG_OPTION" == "1" ]]; then
@@ -29,10 +29,10 @@ if [[ "$LANG_OPTION" == "1" ]]; then
 fi
 echo "$LANGUAGE" > "$LANG_FILE"
 
-# 🐾 Mensajes de carga dinámicos
+# 🐾  Mensajes de carga dinámicos
 LOADING_USED=()
-LOADING_MSGS_ES=("󰀅 Los gatos se estiran" " Acomodando almohadillas" " Afinando maullidos" "★ Ronroneo en progreso" "󰀅 Explorando el código")
-LOADING_MSGS_EN=("󰀅 The cats are stretching" " Adjusting paw pads" " Fine-tuning meows" "★ Purring in progress" "󰀅 Exploring the code")
+LOADING_MSGS_ES=(" Los gatos se estiran" "󰄛 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
+LOADING_MSGS_EN=(" The cats are stretching" "󰄛 Adjusting paw pads" "󰏩 Fine-tuning meows" "󱏿 Purring in progress" "󰏩 Exploring the code")
 
 for i in {1..3}; do 
     while true; do
@@ -50,7 +50,7 @@ for i in {1..3}; do
     echo -e "${GREEN}${NC}"
 done
 
-# 🐾 Mover configuración
+# 🐾 󰚝 Mover configuración
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
 else
@@ -74,11 +74,11 @@ else
     echo -e "${GREEN} Configuration moved successfully.${NC}"
 fi
 
-# 🐾 Detectar shell y agregar alias
+# 🐾 󰄛 Detectar shell y agregar alias
 if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "${CYAN}󰀅 Detectando shell y agregando alias...${NC}"
+    echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
 else
-    echo -e "${CYAN}󰀅 Detecting shell and adding alias...${NC}"
+    echo -e "${CYAN}󰄛 Detecting shell and adding alias...${NC}"
 fi
 sleep 1
 
@@ -110,24 +110,24 @@ else
     fi
 fi
 
-# 🐾 Abrir configuración
+# 🐾  Abrir configuración
 if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "\n${CYAN}󰀅 ¿Quieres abrir la configuración ahora?${NC}"
+    echo -e "\n${CYAN} ¿Quieres abrir la configuración ahora?${NC}"
     echo -e "1) Sí"
     echo -e "2) No"
 else
-    echo -e "\n${CYAN}󰀅 Do you want to open the configuration now?${NC}"
+    echo -e "\n${CYAN} Do you want to open the configuration now?${NC}"
     echo -e "1) Yes"
     echo -e "2) No"
 fi
-read -p "Select an option [1/2]: " SETUP_OPTION
+read -p "󰏩 Select an option [1/2]: " SETUP_OPTION
 
 if [[ "$SETUP_OPTION" == "1" ]]; then
     if [ -f "$SETUP_SCRIPT" ]; then
         if [[ "$LANGUAGE" == "es" ]]; then
-            echo -e "${CYAN}󰀅 Abriendo configuración...${NC}"
+            echo -e "${CYAN}󰏩 Abriendo configuración...${NC}"
         else
-            echo -e "${CYAN}󰀅 Opening configuration...${NC}"
+            echo -e "${CYAN}󰏩 Opening configuration...${NC}"
         fi
         bash "$SETUP_SCRIPT"
     else
@@ -137,12 +137,4 @@ if [[ "$SETUP_OPTION" == "1" ]]; then
             echo -e "${RED}󰀅 Error: setup.sh not found.${NC}"
         fi
     fi
-fi
-
-if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "\n${GREEN} Instalación completada exitosamente. ¡Ansi-meow está listo!${NC}"
-    echo -e "󰚝 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${NC}"
-else
-    echo -e "\n${GREEN} Installation completed successfully. Ansi-meow is ready!${NC}"
-    echo -e "󰚝 Configuration location: ${WHITE}~/.config/meow-colorscripts/${NC}"
 fi
