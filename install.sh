@@ -3,10 +3,10 @@
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
+LANG_FILE="$LOCAL_REPO/.config/meow-colorscripts/lang"
 
 # 🐾 Asegurar que la carpeta de configuración existe antes de escribir en `lang`
-mkdir -p "$INSTALL_DIR/meow-colorscripts"
+mkdir -p "$LOCAL_REPO/.config/meow-colorscripts"
 touch "$LANG_FILE"
 
 # Nord Aurora Colors
@@ -58,16 +58,6 @@ if [[ -d "$LOCAL_REPO/.config/meow-colorscripts" ]]; then
     mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
 else
     echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración en $LOCAL_REPO/.config/meow-colorscripts.${NC}"
-fi
-
-# 🐾 Verificar que `show-meows.sh` se movió correctamente
-if [[ ! -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]]; then
-    if [[ -f "$LOCAL_REPO/show-meows.sh" ]]; then
-        mv "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/meow-colorscripts/"
-        echo -e "${GREEN} show-meows.sh movido correctamente.${NC}"
-    else
-        echo -e "${RED}󰀅 Error: No se encontró show-meows.sh en $LOCAL_REPO. ¿Está en el repositorio correcto?${NC}"
-    fi
 fi
 
 echo -e "${GREEN} Configuración movida correctamente.${NC}"
