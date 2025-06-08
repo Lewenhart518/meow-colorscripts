@@ -18,12 +18,18 @@ NC='\033[0m'
 
 # 🐾 Selección de idioma
 echo -e "${CYAN} Selecciona tu idioma:${NC}"
-echo -e "1) Español"
-echo -e "2) English"
-read -p "Elige una opción [1/2]: " LANG_OPTION
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "s) sí"
+    echo -e "n) no"
+    read -p "Elige una opción [s/n]: " LANG_OPTION
+else
+    echo -e "y) yes"
+    echo -e "n) no"
+    read -p "Choose an option [y/n]: " LANG_OPTION
+fi
 
 LANGUAGE="en"
-if [[ "$LANG_OPTION" == "1" ]]; then
+if [[ "$LANG_OPTION" == "s" || "$LANG_OPTION" == "y" ]]; then
     LANGUAGE="es"
 fi
 echo "$LANGUAGE" > "$LANG_FILE"
@@ -36,7 +42,7 @@ LOADING_MSGS_EN=("󰀅 The cats are stretching" " Adjusting paw pads" " Fi
 for i in {1..3}; do 
     while true; do
         LOADING_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
-        if [ "$LANGUAGE" == "en" ]; then
+        if [[ "$LANGUAGE" == "en" ]]; then
             LOADING_MSG=${LOADING_MSGS_EN[$RANDOM % ${#LOADING_MSGS_EN[@]}]}
         fi
         if [[ ! " ${LOADING_USED[*]} " =~ " $LOADING_MSG " ]]; then
@@ -52,11 +58,21 @@ done
 # 🐾 Moviendo configuración correctamente
 echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
-mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
+
+if [[ -d "$LOCAL_REPO/.config/meow-colorscripts" ]]; then
+    mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
+else
+    echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración en $LOCAL_REPO/.config/meow-colorscripts.${NC}"
+fi
 
 # 🐾 Verificar que `show-meows.sh` se movió correctamente
 if [[ ! -f "$INSTALL_DIR/show-meows.sh" ]]; then
-    cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/"
+    if [[ -f "$LOCAL_REPO/show-meows.sh" ]]; then
+        cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/"
+        echo -e "${GREEN} show-meows.sh movido correctamente.${NC}"
+    else
+        echo -e "${RED}󰀅 Error: No se encontró show-meows.sh en $LOCAL_REPO. ¿Está en el repositorio correcto?${NC}"
+    fi
 fi
 
 echo -e "${GREEN} Configuración movida correctamente.${NC}"
@@ -90,18 +106,14 @@ fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
 echo -e "\n${CYAN}󰀅 ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "1) Sí"
-echo -e "2) No"
-read -p "Elige una opción [1/2]: " SETUP_OPTION
-
-if [[ "$SETUP_OPTION" == "1" ]]; then
-    if [ -f "$SETUP_SCRIPT" ]; then
-        echo -e "${CYAN}󰀅 Abriendo configuración...${NC}"
-        bash "$SETUP_SCRIPT"
-    else
-        echo -e "${RED}󰀅 Error: No se encontró setup.sh en ~/meow-colorscripts/.${NC}"
-    fi
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "s) sí"
+    echo -e "n) no"
+    read -p "Elige una opción [s/n]: " SETUP_OPTION
+else
+    echo -e "y) yes"
+    echo -e "n) no"
+    read -p "Choose an option [y/n]: " SETUP_OPTION
 fi
 
-echo -e "\n${GREEN} Instalación completada exitosamente. ¡Ansi-meow está listo!${NC}"
-echo -e "󰚝 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${NC}"
+if [[ "$SETUP_OPTION" == "s" || "$SETUP_OPTION" == "y" ]];
