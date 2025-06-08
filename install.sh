@@ -1,17 +1,24 @@
 #!/bin/bash
 # ========================================================
-# Instalación de meow-colorscripts y configuración de comandos
-# Inspirado en el proceso de fastfetch:
-#   - Copia de ejecutables a ~/.local/bin
-#   - Asignación de permisos mediante "install -Dm755"
-#   - Mensajes en español/inglés según configuración
+# Instalación de meow-colorscripts
+# ========================================================
+# Este script instala meow-colorscripts siguiendo una metodología
+# inspirada en fastfetch:
+#   • Verificación de dependencias (Git, fc-list, Nerd Fonts)
+#   • Selección de idioma (español/inglés)
+#   • Clonación (si es necesario) y permisos adecuados a los scripts.
+#   • Movimiento de la carpeta de configuración a ~/.config/meow-colorscripts.
+#   • Instalación de los comandos principales en ~/.local/bin usando
+#     "install -Dm755".
+#   • Frases de carga felinas durante el proceso.
+#   • Pregunta para abrir el setup y guardado de la configuración.
 # ========================================================
 
 # --- Forzar TERM para ANSI (asegúrate de que tu terminal lo soporte)
 export TERM=${TERM:-xterm-256color}
 
 # ========================================================
-# Función para reiniciar el script (tras instalar alguna dependencia)
+# Función para reiniciar el script tras instalar alguna dependencia
 restart_script() {
     echo " Reiniciando el instalador..."
     exec "$0" "$@"
@@ -24,7 +31,7 @@ LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 
 # ------------------------------------------------------------
-# Definir colores (para terminal 24 bits)
+# Definir colores ANSI (24 bits) para mensajes
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 YELLOW='\033[38;2;235;203;139m'
@@ -45,7 +52,7 @@ if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 
-# Crear la carpeta de configuración si no existe y guardar el idioma
+# Crear la carpeta de configuración y guardar el idioma
 mkdir -p "$CONFIG_DIR"
 echo "$LANGUAGE" > "$CONFIG_DIR/lang"
 
@@ -135,23 +142,21 @@ if [ -z "$NERD_FONT_INSTALLED" ]; then
 fi
 
 # ========================================================
-# Instalación (al estilo fastfetch)
+# Instalación del repositorio y configuración
 # ========================================================
 
-# Si existe la carpeta local del repositorio, asume que es
-# el origen; de lo contrario, se debe clonar (este ejemplo asume que ya existe).
+# Si no existe la carpeta local del repositorio, clónala (ajusta la URL según corresponda)
 if [ ! -d "$LOCAL_REPO" ]; then
     echo -e "${YELLOW} No se encontró $LOCAL_REPO. Clonando repositorio...${NC}"
-    # Clonar el repositorio (ajusta la URL según corresponda)
     git clone https://github.com/tu_usuario/tu_repositorio.git "$LOCAL_REPO" || { echo -e "${RED} Error clonando el repositorio.${NC}"; exit 1; }
 fi
 
-# Dar permisos a todos los scripts del repositorio (por ejemplo, *.sh)
+# Dar permisos a todos los scripts del repositorio
 find "$LOCAL_REPO" -type f -name "*.sh" -exec chmod +x {} \;
 
-# Mover la carpeta de configuración (si existe en el repo)
+# Mover (o actualizar) la carpeta de configuración
 if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
-    rm -rf "$CONFIG_DIR" 2>/dev/null
+    rm -rf "$CONFIG_DIR"
     mv "$LOCAL_REPO/.config/meow-colorscripts" "$CONFIG_DIR"
     echo -e "${GREEN} Carpeta de configuración movida a $CONFIG_DIR.${NC}"
 else
@@ -159,17 +164,14 @@ else
 fi
 
 # ========================================================
-# Instalar comandos en ~/.local/bin usando install (similar a fastfetch)
+# Instalación de comandos en ~/.local/bin (estilo fastfetch)
 # ========================================================
 mkdir -p "$HOME/.local/bin"
-# Agrega ~/.local/bin al PATH si no está ya
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 fi
 
-# Usamos el comando "install -Dm755" para copiar y darle permisos de ejecución a cada script:
-
-# meow-colorscripts:
+# Instalar meow-colorscripts (usando show-meows.sh)
 if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
     install -Dm755 "$CONFIG_DIR/show-meows.sh" "$HOME/.local/bin/meow-colorscripts"
     if [[ "$LANGUAGE" == "es" ]]; then
@@ -185,7 +187,7 @@ else
     fi
 fi
 
-# meow-update:
+# Instalar meow-update
 if [ -f "$LOCAL_REPO/update.sh" ]; then
     install -Dm755 "$LOCAL_REPO/update.sh" "$HOME/.local/bin/meow-update"
     if [[ "$LANGUAGE" == "es" ]]; then
@@ -201,7 +203,7 @@ else
     fi
 fi
 
-# meow-colorscripts-setup:
+# Instalar meow-colorscripts-setup (para ejecutar setup.sh)
 if [ -f "$SETUP_SCRIPT" ]; then
     install -Dm755 "$SETUP_SCRIPT" "$HOME/.local/bin/meow-colorscripts-setup"
     if [[ "$LANGUAGE" == "es" ]]; then
@@ -216,6 +218,33 @@ else
         echo -e "${RED} Error: setup.sh not found in the repository.${NC}"
     fi
 fi
+
+# ========================================================
+# Frases de carga felinas
+# ========================================================
+LOADING_MSGS_ES=("Los gatos se estiran" "Acomodando almohadillas" "Afinando maullidos" "Ronroneo en progreso" "Explorando el código")
+LOADING_MSGS_EN=("The cats are stretching" "Adjusting paw pads" "Fine-tuning meows" "Purring in progress" "Exploring the code")
+LOADING_USED=()
+for i in {1..3}; do 
+    while true; do
+        if [[ "$LANGUAGE" == "es" ]]; then
+            RANDOM_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
+        else
+            RANDOM_MSG=${LOADING_MSGS_EN[$RANDOM % ${#LOADING_MSGS_EN[@]}]}
+        fi
+        # Evitar repetición
+        if [[ ! " ${LOADING_USED[@]} " =~ " $RANDOM_MSG " ]]; then
+            LOADING_USED+=("$RANDOM_MSG")
+            break
+        fi
+    done
+    echo -ne "${CYAN}$RANDOM_MSG"
+    for j in {1..3}; do 
+        echo -ne "."
+        sleep 0.5
+    done
+    echo -e " ${GREEN}${NC}"
+done
 
 # ========================================================
 # Preguntar si se desea abrir la configuración ahora
@@ -253,8 +282,9 @@ else
 fi
 
 # ========================================================
-# Guardar la configuración en meow.conf (solo en $CONFIG_DIR)
+# Guardar la configuración en meow.conf (en $CONFIG_DIR)
 # ========================================================
+# Se supone que las variables MEOW_THEME y MEOW_SIZE ya fueron definidas
 echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_DIR/meow.conf"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_DIR/meow.conf"
 
@@ -265,3 +295,4 @@ else
     echo -e "\n ${GREEN}Configuration saved successfully.${NC}"
     echo -e "Configuration file: ${WHITE}$CONFIG_DIR/meow.conf${NC}"
 fi
+
