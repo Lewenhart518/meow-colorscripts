@@ -1,14 +1,17 @@
 #!/bin/bash
 # ========================================================
-# Instalación de meow-colorscripts y comandos sin alias
-# (Se instalan meow-colorscripts, meow-update y meow-colorscripts-setup)
+# Instalación de meow-colorscripts y configuración de comandos
+# Inspirado en el proceso de fastfetch:
+#   - Copia de ejecutables a ~/.local/bin
+#   - Asignación de permisos mediante "install -Dm755"
+#   - Mensajes en español/inglés según configuración
 # ========================================================
 
 # --- Forzar TERM para ANSI (asegúrate de que tu terminal lo soporte)
 export TERM=${TERM:-xterm-256color}
 
 # ========================================================
-# Función para reiniciar el script (después de instalar alguna dependencia)
+# Función para reiniciar el script (tras instalar alguna dependencia)
 restart_script() {
     echo " Reiniciando el instalador..."
     exec "$0" "$@"
@@ -16,11 +19,12 @@ restart_script() {
 
 # ------------------------------------------------------------
 # Variables principales
-INSTALL_DIR="$HOME/.config"
+CONFIG_DIR="$HOME/.config/meow-colorscripts"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 
-# Colores (24bits) para mensajes
+# ------------------------------------------------------------
+# Definir colores (para terminal 24 bits)
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 YELLOW='\033[38;2;235;203;139m'
@@ -29,7 +33,7 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 # ========================================================
-# Selección de idioma (mensajes en español o inglés)
+# Selección de idioma
 # ========================================================
 echo -e "${CYAN} Select your language:${NC}"
 echo -e "  1) Español"
@@ -41,10 +45,9 @@ if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 
-# Guardar el idioma en el archivo de configuración temporal
-mkdir -p "$LOCAL_REPO/.config/meow-colorscripts"
-LANG_FILE="$LOCAL_REPO/.config/meow-colorscripts/lang"
-echo "$LANGUAGE" > "$LANG_FILE"
+# Crear la carpeta de configuración si no existe y guardar el idioma
+mkdir -p "$CONFIG_DIR"
+echo "$LANGUAGE" > "$CONFIG_DIR/lang"
 
 # ========================================================
 # Verificar dependencias
@@ -54,36 +57,24 @@ echo "$LANGUAGE" > "$LANG_FILE"
 if ! command -v git &> /dev/null; then
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "${RED} Git no está instalado.${NC}"
-        read -p "󰏩 ¿Deseas instalar Git automáticamente? (s/n): " INSTALL_GIT
-        if [[ "$INSTALL_GIT" == "s" || "$INSTALL_GIT" == "S" ]]; then
+        read -p "󰏩 ¿Instalar Git automáticamente? (s/n): " INSTALL_GIT
+        if [[ "$INSTALL_GIT" =~ ^[sS]$ ]]; then
             echo -e "${CYAN} Instalando Git...${NC}"
             sudo apt-get update && sudo apt-get install -y git
-            if [ $? -eq 0 ]; then
-                echo -e "${GREEN} Git instalado correctamente.${NC}"
-                restart_script "$@"
-            else
-                echo -e "${RED} Error al instalar Git. Instálalo manualmente e inténtalo de nuevo.${NC}"
-                exit 1
-            fi
+            [ $? -eq 0 ] && { echo -e "${GREEN} Git instalado.${NC}"; restart_script "$@"; } || { echo -e "${RED} Error al instalar Git.${NC}"; exit 1; }
         else
-            echo -e "${RED} Git es necesario para continuar. Instálalo manualmente e inténtalo nuevamente.${NC}"
+            echo -e "${RED} Git es necesario. Instálalo manualmente y reejecuta.${NC}"
             exit 1
         fi
     else
         echo -e "${RED} Git is not installed.${NC}"
-        read -p "󰏩 Do you want to automatically install Git? (y/n): " INSTALL_GIT
-        if [[ "$INSTALL_GIT" == "y" || "$INSTALL_GIT" == "Y" ]]; then
+        read -p "󰏩 Install Git automatically? (y/n): " INSTALL_GIT
+        if [[ "$INSTALL_GIT" =~ ^[yY]$ ]]; then
             echo -e "${CYAN} Installing Git...${NC}"
             sudo apt-get update && sudo apt-get install -y git
-            if [ $? -eq 0 ]; then
-                echo -e "${GREEN} Git installed successfully.${NC}"
-                restart_script "$@"
-            else
-                echo -e "${RED} Error installing Git. Please install it manually and re-run the installer.${NC}"
-                exit 1
-            fi
+            [ $? -eq 0 ] && { echo -e "${GREEN} Git installed.${NC}"; restart_script "$@"; } || { echo -e "${RED} Error installing Git.${NC}"; exit 1; }
         else
-            echo -e "${RED} Git is required to continue. Please install it manually and run the installer again.${NC}"
+            echo -e "${RED} Git is required. Please install it manually and rerun.${NC}"
             exit 1
         fi
     fi
@@ -92,7 +83,7 @@ fi
 # --- fc-list (fontconfig) ---
 if ! command -v fc-list &> /dev/null; then
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED} fc-list no está instalado. Instala fontconfig (ej.: 'sudo apt install fontconfig') e inténtalo nuevamente.${NC}"
+        echo -e "${RED} fc-list no está instalado. Instala fontconfig (ej.: 'sudo apt install fontconfig') e inténtalo.${NC}"
     else
         echo -e "${RED} fc-list is not installed. Please install fontconfig (e.g., 'sudo apt install fontconfig') and try again.${NC}"
     fi
@@ -104,23 +95,23 @@ NERD_FONT_INSTALLED=$(fc-list | grep -i "Nerd")
 if [ -z "$NERD_FONT_INSTALLED" ]; then
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "${RED} No se detectaron Nerd Fonts instaladas.${NC}"
-        read -p "󰏩 ¿Deseas instalar Nerd Fonts? (s/n): " INSTALL_NERD
-        if [[ "$INSTALL_NERD" == "s" || "$INSTALL_NERD" == "S" ]]; then
+        read -p "󰏩 ¿Instalar Nerd Fonts? (s/n): " INSTALL_NERD
+        if [[ "$INSTALL_NERD" =~ ^[sS]$ ]]; then
             echo -e "${CYAN} Instalando Nerd Fonts...${NC}"
         else
-            echo -e "${RED} Continuando sin instalar Nerd Fonts. Es posible que la visualización no sea la correcta.${NC}"
+            echo -e "${RED} Continuando sin Nerd Fonts. La visualización puede sufrir.${NC}"
         fi
     else
-        echo -e "${RED} No Nerd Fonts were detected.${NC}"
-        read -p "󰏩 Do you want to install Nerd Fonts? (y/n): " INSTALL_NERD
-        if [[ "$INSTALL_NERD" == "y" || "$INSTALL_NERD" == "Y" ]]; then
+        echo -e "${RED} No Nerd Fonts detected.${NC}"
+        read -p "󰏩 Install Nerd Fonts? (y/n): " INSTALL_NERD
+        if [[ "$INSTALL_NERD" =~ ^[yY]$ ]]; then
             echo -e "${CYAN} Installing Nerd Fonts...${NC}"
         else
-            echo -e "${RED} Continuing without installing Nerd Fonts. Display might not be correct.${NC}"
+            echo -e "${RED} Continuing without Nerd Fonts. Display might be affected.${NC}"
         fi
     fi
 
-    if [[ "$INSTALL_NERD" == "s" || "$INSTALL_NERD" == "S" || "$INSTALL_NERD" == "y" || "$INSTALL_NERD" == "Y" ]]; then
+    if [[ "$INSTALL_NERD" =~ ^[sSyY]$ ]]; then
         git clone https://github.com/ryanoasis/nerd-fonts.git /tmp/nerd-fonts
         if [ $? -eq 0 ]; then
             cd /tmp/nerd-fonts || exit
@@ -128,15 +119,15 @@ if [ -z "$NERD_FONT_INSTALLED" ]; then
             cd - > /dev/null
             rm -rf /tmp/nerd-fonts
             if [[ "$LANGUAGE" == "es" ]]; then
-                echo -e "${GREEN} Nerd Fonts instaladas. Es recomendable reiniciar la terminal.${NC}"
+                echo -e "${GREEN} Nerd Fonts instaladas. Reinicia la terminal.${NC}"
             else
-                echo -e "${GREEN} Nerd Fonts installed. It's recommended to restart your terminal.${NC}"
+                echo -e "${GREEN} Nerd Fonts installed. Please restart your terminal.${NC}"
             fi
         else
             if [[ "$LANGUAGE" == "es" ]]; then
-                echo -e "${RED} Error al clonar el repositorio de Nerd Fonts.${NC}"
+                echo -e "${RED} Error clonando Nerd Fonts.${NC}"
             else
-                echo -e "${RED} Error cloning the Nerd Fonts repository.${NC}"
+                echo -e "${RED} Error cloning Nerd Fonts repository.${NC}"
             fi
             exit 1
         fi
@@ -144,94 +135,43 @@ if [ -z "$NERD_FONT_INSTALLED" ]; then
 fi
 
 # ========================================================
-# Continuación de la instalación de meow-colorscripts
+# Instalación (al estilo fastfetch)
 # ========================================================
 
-# Mover la carpeta de configuración del repositorio local a ~/.config/
-mkdir -p "$INSTALL_DIR"
-mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
+# Si existe la carpeta local del repositorio, asume que es
+# el origen; de lo contrario, se debe clonar (este ejemplo asume que ya existe).
+if [ ! -d "$LOCAL_REPO" ]; then
+    echo -e "${YELLOW} No se encontró $LOCAL_REPO. Clonando repositorio...${NC}"
+    # Clonar el repositorio (ajusta la URL según corresponda)
+    git clone https://github.com/tu_usuario/tu_repositorio.git "$LOCAL_REPO" || { echo -e "${RED} Error clonando el repositorio.${NC}"; exit 1; }
+fi
 
-if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
-    if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${GREEN} Archivo de configuración movido correctamente.${NC}"
-    else
-        echo -e "${GREEN} Configuration folder moved successfully.${NC}"
-    fi
+# Dar permisos a todos los scripts del repositorio (por ejemplo, *.sh)
+find "$LOCAL_REPO" -type f -name "*.sh" -exec chmod +x {} \;
+
+# Mover la carpeta de configuración (si existe en el repo)
+if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
+    rm -rf "$CONFIG_DIR" 2>/dev/null
+    mv "$LOCAL_REPO/.config/meow-colorscripts" "$CONFIG_DIR"
+    echo -e "${GREEN} Carpeta de configuración movida a $CONFIG_DIR.${NC}"
 else
-    if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED} Error: No se pudo mover la carpeta de configuración.${NC}"
-    else
-        echo -e "${RED} Error: Could not move configuration folder.${NC}"
-    fi
-fi
-
-# Verificar que show-meows.sh esté en la carpeta de configuración destino
-if [[ ! -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" && -f "$LOCAL_REPO/show-meows.sh" ]]; then
-    cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/meow-colorscripts/"
-fi
-
-if [[ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]]; then
-    echo -e "${GREEN} show-meows.sh copiado correctamente.${NC}"
-else
-    echo -e "${RED} Error: No se encontró show-meows.sh en el destino.${NC}"
-fi
-
-# Dar permisos de ejecución a todos los scripts en el directorio de configuración
-find "$INSTALL_DIR/meow-colorscripts" -type f -name "*.sh" -exec chmod +x {} \;
-
-# ========================================================
-# Mensajes de carga dinámicos (frases felinas)
-# ========================================================
-LOADING_USED=()
-LOADING_MSGS_ES=(" Los gatos se estiran" "󰚝 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
-LOADING_MSGS_EN=(" The cats are stretching" "󰚝 Adjusting paw pads" "󰏩 Fine-tuning meows" "󱏿 Purring in progress" "󰏩 Exploring the code")
-
-for i in {1..3}; do 
-    while true; do
-        if [[ "$LANGUAGE" == "es" ]]; then
-            LOADING_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
-        else
-            LOADING_MSG=${LOADING_MSGS_EN[$RANDOM % ${#LOADING_MSGS_EN[@]}]}
-        fi
-        if [[ ! " ${LOADING_USED[*]} " =~ " $LOADING_MSG " ]]; then
-            LOADING_USED+=("$LOADING_MSG")
-            break
-        fi
-    done
-    echo -ne "${CYAN}$LOADING_MSG"
-    for j in {1..3}; do 
-        echo -ne "."
-        sleep 0.5
-    done
-    echo -e "${GREEN}${NC}"
-done
-
-# ========================================================
-# Verificación final de la carpeta de configuración
-# ========================================================
-if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
-    echo -e "${GREEN} Configuración movida correctamente.${NC}"
-else
-    if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED} Error: No se encontró la carpeta de configuración en el destino.${NC}"
-    else
-        echo -e "${RED} Error: Configuration folder not found at destination.${NC}"
-    fi
+    echo -e "${YELLOW} No se encontró carpeta de configuración en el repositorio.${NC}"
 fi
 
 # ========================================================
-# Instalar comandos en ~/.local/bin (sin los de nombres)
+# Instalar comandos en ~/.local/bin usando install (similar a fastfetch)
 # ========================================================
 mkdir -p "$HOME/.local/bin"
+# Agrega ~/.local/bin al PATH si no está ya
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 fi
 
-# ------------------------------------------------------------
-# INSTALACIÓN DEL COMANDO meow-colorscripts (usa show-meows.sh)
-if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
-    cp "$INSTALL_DIR/meow-colorscripts/show-meows.sh" "$HOME/.local/bin/meow-colorscripts"
-    chmod +x "$HOME/.local/bin/meow-colorscripts"
+# Usamos el comando "install -Dm755" para copiar y darle permisos de ejecución a cada script:
+
+# meow-colorscripts:
+if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
+    install -Dm755 "$CONFIG_DIR/show-meows.sh" "$HOME/.local/bin/meow-colorscripts"
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "${GREEN} Comando meow-colorscripts instalado correctamente.${NC}"
     else
@@ -239,18 +179,15 @@ if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
     fi
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED} Error: show-meows.sh no encontrado para instalar meow-colorscripts.${NC}"
+        echo -e "${RED} Error: show-meows.sh no se encontró en $CONFIG_DIR.${NC}"
     else
-        echo -e "${RED} Error: show-meows.sh not found for installing meow-colorscripts.${NC}"
+        echo -e "${RED} Error: show-meows.sh not found in $CONFIG_DIR.${NC}"
     fi
 fi
 
-# ------------------------------------------------------------
-# INSTALACIÓN DEL COMANDO meow-update (update.sh)
+# meow-update:
 if [ -f "$LOCAL_REPO/update.sh" ]; then
-    chmod +x "$LOCAL_REPO/update.sh"
-    cp "$LOCAL_REPO/update.sh" "$HOME/.local/bin/meow-update"
-    chmod +x "$HOME/.local/bin/meow-update"
+    install -Dm755 "$LOCAL_REPO/update.sh" "$HOME/.local/bin/meow-update"
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "${GREEN} Comando meow-update instalado correctamente.${NC}"
     else
@@ -258,17 +195,15 @@ if [ -f "$LOCAL_REPO/update.sh" ]; then
     fi
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED} Error: update.sh no encontrado en el repositorio local.${NC}"
+        echo -e "${RED} Error: update.sh no se encontró en el repositorio local.${NC}"
     else
         echo -e "${RED} Error: update.sh not found in the local repository.${NC}"
     fi
 fi
 
-# ------------------------------------------------------------
-# INSTALACIÓN DEL COMANDO meow-colorscripts-setup (para ejecutar setup.sh)
+# meow-colorscripts-setup:
 if [ -f "$SETUP_SCRIPT" ]; then
-    cp "$SETUP_SCRIPT" "$HOME/.local/bin/meow-colorscripts-setup"
-    chmod +x "$HOME/.local/bin/meow-colorscripts-setup"
+    install -Dm755 "$SETUP_SCRIPT" "$HOME/.local/bin/meow-colorscripts-setup"
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "${GREEN} Comando meow-colorscripts-setup instalado correctamente.${NC}"
     else
@@ -276,9 +211,9 @@ if [ -f "$SETUP_SCRIPT" ]; then
     fi
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED} Error: setup.sh no encontrado para instalar meow-colorscripts-setup.${NC}"
+        echo -e "${RED} Error: setup.sh no se encontró en el repositorio local.${NC}"
     else
-        echo -e "${RED} Error: setup.sh not found for installing meow-colorscripts-setup.${NC}"
+        echo -e "${RED} Error: setup.sh not found in the repository.${NC}"
     fi
 fi
 
@@ -298,16 +233,16 @@ else
 fi
 
 if [[ "$LANGUAGE" == "es" ]]; then
-    if [[ "$OPEN_CONF" == "s" || "$OPEN_CONF" == "S" ]]; then
+    if [[ "$OPEN_CONF" =~ ^[sS]$ ]]; then
         if [ -f "$SETUP_SCRIPT" ]; then
             echo -e "${CYAN}󰏩 Abriendo configuración...${NC}"
             bash "$SETUP_SCRIPT"
         else
-            echo -e "${RED} Error: No se encontró setup.sh.${NC}"
+            echo -e "${RED} Error: setup.sh no encontrado.${NC}"
         fi
     fi
 else
-    if [[ "$OPEN_CONF" == "y" || "$OPEN_CONF" == "Y" ]]; then
+    if [[ "$OPEN_CONF" =~ ^[yY]$ ]]; then
         if [ -f "$SETUP_SCRIPT" ]; then
             echo -e "${CYAN}󰏩 Opening configuration...${NC}"
             bash "$SETUP_SCRIPT"
@@ -318,15 +253,15 @@ else
 fi
 
 # ========================================================
-# Guardar la configuración en meow.conf (en ~/.config/meow-colorscripts)
+# Guardar la configuración en meow.conf (solo en $CONFIG_DIR)
 # ========================================================
-echo "MEOW_THEME=$MEOW_THEME" > "$INSTALL_DIR/meow-colorscripts/meow.conf"
-echo "MEOW_SIZE=$MEOW_SIZE" >> "$INSTALL_DIR/meow-colorscripts/meow.conf"
+echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_DIR/meow.conf"
+echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_DIR/meow.conf"
 
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "\n ${GREEN}Configuración guardada exitosamente.${NC}"
-    echo -e "Archivo de configuración: ${WHITE}$INSTALL_DIR/meow-colorscripts/meow.conf${NC}"
+    echo -e "Archivo de configuración: ${WHITE}$CONFIG_DIR/meow.conf${NC}"
 else
     echo -e "\n ${GREEN}Configuration saved successfully.${NC}"
-    echo -e "Configuration file: ${WHITE}$INSTALL_DIR/meow-colorscripts/meow.conf${NC}"
+    echo -e "Configuration file: ${WHITE}$CONFIG_DIR/meow.conf${NC}"
 fi
