@@ -3,6 +3,7 @@
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
+LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -12,24 +13,24 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
-# Frases felinas de carga 🐾
-LOADING_MSGS_ES=("󰏩 Los gatos se están estirando" "󰄛 Acomodando las almohadillas" " Ronroneo en proceso")
-LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting the paw pads" " Purring in progress")
+# 🐾 Frases felinas de carga únicas 🐾
+LOADING_MSGS_ES=("󰏩 Los gatos se estiran" "󰄛 Acomodando almohadillas" "󰌽 Afinando maullidos" " Ronroneo en progreso" "󰗥 Explorando el código")
+LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting paw pads" "󰌽 Fine-tuning meows" " Purring in progress" "󰗥 Exploring the code")
 
 # 🐾 Selección de idioma
-echo -e "${CYAN} Select your language:${NC}"
-echo -e "1) Español"
-echo -e "2) English"
-read -p "Choose an option [1-2]: " LANG_OPTION
+echo -e "${CYAN}󰯇 Selecciona tu idioma:${NC}"
+echo -e "1)  Español"
+echo -e "2)  English"
+read -p "Elige una opción [1-2]: " LANG_OPTION
 
 LANGUAGE="en"
 if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 
-echo "$LANGUAGE" > "$LOCAL_REPO/.config/meow-colorscripts/lang"
+echo "$LANGUAGE" > "$LANG_FILE"
 
-# 🐾 Animaciones de carga
+# 🐾 Animaciones de carga con palomita verde
 for i in {1..3}; do 
     LOADING_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
     if [ "$LANGUAGE" == "en" ]; then
@@ -37,10 +38,10 @@ for i in {1..3}; do
     fi
     echo -ne "${CYAN}$LOADING_MSG"
     for j in {1..3}; do echo -ne "."; sleep 0.5; done
-    echo -e "${YELLOW}${NC}"
+    echo -e "${GREEN}${NC}"
 done
 
-# 🐾 Mover configuración a ~/.config/
+# 🐾 Moviendo configuración correctamente
 echo -e "${GREEN}󰄛 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
 
@@ -65,17 +66,19 @@ else
     echo -e "${RED}󰅟 Error: No se encontró show-meows.sh en ~/.config/meow-colorscripts/.${NC}"
 fi
 
-# 🐾 Preguntar si ejecutar configuración
+# 🐾 Preguntar si abrir configuración después de instalar
 if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
-    echo -e "s) sí  n) no"
+    echo -e "\n${CYAN}󰄛 ¿Quieres abrir la configuración ahora?${NC}"
+    echo -e "1) Sí"
+    echo -e "2) No"
 else
-    echo -e "\n${CYAN}  Do you want to open the configuration now?${NC}"
-    echo -e "y) yes  n) no"
+    echo -e "\n${CYAN}󰄛 Do you want to open the configuration now?${NC}"
+    echo -e "1) Yes"
+    echo -e "2) No"
 fi
-read -p "Selecciona una opción: " SETUP_OPTION
+read -p "Elige una opción [1-2]: " SETUP_OPTION
 
-if [[ "$SETUP_OPTION" =~ ^[sSyY]$ ]]; then
+if [[ "$SETUP_OPTION" == "1" ]]; then
     if [ -f "$SETUP_SCRIPT" ]; then
         echo -e "${CYAN}󰄛 Abriendo configuración...${NC}"
         bash "$SETUP_SCRIPT"
@@ -84,5 +87,5 @@ if [[ "$SETUP_OPTION" =~ ^[sSyY]$ ]]; then
     fi
 fi
 
-echo -e "\n${GREEN} Instalación completada exitosamente. ¡Listo para usar ansi-meow!${NC}"
+echo -e "\n${GREEN} Instalación completada exitosamente. ¡Ansi-meow está listo!${NC}"
 echo -e "📁 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${NC}"
