@@ -59,23 +59,26 @@ if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
     case "$USER_SHELL" in
         "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
         "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
-        "fish") echo "$ALIAS_CMD" >> "$HOME/.config/fish/config.fish" ;;
+        "fish") 
+            echo -e "function ansi-meow" >> "$HOME/.config/fish/config.fish"
+            echo -e "    bash ~/.config/meow-colorscripts/show-meows.sh" >> "$HOME/.config/fish/config.fish"
+            echo -e "end" >> "$HOME/.config/fish/config.fish"
+            ;;
     esac
     echo -e "${GREEN} Alias agregado correctamente.${NC}"
+    if [[ "$LANGUAGE" == "es" ]]; then
+        echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias/comando!${NC}"
+    else
+        echo -e "${YELLOW} You must restart the terminal for the alias/command to work!${NC}"
+    fi
 else
     echo -e "${RED}󰅟 Error: No se encontró show-meows.sh en ~/.config/meow-colorscripts/.${NC}"
 fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
-if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "\n${CYAN}󰄛 ¿Quieres abrir la configuración ahora?${NC}"
-    echo -e "1) Sí"
-    echo -e "2) No"
-else
-    echo -e "\n${CYAN}󰄛 Do you want to open the configuration now?${NC}"
-    echo -e "1) Yes"
-    echo -e "2) No"
-fi
+echo -e "\n${CYAN}󰄛 ¿Quieres abrir la configuración ahora?${NC}"
+echo -e "1) Sí"
+echo -e "2) No"
 read -p "Elige una opción [1-2]: " SETUP_OPTION
 
 if [[ "$SETUP_OPTION" == "1" ]]; then
