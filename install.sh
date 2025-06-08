@@ -25,7 +25,7 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 # ========================================================
-# Selección de idioma (se ejecuta primero para usar mensajes en español o inglés)
+# Selección de idioma (mensajes en español o inglés)
 # ========================================================
 echo -e " ${CYAN}Select your language:${NC}"
 echo -e "  1) Español"
@@ -43,7 +43,7 @@ LANG_FILE="$LOCAL_REPO/.config/meow-colorscripts/lang"
 echo "$LANGUAGE" > "$LANG_FILE"
 
 # ========================================================
-# DETECCIÓN DE DEPENDENCIAS: git
+# DETECCIÓN DE DEPENDENCIAS: Git
 # ========================================================
 if ! command -v git &> /dev/null; then
     if [[ "$LANGUAGE" == "es" ]]; then
@@ -119,7 +119,6 @@ if [ -z "$NERD_FONT_INSTALLED" ]; then
     fi
 
     if [[ "$INSTALL_NERD" == "s" || "$INSTALL_NERD" == "S" || "$INSTALL_NERD" == "y" || "$INSTALL_NERD" == "Y" ]]; then
-        # Asegurarse de que git esté instalado (ya verificado arriba)
         git clone https://github.com/ryanoasis/nerd-fonts.git /tmp/nerd-fonts
         if [ $? -eq 0 ]; then
             cd /tmp/nerd-fonts || exit
@@ -145,7 +144,6 @@ fi
 # ========================================================
 # Continuación de la instalación de meow-colorscripts
 # ========================================================
-
 # Mover la carpeta de configuración del repositorio local a ~/.config/
 mkdir -p "$INSTALL_DIR"
 mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
@@ -182,7 +180,6 @@ LOADING_USED=()
 LOADING_MSGS_ES=(" Los gatos se estiran" "󰚝 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
 LOADING_MSGS_EN=(" The cats are stretching" "󰚝 Adjusting paw pads" "󰏩 Fine-tuning meows" "󱏿 Purring in progress" "󰏩 Exploring the code")
 
-# Mostrar 3 mensajes de carga aleatorios
 for i in {1..3}; do 
     while true; do
         if [[ "$LANGUAGE" == "es" ]]; then
@@ -249,23 +246,33 @@ fi
 # CREACIÓN DEL COMANDO meow-show (wrapper que invoca meow-colorscripts)
 cat << 'EOF' > "$HOME/.local/bin/meow-show"
 #!/bin/bash
-# Wrapper que pasa argumentos al comando meow-colorscripts.
+# Este wrapper verifica si el archivo de nombres ha sido generado.
+if [ ! -f "\$HOME/.config/meow-colorscripts/names.txt" ]; then
+    echo " Setup no ejecutado. Por favor, ejecuta 'meow-colorscripts-setup' para activar el comando 'meow-show [name]'."
+    exit 1
+fi
+# Pasa los argumentos al comando meow-colorscripts.
 meow-colorscripts "\$@"
 EOF
 chmod +x "$HOME/.local/bin/meow-show"
 echo -e " ${GREEN}Comando meow-show instalado correctamente.${NC}"
 
 # ------------------------------------------------------------
-# CREACIÓN DEL COMANDO meows-names (muestra el contenido de names.txt)
+# CREACIÓN DEL COMANDO meows-names (muestra names.txt)
 cat << 'EOF' > "$HOME/.local/bin/meows-names"
 #!/bin/bash
+# Este comando verifica que el archivo de nombres exista.
+if [ ! -f "\$HOME/.config/meow-colorscripts/names.txt" ]; then
+    echo " Setup no ejecutado. Por favor, ejecuta 'meow-colorscripts-setup' para activar el comando 'meows-names'."
+    exit 1
+fi
 cat "\$HOME/.config/meow-colorscripts/names.txt"
 EOF
 chmod +x "$HOME/.local/bin/meows-names"
 echo -e " ${GREEN}Comando meows-names instalado correctamente.${NC}"
 
 # ------------------------------------------------------------
-# INSTALACIÓN DEL COMANDO meow-colorscripts-setup (para abrir setup.sh)
+# INSTALACIÓN DEL COMANDO meow-colorscripts-setup (para ejecutar setup.sh)
 if [ -f "$SETUP_SCRIPT" ]; then
     cp "$SETUP_SCRIPT" "$HOME/.local/bin/meow-colorscripts-setup"
     chmod +x "$HOME/.local/bin/meow-colorscripts-setup"
@@ -310,7 +317,7 @@ else
 fi
 
 # ========================================================
-# Guardar la configuración en meow.conf (dentro de ~/.config/meow-colorscripts)
+# Guardar la configuración en meow.conf (en ~/.config/meow-colorscripts)
 # ========================================================
 echo "MEOW_THEME=$MEOW_THEME" > "$INSTALL_DIR/meow-colorscripts/meow.conf"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$INSTALL_DIR/meow-colorscripts/meow.conf"
