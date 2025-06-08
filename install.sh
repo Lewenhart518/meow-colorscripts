@@ -5,6 +5,10 @@ LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
 
+# 🐾 Asegurar que la carpeta de configuración existe antes de escribir en `lang`
+mkdir -p "$INSTALL_DIR/meow-colorscripts"
+touch "$LANG_FILE"
+
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
@@ -14,7 +18,7 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 # 🐾 Selección de idioma con opciones `1` y `2`
-echo -e "${CYAN}  select your language:${NC}"
+echo -e "${CYAN} Selecciona tu idioma:${NC}"
 echo -e "1) Español"
 echo -e "2) English"
 read -p "Elige una opción [1/2]: " LANG_OPTION
