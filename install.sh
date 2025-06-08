@@ -20,7 +20,7 @@ INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 
-# Colores NIVEL 24bits para mensajes (si tu terminal lo soporta)
+# Colores (24bits) para mensajes
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 YELLOW='\033[38;2;235;203;139m'
@@ -175,6 +175,9 @@ if [[ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]]; then
 else
     echo -e "${RED} Error: No se encontró show-meows.sh en el destino.${NC}"
 fi
+
+# Dar permisos de ejecución a todos los scripts en el directorio de configuración
+find "$INSTALL_DIR/meow-colorscripts" -type f -name "*.sh" -exec chmod +x {} \;
 
 # ========================================================
 # Mensajes de carga dinámicos (frases felinas)
