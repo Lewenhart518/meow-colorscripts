@@ -18,7 +18,6 @@ NC='\033[0m'
 # 󰏩 -> Indicador de entrada/prompt
 # 󰚝 -> Indicador de movimiento/acción
 #   -> Confirmación
-#   -> Mensaje de advertencia o acción necesaria
 #   -> Opción adicional o de pregunta
 # ────────────────────────────────────────────────────────────── 
 
@@ -43,6 +42,9 @@ echo "$LANGUAGE" > "$LANG_FILE"
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
+# Asegurarse de que el directorio de destino exista
+mkdir -p "$HOME/.config/meow-colorscripts"
+
 # Mover el archivo lang a la ubicación final
 mv "$LOCAL_REPO/.config/meow-colorscripts/lang" "$HOME/.config/meow-colorscripts/lang"
 if [[ -f "$HOME/.config/meow-colorscripts/lang" ]]; then
@@ -139,6 +141,38 @@ else
         echo -e "${RED}󰀅 Error: No se encontró show-meows.sh.${NC}"
     else
         echo -e "${RED}󰀅 Error: show-meows.sh not found.${NC}"
+    fi
+fi
+# ────────────────────────────────────────────────────────────── 
+
+# ────────────────────────────────────────────────────────────── 
+# Preguntar si se desea abrir la configuración ahora
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "\n${CYAN} ¿Deseas abrir la configuración ahora?${NC}"
+    echo -e "  1) Sí"
+    echo -e "  2) No"
+    read -p "󰏩 Selecciona una opción [1-2]: " OPEN_CONF
+else
+    echo -e "\n${CYAN} Do you want to open the configuration now?${NC}"
+    echo -e "  1) Yes"
+    echo -e "  2) No"
+    read -p "󰏩 Select an option [1-2]: " OPEN_CONF
+fi
+
+if [[ "$OPEN_CONF" == "1" ]]; then
+    if [ -f "$SETUP_SCRIPT" ]; then
+        if [[ "$LANGUAGE" == "es" ]]; then
+            echo -e "${CYAN}󰏩 Abriendo configuración...${NC}"
+        else
+            echo -e "${CYAN}󰏩 Opening configuration...${NC}"
+        fi
+        bash "$SETUP_SCRIPT"
+    else
+        if [[ "$LANGUAGE" == "es" ]]; then
+            echo -e "${RED}󰀅 Error: No se encontró setup.sh.${NC}"
+        else
+            echo -e "${RED}󰀅 Error: setup.sh not found.${NC}"
+        fi
     fi
 fi
 # ────────────────────────────────────────────────────────────── 
