@@ -31,8 +31,8 @@ echo "$LANGUAGE" > "$LANG_FILE"
 
 # 🐾 Frases felinas de carga únicas 🐾
 LOADING_USED=()
-LOADING_MSGS_ES=("󰀅 Los gatos se estiran" " Acomodando almohadillas" " Afinando maullidos" "★ Ronroneo en progreso" "󰀅 Explorando el código")
-LOADING_MSGS_EN=("󰀅 The cats are stretching" " Adjusting paw pads" " Fine-tuning meows" "★ Purring in progress" "󰀅 Exploring the code")
+LOADING_MSGS_ES=(" Los gatos se estiran" " Acomodando almohadillas" "󱏿 Afinando maullidos" "󰏩 Ronroneo en progreso" "󰄛 Explorando el código")
+LOADING_MSGS_EN=(" The cats are stretching" " Adjusting paw pads" "󱏿 Fine-tuning meows" "󰏩 Purring in progress" "󰄛 Exploring the code")
 
 for i in {1..3}; do 
     while true; do
@@ -66,7 +66,7 @@ echo -e "${GREEN} Configuración movida correctamente.${NC}"
 USER_SHELL=$(basename "$SHELL")
 ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
 
-echo -e "${CYAN}󰀅 Detectando shell y agregando alias...${NC}"
+echo -e "${CYAN}󱏿 Detectando shell y agregando alias...${NC}"
 sleep 1
 
 if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
@@ -81,7 +81,7 @@ if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
     esac
     echo -e "${GREEN} Alias agregado correctamente.${NC}"
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias ${NC}"
+        echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias  ${NC}"
     else
         echo -e "${YELLOW} You must restart the terminal for the alias ${NC}"
     fi
@@ -90,7 +90,7 @@ else
 fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
-echo -e "\n${CYAN}󰀅 ¿Quieres abrir la configuración ahora?${NC}"
+echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
 echo -e "1) Sí"
 echo -e "2) No"
 read -p "Elige una opción [1/2]: " SETUP_OPTION
@@ -105,4 +105,4 @@ if [[ "$SETUP_OPTION" == "1" ]]; then
 fi
 
 echo -e "\n${GREEN} Instalación completada exitosamente. ¡Ansi-meow está listo!${NC}"
-echo -e "󰚝 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${NC}"
+echo -e "󰚝 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${GREEN}"
