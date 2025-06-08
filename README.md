@@ -33,8 +33,14 @@ To install `meow-colorscripts`, run the following commands in your terminal:
 
 ```bash
 git clone https://github.com/Lewenhart518/meow-colorscripts.git
+``` 
+```bash
 cd meow-colorscripts
+``` 
+```bash
 chmod +x install.sh
+``` 
+```bash
 clear && ./install.sh
 ```  
 
@@ -70,11 +76,19 @@ To update `meow-colorscripts`, follow these steps:
 
 _First time:_
 ```bash
+cd meow-colorscripts
+``` 
+```bash
 chmod +x update.sh
+``` 
+```bash
 ./update.sh
 ```  
 
 _Subsequent updates:_
+```bash
+cd meow-colorscripts
+``` 
 ```bash
 ./update.sh
 ```  
