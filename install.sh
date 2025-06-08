@@ -67,7 +67,7 @@ fi
 # ────────────────────────────────────────────────────────────── 
 # Asegurar que el archivo show-meows.sh esté en el directorio de configuración
 # Se espera que este archivo se encuentre en la raíz del repositorio LOCAL_REPO;
-# si no está en ~/.config/meow-colorscripts/, se copia
+# si no está en ~/.config/meow-colorscripts/, se copia.
 if [[ ! -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" && -f "$LOCAL_REPO/show-meows.sh" ]]; then
     cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/meow-colorscripts/"
 fi
@@ -106,14 +106,7 @@ done
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Mover configuración (la carpeta ya movida se encuentra en ~/.config/)
-if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
-else
-    echo -e "${GREEN}󰚝 Moving meow-colorscripts configuration...${NC}"
-fi
-sleep 1
-# (La carpeta ya se movió previamente, pero se puede realizar alguna verificación adicional)
+# Verificación final de la carpeta movida
 if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
     echo -e "${GREEN} Configuración movida correctamente.${NC}"
 else
@@ -194,5 +187,18 @@ else
         fi
     fi
 fi
+# ────────────────────────────────────────────────────────────── 
 
+# ────────────────────────────────────────────────────────────── 
+# Guardar configuración
+echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_FILE"
+echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
+
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
+    echo -e "Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+else
+    echo -e "\n${GREEN} Configuration saved successfully.${NC}"
+    echo -e "Configuration file: ${WHITE}$CONFIG_FILE${NC}"
+fi
 # ────────────────────────────────────────────────────────────── 
