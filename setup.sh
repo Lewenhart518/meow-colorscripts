@@ -36,7 +36,7 @@ case "$STYLE_OPTION" in
     1) MEOW_THEME="normal" ;;
     2) MEOW_THEME="nocolor" ;;
     3) 
-        echo -e "\n${CYAN}󰄛 ¿Qué tema quieres usar?${NC}"
+        echo -e "\n${CYAN} ¿Qué tema quieres usar?${NC}"
         echo -e "1) ${GREEN}Nord${NC}"
         echo -e "2) ${CYAN}Catpuccin${NC}"
         echo -e "3) ${YELLOW}Everforest${NC}"
