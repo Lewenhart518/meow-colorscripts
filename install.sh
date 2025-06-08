@@ -18,9 +18,9 @@ LOADING_MSGS_ES=("󰏩 Los gatos se estiran" "󰄛 Acomodando almohadillas" "�
 LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting paw pads" "󰌽 Fine-tuning meows" " Purring in progress" "󰗥 Exploring the code")
 
 # 🐾 Selección de idioma
-echo -e "${CYAN}󰯇 Selecciona tu idioma:${NC}"
-echo -e "1)  Español"
-echo -e "2)  English"
+echo -e "${CYAN}  Selecciona tu idioma:${NC}"
+echo -e "1) Español"
+echo -e "2) English"
 read -p "Elige una opción [1-2]: " LANG_OPTION
 
 LANGUAGE="en"
