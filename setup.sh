@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
+LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -10,12 +11,18 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
+# 🐾 Detectar idioma desde install.sh
+LANGUAGE="en"
+if [[ -f "$LANG_FILE" ]]; then
+    LANGUAGE=$(cat "$LANG_FILE")
+fi
+
 # 🐾 Preguntar por el estilo
 echo -e "${CYAN}󰄛 ¿Qué estilo de meow-colorscripts quieres usar?${NC}"
 echo -e "1) ${WHITE}Normal${NC}"
 echo -e "2) ${WHITE}Sin color${NC}"
-echo -e "3) ${CYAN}Con tema (Nord, Catpuccin, Everforest)${NC}"
-echo -e "4) ${GREEN}ASCII (Con color o sin color, luego Símbolos o Bloques)${NC}"
+echo -e "3) ${CYAN}Con tema: Nord, Catpuccin, Everforest${NC}"
+echo -e "4) ${GREEN}ASCII: Símbolos o Bloques${NC}"
 read -p "Selecciona una opción [1-4]: " STYLE_OPTION
 
 case "$STYLE_OPTION" in
@@ -36,8 +43,8 @@ case "$STYLE_OPTION" in
         ;;
     4) 
         echo -e "\n${CYAN}󰄛 ¿Quieres ASCII con color o sin color?${NC}"
-        echo -e "1) ${GREEN}Con color (ascii-color)${NC}"
-        echo -e "2) ${WHITE}Sin color (ascii)${NC}"
+        echo -e "1) ${GREEN}Con color${NC}"
+        echo -e "2) ${WHITE}Sin color${NC}"
         read -p "Selecciona una opción [1-2]: " ASCII_OPTION
         case "$ASCII_OPTION" in
             1) MEOW_THEME="ascii-color" ;;
@@ -46,8 +53,8 @@ case "$STYLE_OPTION" in
         esac
 
         echo -e "\n${CYAN}󰄛 ¿Qué tipo de ASCII prefieres?${NC}"
-        echo -e "1) ${YELLOW}Símbolos de teclado (keyboard-symbols)${NC}"
-        echo -e "2) ${RED}Bloques (block)${NC}"
+        echo -e "1) ${YELLOW}Símbolos de teclado${NC}"
+        echo -e "2) ${RED}Bloques${NC}"
         read -p "Selecciona una opción [1-2]: " ASCII_TYPE_OPTION
         case "$ASCII_TYPE_OPTION" in
             1) MEOW_SIZE="keyboard-symbols" ;;
@@ -61,9 +68,9 @@ esac
 # 🐾 Preguntar por el tamaño si no es ASCII
 if [[ "$MEOW_THEME" != "ascii" && "$MEOW_THEME" != "ascii-color" ]]; then
     echo -e "\n${CYAN}󰄛 ¿Qué tamaño prefieres?${NC}"
-    echo -e "1) ${GREEN}Pequeño (small)${NC}"
+    echo -e "1) ${GREEN}Pequeño${NC}"
     echo -e "2) ${WHITE}Normal${NC}"
-    echo -e "3) ${RED}Grande (large)${NC}"
+    echo -e "3) ${RED}Grande${NC}"
     read -p "Selecciona una opción [1-3]: " SIZE_OPTION
     case "$SIZE_OPTION" in
         1) MEOW_SIZE="small" ;;
@@ -82,7 +89,11 @@ echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
 
 # 🐾 Preguntar si se quiere ejecutar ansi-meow al abrir la terminal
 echo -e "\n${CYAN}󰄛 ¿Quieres que ansi-meow se ejecute al abrir la terminal?${NC}"
-echo -e "[s/n] en español | [y/n] en inglés"
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "s) sí  n) no"
+else
+    echo -e "y) yes n) no"
+fi
 read -p "Selecciona una opción: " AUTO_RUN_OPTION
 
 if [[ "$AUTO_RUN_OPTION" =~ ^[sSyY]$ ]]; then
