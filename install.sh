@@ -15,9 +15,9 @@ NC='\033[0m'
 
 # 🐾 Selección de idioma
 echo -e "${CYAN} Selecciona tu idioma:${NC}"
-echo -e "s) sí"
-echo -e "n) no"
-read -p "Elige una opción [s/n]: " LANG_OPTION
+echo -e "1) Español"
+echo -e "2) English"
+read -p "Elige una opción [1/2]: " LANG_OPTION
 
 LANGUAGE="en"
 if [[ "$LANG_OPTION" == "s" ]]; then
