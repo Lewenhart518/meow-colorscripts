@@ -1,75 +1,81 @@
-# 🐱 meow-colorscripts  
-Customize your terminal with cat-themed ANSI art! 🎨🔥  
+# 🐱 miau-colorscripts  
+Personaliza tu terminal con arte ANSI con temática de gato! 🎨🔥  
 
-## 📌 Index  
-- [Required](#required)  
-- [Available Languages](#languages)  
-- [Available Themes](#themes)  
-- [Installation](#installation)  
-- [Configuration](#configuration)  
-- [Update](#update)  
-- [View Available Cats](#view-available-cats)  
-- [Features](#features)  
-- [Credits](#credits)  
-- [Author](#author)  
+## 📌 Índice  
+- [Requerido](#Requerido)  
+- [Idiomas disponibles](#Lenguas)  
+- [Temas disponibles](#Temas)  
+- [Instalación](#Instalación)  
+- [Configuración](#Configuración)  
+- [Actual](#Actualizar)  
+- [Ver gatos disponibles](#visualización)  
+- [Características](#Características)  
+- [Créditos](#Créditos)  
+- [Autor](#Autor)  
 
-## Required  
-You need **[Nerd Fonts](https://www.nerdfonts.com/)** to display everything correctly.
+## Requerido  
+Necesitas **[Fuentes nerd](https://www.nerdfonts.com/)** para mostrar todo correctamente.
 
-## Languages  
-The available languages are: English and Spanish.
+## Lenguas  
+Los idiomas disponibles son: inglés y español.
 
-## Themes  
-This project supports several themes and color schemes that enhance your terminal’s aesthetics:
+## Temas  
+Este proyecto admite varios temas y esquemas de color que mejoran la estética de su terminal:
 
-- **Nord Theme**: A clean, elegant arctic color scheme developed by [Sven Greb](https://www.nordtheme.com).  
-- **Catppuccin**: A community-driven pastel theme offering variants such as Latte, Frappé, Macchiato, and Mocha.  
-- **Everforest**: A soft, low-contrast theme optimized to reduce eye strain.  
+- **Tema nord**: Un esquema de color ártico limpio y elegante desarrollado por [Sven Greb](https://www.nordtheme.com).  
+- **Catpuccina**: Un tema pastel impulsado por la comunidad que ofrece variantes como Latte, Frappé, MacChiato y Mocha.  
+- **Siempre**: Un tema suave y de bajo contraste optimizado para reducir la fatiga visual.  
 
-Thanks to the creators and communities behind these themes for their amazing work.
+Gracias a los creadores y comunidades detrás de estos temas por su increíble trabajo..
 
-## Installation  
-To install `meow-colorscripts`, run the following commands in your terminal:  
+## Instalación  
+Para instalar `miau-colorscripts`, Ejecute los siguientes comandos en su terminal:  
 
-```bash
-git clone https://github.com/Lewenhart518/meow-colorscripts.git
-cd meow-colorscripts
-chmod +x install.sh
-clear && ./install.sh
+```intento
+Git clon https://github.com/lewenhart518/mew-cloorscripts.git
+```
+```intento
+CD Meow-Colorscripts
+```
+```intento
+chmod +x install.Sh
+```
+```intento
+Claro &amp; Erio; &amp; ERio; ./install.sh
 ```  
 
-The installation script will automatically:  
-- Set up the required configuration folder.  
-- Move the configuration from `~/meow-colorscripts/.config/meow-colorscripts/` to `~/.config/meow-colorscripts/`.  
-- Copy necessary files (like `show-meows.sh`).  
-- Add the alias `ansi-meow` to your shell configuration.  
-- Ask if you want to open the interactive setup immediately.
+El Script de Instalacia Auticamete:  
+- Configuración la alfombra de configuración requerida.  
+- Mover la configuración desde `~/Meow-Colorscripts/.config/meow-colorscripts/` a `~/.config/meow-colorscripts/`.  
+- Copie Los Archivos Necesarios (como `show-meows.sh`).  
+- Agrega el alias `ansi-meow` Una Configuración de su de Shell.  
+- Pregunte Si Desea Abrir La Configuración Interactiva Inmediateo.
 
-## Configuration  
-Customize your installation using:  
+## Configuración  
+Personalice su instalacia utilizando:  
 
-```bash
-meow-colorscripts-setup
+```intento
+miau-colorscripts-setup
 ```  
 
-This command allows you to interactively choose your configuration options:  
+Este comando le permite elegir interactivamente sus opciones de configuración.:  
 
-- **Select your style** (e.g., *normal*, *nocolor*, a theme such as *nord*, *catpuccin*, *everforest*, or ASCII-based styles: *ascii* and *ascii-color*).  
-- **Choose the cat size** (small, normal, large) or the ASCII type (keyboard symbols or blocks, which are treated as “size”) for ASCII styles.  
-- **Activate additional commands**:  
-  - `meows-names` displays the list of available cat designs.  
-  - `show-meow [name]` displays the ANSI art for the specified cat design.  
-- **Enable auto-run**: Decide if you want `ansi-meow` to execute automatically when opening a terminal.
+- **Seleccione su estilo** (p.ej., *normal*, *nocolor*, un tema como *nórdico*, *catpuccina*, *Siempre*, o estilos basados ​​en ASCII: *ascii* y *color ascii*).  
+- **Elija el Tamaño del Gato** (pequeño, normal, grande) o el tipo ASCII (símbolos o bloques de teclado, que se tratan como "tamaño") para los estilos ASCII.  
+- **Activar comandos adicionales**:  
+  - `maullidos` Muestra la lista de diseños de gatos disponibles.  
+  - `show-meow [nombre]` Muestra el arte ANSI para el diseño de gato especificado.  
+- **Hobilitar automática**: Decide si quieres `ansi-meow` ejecutar automáticamente al abrir un terminal.
 
-During setup, responses are handled interactively:  
-- In Spanish, answer with **s** (sí) or **n** (no).  
-- In English, answer with **y** (yes) or **n** (no).
+Durante la configuración, las respuestas se manejan de manera interactiva:  
+- En español, responda con **s** (sí) o **norte** (No).  
+- En inglés, responda con **Y** (si) o **norte** (No).
 
-## Update  
-To update `meow-colorscripts`, follow these steps:
+## Actualizar  
+Para actualizar `miau-colorscripts`, Sigue estos pasos:
 
-_First time:_
-```bash
+_Primer tiempo:_
+```intento
 chmod +x update.sh
 ./update.sh
 ```  
