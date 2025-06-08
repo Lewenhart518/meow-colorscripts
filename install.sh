@@ -16,14 +16,14 @@ NC='\033[0m'
 LOADING_MSGS_ES=("󰏩 Los gatos se están estirando" "󰄛 Acomodando las almohadillas" " Ronroneo en proceso")
 LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting the paw pads" " Purring in progress")
 
-# 🐾 Detectar idioma y guardarlo en archivo
-echo -e "${CYAN} Selecciona tu idioma:${NC}"
-echo -e "s) sí  n) no (Español)"
-echo -e "y) yes n) no (Inglés)"
-read -p "Selecciona una opción: " LANG_OPTION
+# 🐾 Selección de idioma
+echo -e "${CYAN} Select your language:${NC}"
+echo -e "1) Español"
+echo -e "2) English"
+read -p "Choose an option [1-2]: " LANG_OPTION
 
 LANGUAGE="en"
-if [[ "$LANG_OPTION" =~ ^[sS]$ ]]; then
+if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 
@@ -66,9 +66,13 @@ else
 fi
 
 # 🐾 Preguntar si ejecutar configuración
-echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "s) sí  n) no (Español)"
-echo -e "y) yes n) no (Inglés)"
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
+    echo -e "s) sí  n) no"
+else
+    echo -e "\n${CYAN}  Do you want to open the configuration now?${NC}"
+    echo -e "y) yes  n) no"
+fi
 read -p "Selecciona una opción: " SETUP_OPTION
 
 if [[ "$SETUP_OPTION" =~ ^[sSyY]$ ]]; then
