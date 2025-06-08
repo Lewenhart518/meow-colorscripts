@@ -1,8 +1,9 @@
 #!/bin/bash
 
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
+LANG_FILE="$HOME/.config/meow-colorscripts/lang"
+SCRIPTS_DIR="$HOME/.config/meow-colorscripts/colorscripts"
 NAMES_FILE="$HOME/.config/meow-colorscripts/names.txt"
-MEOW_DIR="$HOME/.config/meow-colorscripts/colorscripts"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -16,40 +17,36 @@ NC='\033[0m'
 if [[ -f "$CONFIG_FILE" ]]; then
     source "$CONFIG_FILE"
 else
-    MEOW_THEME="normal"
-    MEOW_SIZE="normal"
+    echo -e "${RED}󰅟 Error: No se encontró el archivo de configuración en $CONFIG_FILE.${NC}"
+    exit 1
 fi
 
-# 🐾 Frases felinas de carga únicas 🐾
-LOADING_MSGS=("󰀅 Cargando meows..." " Preparando colores..." " Ajustando detalles..." "★ Refinando arte ANSI..." "󰀅 Explorando el código")
-LOADING_USED=()
+# 🐾 Detectar idioma desde install.sh
+LANGUAGE="en"
+if [[ -f "$LANG_FILE" ]]; then
+    LANGUAGE=$(cat "$LANG_FILE")
+fi
 
-for i in {1..3}; do 
-    while true; do
-        LOADING_MSG=${LOADING_MSGS[$RANDOM % ${#LOADING_MSGS[@]}]}
-        if [[ ! " ${LOADING_USED[*]} " =~ " $LOADING_MSG " ]]; then
-            LOADING_USED+=("$LOADING_MSG")
-            break
-        fi
-    done
-    echo -ne "${CYAN}$LOADING_MSG"
-    for j in {1..3}; do echo -ne "."; sleep 0.5; done
-    echo -e "${GREEN}${NC}"
+# 🐾 Construcción de ruta correcta
+SCRIPT_PATH="$SCRIPTS_DIR/$MEOW_THEME/$MEOW_SIZE"
+
+if [[ ! -d "$SCRIPT_PATH" ]]; then
+    echo -e "${RED}󰅟 Error: No se encontró la carpeta $SCRIPT_PATH.${NC}"
+    echo -e "${WHITE}Verifica la estructura y asegúrate de que los archivos existen.${NC}"
+    exit 1
+fi
+
+# 🐾 Mostrar los archivos `.txt` procesando códigos ANSI correctamente
+for FILE in "$SCRIPT_PATH"/*.txt; do
+    if [[ -f "$FILE" ]]; then
+        while IFS= read -r line; do
+            echo -e "$line"
+        done < "$FILE"
+    fi
 done
 
-# 🐾 Mostrar meows
-MEOW_PATH="$MEOW_DIR/$MEOW_THEME/$MEOW_SIZE"
-if [[ -d "$MEOW_PATH" ]]; then
-    MEOW_FILES=($(ls "$MEOW_PATH" | grep ".txt"))
-    MEOW_FILE="${MEOW_FILES[$RANDOM % ${#MEOW_FILES[@]}]}"
-    cat "$MEOW_PATH/$MEOW_FILE"
-else
-    echo -e "${RED}󰀅 Error: No se encontraron meows en $MEOW_PATH.${NC}"
-fi
-
-# 🐾 Mostrar comandos activados si existen
+# 🐾 Verificar si los comandos de nombres están activados
 if [[ -f "$NAMES_FILE" ]]; then
-    echo -e "\n${CYAN}󰀅 Comandos activados:${NC}"
-    echo -e "${WHITE}- meows-names${NC}"
-    echo -e "${WHITE}- meows-show [name]${NC}"
+    alias meows-names="cat $NAMES_FILE"
+    alias meows-show="grep -i"
 fi
