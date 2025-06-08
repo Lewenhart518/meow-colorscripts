@@ -9,7 +9,8 @@
 #   - meow-colorscripts-setup
 #   - (si existen) meow-show y meows-names.
 #
-# También elimina la carpeta de configuración en ~/.config/meow-colorscripts.
+# También elimina la carpeta de configuración en ~/.config/meow-colorscripts
+# y la carpeta del repositorio local ~/meow-colorscripts.
 #
 # El script utiliza el idioma configurado en el proceso de instalación,
 # leyendo el archivo $HOME/.config/meow-colorscripts/lang (si existe).
@@ -75,7 +76,7 @@ for cmd in "${COMMANDS[@]}"; do
     fi
 done
 
-# Eliminar la carpeta de configuración
+# Eliminar la carpeta de configuración en ~/.config/meow-colorscripts
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 if [ -d "$CONFIG_DIR" ]; then
     rm -rf "$CONFIG_DIR"
@@ -92,6 +93,23 @@ else
     fi
 fi
 
+# Eliminar la carpeta del repositorio local ~/meow-colorscripts
+LOCAL_REPO="$HOME/meow-colorscripts"
+if [ -d "$LOCAL_REPO" ]; then
+    rm -rf "$LOCAL_REPO"
+    if [[ "$LANGUAGE" == "es" ]]; then
+        echo -e " Se eliminó el directorio del repositorio: $LOCAL_REPO"
+    else
+        echo -e " Removed repository directory: $LOCAL_REPO"
+    fi
+else
+    if [[ "$LANGUAGE" == "es" ]]; then
+        echo -e " No se encontró el directorio del repositorio."
+    else
+        echo -e " Repository directory not found."
+    fi
+fi
+
 # Recordatorio para revisar el archivo de configuración del shell
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "\n Desinstalación completada."
@@ -100,3 +118,4 @@ else
     echo -e "\n Uninstallation completed."
     echo -e " Check your .bashrc or .zshrc file to remove the line that adds ~/.local/bin to the PATH if desired."
 fi
+
