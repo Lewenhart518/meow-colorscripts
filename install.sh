@@ -1,37 +1,35 @@
 #!/bin/bash
 
+# ========================================================
+# Instalación de meow-colorscripts y comandos sin alias
+# ========================================================
+
 # Variables principales
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 
-# ────────────────────────────────────────────────────────────── 
-# Nerd Fonts Colors and Icons
+# Colores para mensajes en la terminal
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 YELLOW='\033[38;2;235;203;139m'
 CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
-# Iconos usados:
-#   -> Título o encabezado
-# 󰏩 -> Prompt o entrada de usuario
-# 󰚝 -> Acción de movimiento
-#   -> Confirmación
-#   -> Pregunta o instrucción adicional
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Crear la carpeta de configuración dentro del repositorio local
+# ------------------------------------------------------------
+# (Iconos:  para idioma, 󰏩 para prompt,  para confirmación,  para error,
+#   para actualización/ajuste,  para configuración,  para caja abierta)
+#
+# Crear la carpeta de configuración en el repositorio local
 mkdir -p "$LOCAL_REPO/.config/meow-colorscripts"
-# Definir el archivo de idioma en el repositorio local (donde se almacena la elección)
+# Definir el archivo de idioma en el repositorio local
 LANG_FILE="$LOCAL_REPO/.config/meow-colorscripts/lang"
 touch "$LANG_FILE"
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
+# ------------------------------------------------------------
 # Selección de idioma
-echo -e " ${CYAN}Select your language:${NC}"
+echo -e " ${CYAN}Select your language:${NC}"
 echo -e "  1) Español"
 echo -e "  2) English"
 read -p "󰏩 Choose an option [1/2]: " LANG_OPTION
@@ -41,49 +39,44 @@ if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 echo "$LANGUAGE" > "$LANG_FILE"
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Mover la carpeta completa de configuración del repositorio local a ~/.config/
-# Es decir, mover ~/meow-colorscripts/.config/meow-colorscripts/ a ~/.config/
-mkdir -p "$INSTALL_DIR"  # Asegurarse de que ~/.config exista
+# ------------------------------------------------------------
+# Mover la carpeta de configuración del repositorio local a ~/.config/
+# Esto mueve: ~/meow-colorscripts/.config/meow-colorscripts --> ~/.config/meow-colorscripts
+mkdir -p "$INSTALL_DIR"
 mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
 
 if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e " ${GREEN}Archivo de configuración movido correctamente.${NC}"
+        echo -e " ${GREEN}Archivo de configuración movido correctamente.${NC}"
     else
-        echo -e " ${GREEN}Configuration folder moved successfully.${NC}"
+        echo -e " ${GREEN}Configuration folder moved successfully.${NC}"
     fi
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e " ${RED}Error: No se pudo mover la carpeta de configuración.${NC}"
+        echo -e " ${RED}Error: No se pudo mover la carpeta de configuración.${NC}"
     else
-        echo -e " ${RED}Error: Could not move configuration folder.${NC}"
+        echo -e " ${RED}Error: Could not move configuration folder.${NC}"
     fi
 fi
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Asegurar que el archivo show-meows.sh esté en el directorio de configuración
-# Se espera que este archivo se encuentre en la raíz del repositorio LOCAL_REPO;
-# si no está en ~/.config/meow-colorscripts/, se copia.
+# ------------------------------------------------------------
+# Garantizar que show-meows.sh esté en la carpeta de configuración destino (~/.config/meow-colorscripts)
 if [[ ! -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" && -f "$LOCAL_REPO/show-meows.sh" ]]; then
     cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/meow-colorscripts/"
 fi
 
 if [[ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]]; then
-    echo -e " ${GREEN}show-meows.sh copiado correctamente.${NC}"
+    echo -e " ${GREEN}show-meows.sh copiado correctamente.${NC}"
 else
-    echo -e " ${RED}Error: No se encontró show-meows.sh en el destino.${NC}"
+    echo -e " ${RED}Error: No se encontró show-meows.sh en el destino.${NC}"
 fi
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Mensajes de carga dinámicos
+# ------------------------------------------------------------
+# Mensajes de carga dinámicos (para amenizar la espera)
 LOADING_USED=()
-LOADING_MSGS_ES=(" Los gatos se estiran" "󰄛 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
-LOADING_MSGS_EN=(" The cats are stretching" "󰄛 Adjusting paw pads" "󰏩 Fine-tuning meows" "󱏿 Purring in progress" "󰏩 Exploring the code")
+LOADING_MSGS_ES=(" Los gatos se estiran" "󰚝 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
+LOADING_MSGS_EN=(" The cats are stretching" "󰚝 Adjusting paw pads" "󰏩 Fine-tuning meows" "󱏿 Purring in progress" "󰏩 Exploring the code")
 
 for i in {1..3}; do 
     while true; do
@@ -103,66 +96,89 @@ for i in {1..3}; do
     done
     echo -e "${GREEN}${NC}"
 done
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Verificación final de la carpeta movida
+# ------------------------------------------------------------
+# Verificación final de la carpeta de configuración en ~/.config/
 if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
     echo -e "${GREEN} Configuración movida correctamente.${NC}"
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración en el destino.${NC}"
+        echo -e "${RED} Error: No se encontró la carpeta de configuración en el destino.${NC}"
     else
-        echo -e "${RED}󰀅 Error: Configuration folder not found at destination.${NC}"
+        echo -e "${RED} Error: Configuration folder not found at destination.${NC}"
     fi
 fi
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Detectar shell y agregar alias
-if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
-else
-    echo -e "${CYAN}󰄛 Detecting shell and adding alias...${NC}"
+# ------------------------------------------------------------
+# Instalar comandos en ~/.local/bin (sin usar alias)
+mkdir -p "$HOME/.local/bin"
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 fi
-sleep 1
-USER_SHELL=$(basename "$SHELL")
-ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
+
+# ------------------------------------------------------------
+# INSTALACIÓN DEL COMANDO meow-colorscripts
+# Se copia show-meows.sh (desde ~/.config/meow-colorscripts) y se renombra a meow-colorscripts
 if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
-    case "$USER_SHELL" in
-        "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
-        "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
-        "fish")
-            echo -e "function ansi-meow" >> "$HOME/.config/fish/config.fish"
-            echo -e "    bash ~/.config/meow-colorscripts/show-meows.sh" >> "$HOME/.config/fish/config.fish"
-            echo -e "end" >> "$HOME/.config/fish/config.fish"
-            ;;
-    esac
-    if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${GREEN} Alias agregado correctamente.${NC}"
-        echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias.${NC}"
-    else
-        echo -e "${GREEN} Alias added successfully.${NC}"
-        echo -e "${YELLOW} You must restart the terminal for the alias to work.${NC}"
-    fi
+    cp "$INSTALL_DIR/meow-colorscripts/show-meows.sh" "$HOME/.local/bin/meow-colorscripts"
+    chmod +x "$HOME/.local/bin/meow-colorscripts"
+    echo -e " ${GREEN}Comando meow-colorscripts instalado correctamente.${NC}"
 else
-    if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED}󰀅 Error: No se encontró show-meows.sh.${NC}"
-    else
-        echo -e "${RED}󰀅 Error: show-meows.sh not found.${NC}"
-    fi
+    echo -e " ${RED}Error: show-meows.sh no encontrado para instalar meow-colorscripts.${NC}"
 fi
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Preguntar si se desea abrir la configuración ahora
+# ------------------------------------------------------------
+# INSTALACIÓN DEL COMANDO meow-update (update.sh)
+if [ -f "$LOCAL_REPO/update.sh" ]; then
+    chmod +x "$LOCAL_REPO/update.sh"
+    cp "$LOCAL_REPO/update.sh" "$HOME/.local/bin/meow-update"
+    chmod +x "$HOME/.local/bin/meow-update"
+    echo -e " ${GREEN}Comando meow-update instalado correctamente.${NC}"
+else
+    echo -e " ${RED}Error: update.sh no encontrado en el repositorio local.${NC}"
+fi
+
+# ------------------------------------------------------------
+# CREACIÓN DEL COMANDO meow-show (wrapper)
+# Se usará como: meow-show [nombre]
+cat << 'EOF' > "$HOME/.local/bin/meow-show"
+#!/bin/bash
+# Wrapper que pasa argumentos al comando meow-colorscripts.
+meow-colorscripts "$@"
+EOF
+chmod +x "$HOME/.local/bin/meow-show"
+echo -e " ${GREEN}Comando meow-show instalado correctamente.${NC}"
+
+# ------------------------------------------------------------
+# CREACIÓN DEL COMANDO meows-names
+# Muestra el contenido del archivo names.txt ubicado en ~/.config/meow-colorscripts/
+cat << 'EOF' > "$HOME/.local/bin/meows-names"
+#!/bin/bash
+cat "$HOME/.config/meow-colorscripts/names.txt"
+EOF
+chmod +x "$HOME/.local/bin/meows-names"
+echo -e " ${GREEN}Comando meows-names instalado correctamente.${NC}"
+
+# ------------------------------------------------------------
+# INSTALACIÓN DEL COMANDO meow-colorscripts-setup (wrapper para setup.sh)
+# Este comando permite abrir la configuración para generar names.txt y personalizar
+if [ -f "$SETUP_SCRIPT" ]; then
+    cp "$SETUP_SCRIPT" "$HOME/.local/bin/meow-colorscripts-setup"
+    chmod +x "$HOME/.local/bin/meow-colorscripts-setup"
+    echo -e " ${GREEN}Comando meow-colorscripts-setup instalado correctamente.${NC}"
+else
+    echo -e " ${RED}Error: setup.sh no encontrado para instalar meow-colorscripts-setup.${NC}"
+fi
+
+# ------------------------------------------------------------
+# Preguntar si se desea abrir la configuración ahora (opcional)
 if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "\n${CYAN} ¿Deseas abrir la configuración ahora?${NC}"
+    echo -e "\n ${CYAN} ¿Deseas abrir la configuración ahora?${NC}"
     echo -e "  s) Sí"
     echo -e "  n) No"
     read -p "󰏩 Selecciona una opción [s/n]: " OPEN_CONF
 else
-    echo -e "\n${CYAN} Do you want to open the configuration now?${NC}"
+    echo -e "\n ${CYAN} Do you want to open the configuration now?${NC}"
     echo -e "  y) Yes"
     echo -e "  n) No"
     read -p "󰏩 Select an option [y/n]: " OPEN_CONF
@@ -174,7 +190,7 @@ if [[ "$LANGUAGE" == "es" ]]; then
             echo -e "${CYAN}󰏩 Abriendo configuración...${NC}"
             bash "$SETUP_SCRIPT"
         else
-            echo -e "${RED}󰀅 Error: No se encontró setup.sh.${NC}"
+            echo -e "${RED} Error: No se encontró setup.sh.${NC}"
         fi
     fi
 else
@@ -183,22 +199,21 @@ else
             echo -e "${CYAN}󰏩 Opening configuration...${NC}"
             bash "$SETUP_SCRIPT"
         else
-            echo -e "${RED}󰀅 Error: setup.sh not found.${NC}"
+            echo -e "${RED} Error: setup.sh not found.${NC}"
         fi
     fi
 fi
-# ────────────────────────────────────────────────────────────── 
 
-# ────────────────────────────────────────────────────────────── 
-# Guardar configuración
-echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_FILE"
-echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
+# ------------------------------------------------------------
+# Guardar la configuración en meow.conf (dentro de ~/.config/meow-colorscripts)
+echo "MEOW_THEME=$MEOW_THEME" > "$INSTALL_DIR/meow-colorscripts/meow.conf"
+echo "MEOW_SIZE=$MEOW_SIZE" >> "$INSTALL_DIR/meow-colorscripts/meow.conf"
 
 if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
-    echo -e "Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+    echo -e "\n ${GREEN}Configuración guardada exitosamente.${NC}"
+    echo -e "Archivo de configuración: ${WHITE}$INSTALL_DIR/meow-colorscripts/meow.conf${NC}"
 else
-    echo -e "\n${GREEN} Configuration saved successfully.${NC}"
-    echo -e "Configuration file: ${WHITE}$CONFIG_FILE${NC}"
+    echo -e "\n ${GREEN}Configuration saved successfully.${NC}"
+    echo -e "Configuration file: ${WHITE}$INSTALL_DIR/meow-colorscripts/meow.conf${NC}"
 fi
-# ────────────────────────────────────────────────────────────── 
+
