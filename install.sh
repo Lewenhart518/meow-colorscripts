@@ -3,11 +3,16 @@
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
-# 🐾  Asegurar que la carpeta de configuración existe
+# Definir rutas para el archivo lang: se crea primero en el repositorio local y luego se mueve a la ruta final.
+LOCAL_LANG_DIR="$LOCAL_REPO/.config/meow-colorscripts"
+LANG_FILE_LOCAL="$LOCAL_LANG_DIR/lang"
+FINAL_LANG_FILE="$HOME/.config/meow-colorscripts/lang"
+
+# 🐾  Asegurar que la carpeta de configuración existe en la ruta final y en el repositorio local
 mkdir -p "$HOME/.config/meow-colorscripts"
-touch "$LANG_FILE"
+mkdir -p "$LOCAL_LANG_DIR"
+touch "$LANG_FILE_LOCAL"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -27,7 +32,10 @@ LANGUAGE="en"
 if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
-echo "$LANGUAGE" > "$LANG_FILE"
+echo "$LANGUAGE" > "$LANG_FILE_LOCAL"
+
+# Mover el archivo lang a la ubicación final.
+mv "$LANG_FILE_LOCAL" "$FINAL_LANG_FILE"
 
 # 🐾  Mensajes de carga dinámicos
 LOADING_USED=()
