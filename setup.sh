@@ -17,17 +17,6 @@ if [[ -f "$LANG_FILE" ]]; then
     LANGUAGE=$(cat "$LANG_FILE")
 fi
 
-# 🐾 Selección de idioma
-echo -e "${CYAN} Select your language:${NC}"
-echo -e "1) English"
-echo -e "2) Español"
-read -p "Choose an option [1-2]: " LANG_OPTION
-
-if [[ "$LANG_OPTION" == "2" ]]; then
-    LANGUAGE="es"
-    echo "$LANGUAGE" > "$LANG_FILE"
-fi
-
 # 🐾 Preguntar por el estilo
 if [[ "$LANGUAGE" == "en" ]]; then
     echo -e "${CYAN}󰄛 Choose your meow-colorscripts style:${NC}"
