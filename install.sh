@@ -16,20 +16,15 @@ NC='\033[0m'
 LOADING_MSGS_ES=("󰏩 Los gatos se están estirando" "󰄛 Acomodando las almohadillas" " Ronroneo en proceso")
 LOADING_MSGS_EN=("󰏩 The cats are stretching" "󰄛 Adjusting the paw pads" " Purring in progress")
 
-# 🐾 Detectar idioma y guardarlo en archivo dentro de la carpeta correcta
+# 🐾 Detectar idioma y guardarlo en archivo
 echo -e "${CYAN} Selecciona tu idioma:${NC}"
-echo -e "[y/n] Inglés | [s/n] Español"
+echo -e "s) sí  n) no (Español)"
+echo -e "y) yes n) no (Inglés)"
 read -p "Selecciona una opción: " LANG_OPTION
 
 LANGUAGE="en"
 if [[ "$LANG_OPTION" =~ ^[sS]$ ]]; then
     LANGUAGE="es"
-fi
-
-# Asegurar que la carpeta existe antes de moverla
-if [ ! -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
-    echo -e "${RED}󰅟 Error: No se encontró la carpeta ~/meow-colorscripts/.config/meow-colorscripts/.${NC}"
-    exit 1
 fi
 
 echo "$LANGUAGE" > "$LOCAL_REPO/.config/meow-colorscripts/lang"
@@ -45,7 +40,7 @@ for i in {1..3}; do
     echo -e "${YELLOW}${NC}"
 done
 
-# 🐾 Mover la carpeta completa a ~/.config/
+# 🐾 Mover configuración a ~/.config/
 echo -e "${GREEN}󰄛 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
 
@@ -72,7 +67,8 @@ fi
 
 # 🐾 Preguntar si ejecutar configuración
 echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "[y/n] Inglés | [s/n] Español"
+echo -e "s) sí  n) no (Español)"
+echo -e "y) yes n) no (Inglés)"
 read -p "Selecciona una opción: " SETUP_OPTION
 
 if [[ "$SETUP_OPTION" =~ ^[sSyY]$ ]]; then
