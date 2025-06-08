@@ -45,7 +45,7 @@ cd meow-colorscripts
 chmod +x install.sh
 ```
 ```bash  
-./install.sh  
+clear && ./install.sh  
 ```  
 This will set everything up automatically.  
 ## Configuration   
