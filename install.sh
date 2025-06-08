@@ -1,12 +1,12 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.config"
+INSTALL_DIR="$HOME/.config/meow-colorscripts"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
+LANG_FILE="$INSTALL_DIR/lang"
 
 # 🐾 Asegurar que la carpeta de configuración existe
-mkdir -p "$INSTALL_DIR/meow-colorscripts"
+mkdir -p "$INSTALL_DIR"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -30,15 +30,15 @@ echo "$LANGUAGE" > "$LANG_FILE"
 
 # 🐾 Frases felinas de carga únicas 🐾
 LOADING_USED=()
-if [[ "$LANGUAGE" == "es" ]]; then
-    LOADING_MSGS=("󰀅 Los gatos se estiran" " Acomodando almohadillas" " Afinando maullidos" "★ Ronroneo en progreso" "󰀅 Explorando el código")
-else
-    LOADING_MSGS=("󰀅 The cats are stretching" " Adjusting paw pads" " Fine-tuning meows" "★ Purring in progress" "󰀅 Exploring the code")
-fi
+LOADING_MSGS_ES=("󰀅 Los gatos se estiran" " Acomodando almohadillas" " Afinando maullidos" "★ Ronroneo en progreso" "󰀅 Explorando el código")
+LOADING_MSGS_EN=("󰀅 The cats are stretching" " Adjusting paw pads" " Fine-tuning meows" "★ Purring in progress" "󰀅 Exploring the code")
 
 for i in {1..3}; do 
     while true; do
-        LOADING_MSG=${LOADING_MSGS[$RANDOM % ${#LOADING_MSGS[@]}]}
+        LOADING_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
+        if [ "$LANGUAGE" == "en" ]; then
+            LOADING_MSG=${LOADING_MSGS_EN[$RANDOM % ${#LOADING_MSGS_EN[@]}]}
+        fi
         if [[ ! " ${LOADING_USED[*]} " =~ " $LOADING_MSG " ]]; then
             LOADING_USED+=("$LOADING_MSG")
             break
@@ -53,6 +53,12 @@ done
 echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
 mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
+
+# 🐾 Verificar que `show-meows.sh` se movió correctamente
+if [[ ! -f "$INSTALL_DIR/show-meows.sh" ]]; then
+    cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/"
+fi
+
 echo -e "${GREEN} Configuración movida correctamente.${NC}"
 
 # 🐾 Detectar shell y agregar alias
@@ -62,7 +68,7 @@ ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
 echo -e "${CYAN}󰀅 Detectando shell y agregando alias...${NC}"
 sleep 1
 
-if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
+if [ -f "$INSTALL_DIR/show-meows.sh" ]; then
     case "$USER_SHELL" in
         "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
         "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
@@ -95,13 +101,6 @@ if [[ "$SETUP_OPTION" == "1" ]]; then
     else
         echo -e "${RED}󰀅 Error: No se encontró setup.sh en ~/meow-colorscripts/.${NC}"
     fi
-fi
-
-# 🐾 Mostrar comandos activados si el usuario los seleccionó
-if [[ -f "$INSTALL_DIR/meow-colorscripts/names.txt" ]]; then
-    echo -e "\n${CYAN}󰀅 Comandos activados:${NC}"
-    echo -e "${WHITE}- meows-names${NC}"
-    echo -e "${WHITE}- meows-show [name]${NC}"
 fi
 
 echo -e "\n${GREEN} Instalación completada exitosamente. ¡Ansi-meow está listo!${NC}"
