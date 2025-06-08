@@ -3,6 +3,7 @@
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 SCRIPTS_DIR="$HOME/.config/meow-colorscripts/colorscripts"
+NAMES_FILE="$HOME/.config/meow-colorscripts/names.txt"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -40,9 +41,8 @@ while IFS= read -r line; do
     echo -e "$line"
 done < "$SCRIPT_PATH"/*.txt
 
-# 🐾 Generar lista de nombres de gatos
-NAMES_FILE="$HOME/.config/meow-colorscripts/names.txt"
-ls "$SCRIPT_PATH" | grep ".txt" | sed 's/.txt//' > "$NAMES_FILE"
-
-# 🐾 Mostrar mensaje de confirmación
-echo -e "${GREEN} Archivo de nombres generado correctamente: ${WHITE}$NAMES_FILE${NC}"
+# 🐾 Verificar si los comandos de nombres están activados
+if [[ -f "$NAMES_FILE" ]]; then
+    alias meows-names="cat $NAMES_FILE"
+    alias meows-show="grep -i"
+fi
