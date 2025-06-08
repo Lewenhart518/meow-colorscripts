@@ -91,13 +91,13 @@ fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
 echo -e "\n${CYAN}  ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "1) Sí"
-echo -e "2) No"
+echo -e "s) Sí"
+echo -e "n) No"
 read -p "Elige una opción [1/2]: " SETUP_OPTION
 
-if [[ "$SETUP_OPTION" == "1" ]]; then
+if [[ "$SETUP_OPTION" == "s" ]]; then
     if [ -f "$SETUP_SCRIPT" ]; then
-        echo -e "${CYAN}󰀅 Abriendo configuración...${NC}"
+        echo -e "${CYAN}󰝲 Abriendo configuración...${NC}"
         bash "$SETUP_SCRIPT"
     else
         echo -e "${RED}󰀅 Error: No se encontró setup.sh en ~/meow-colorscripts/.${NC}"
