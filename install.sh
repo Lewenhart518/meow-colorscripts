@@ -5,6 +5,9 @@ LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
 
+# 🐾 Asegurar que la carpeta de configuración existe
+mkdir -p "$INSTALL_DIR/meow-colorscripts"
+
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
@@ -20,20 +23,19 @@ echo -e "2) English"
 read -p "Elige una opción [1/2]: " LANG_OPTION
 
 LANGUAGE="en"
-if [[ "$LANG_OPTION" == "s" ]]; then
+if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 echo "$LANGUAGE" > "$LANG_FILE"
 
 # 🐾 Frases felinas de carga únicas 🐾
+LOADING_USED=()
 if [[ "$LANGUAGE" == "es" ]]; then
     LOADING_MSGS=("󰀅 Los gatos se estiran" " Acomodando almohadillas" " Afinando maullidos" "★ Ronroneo en progreso" "󰀅 Explorando el código")
 else
     LOADING_MSGS=("󰀅 The cats are stretching" " Adjusting paw pads" " Fine-tuning meows" "★ Purring in progress" "󰀅 Exploring the code")
 fi
 
-# 🐾 Animaciones de carga con palomita verde
-LOADING_USED=()
 for i in {1..3}; do 
     while true; do
         LOADING_MSG=${LOADING_MSGS[$RANDOM % ${#LOADING_MSGS[@]}]}
@@ -50,7 +52,6 @@ done
 # 🐾 Moviendo configuración correctamente
 echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
 sleep 1
-
 mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
 echo -e "${GREEN} Configuración movida correctamente.${NC}"
 
@@ -83,11 +84,11 @@ fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
 echo -e "\n${CYAN}󰀅 ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "s) sí"
-echo -e "n) no"
-read -p "Elige una opción [s/n]: " SETUP_OPTION
+echo -e "1) Sí"
+echo -e "2) No"
+read -p "Elige una opción [1/2]: " SETUP_OPTION
 
-if [[ "$SETUP_OPTION" == "s" ]]; then
+if [[ "$SETUP_OPTION" == "1" ]]; then
     if [ -f "$SETUP_SCRIPT" ]; then
         echo -e "${CYAN}󰀅 Abriendo configuración...${NC}"
         bash "$SETUP_SCRIPT"
