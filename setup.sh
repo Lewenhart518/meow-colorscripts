@@ -2,6 +2,7 @@
 
 CONFIG_FILE="$HOME/.config/meow-colorscripts/meow.conf"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
+NAMES_FILE="$HOME/.config/meow-colorscripts/names.txt"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -42,17 +43,10 @@ case "$STYLE_OPTION" in
     1) MEOW_THEME="normal" ;;
     2) MEOW_THEME="nocolor" ;;
     3) 
-        if [[ "$LANGUAGE" == "en" ]]; then
-            echo -e "\n${CYAN}󰄛 Choose your theme:${NC}"
-            echo -e "1) ${GREEN}Nord${NC}"
-            echo -e "2) ${CYAN}Catpuccin${NC}"
-            echo -e "3) ${YELLOW}Everforest${NC}"
-        else
-            echo -e "\n${CYAN}󰄛 ¿Qué tema quieres usar?${NC}"
-            echo -e "1) ${GREEN}Nord${NC}"
-            echo -e "2) ${CYAN}Catpuccin${NC}"
-            echo -e "3) ${YELLOW}Everforest${NC}"
-        fi
+        echo -e "\n${CYAN}󰄛 Choose your theme:${NC}"
+        echo -e "1) ${GREEN}Nord${NC}"
+        echo -e "2) ${CYAN}Catpuccin${NC}"
+        echo -e "3) ${YELLOW}Everforest${NC}"
         read -p "Selecciona una opción [1-3]: " THEME_OPTION
         case "$THEME_OPTION" in
             1) MEOW_THEME="nord" ;;
@@ -62,54 +56,26 @@ case "$STYLE_OPTION" in
         esac
         ;;
     4) 
-        if [[ "$LANGUAGE" == "en" ]]; then
-            echo -e "\n${CYAN}󰄛 Do you want ASCII with color or without?${NC}"
-            echo -e "1) ${GREEN}With color${NC}"
-            echo -e "2) ${WHITE}Without color${NC}"
-        else
-            echo -e "\n${CYAN}󰄛 ¿Quieres ASCII con color o sin color?${NC}"
-            echo -e "1) ${GREEN}Con color${NC}"
-            echo -e "2) ${WHITE}Sin color${NC}"
-        fi
-        read -p "Selecciona una opción [1-2]: " ASCII_OPTION
-        case "$ASCII_OPTION" in
-            1) MEOW_THEME="ascii-color" ;;
-            2) MEOW_THEME="ascii" ;;
-            *) MEOW_THEME="ascii" ;;
-        esac
-
-        if [[ "$LANGUAGE" == "en" ]]; then
-            echo -e "\n${CYAN}󰄛 Which ASCII style do you prefer?${NC}"
-            echo -e "1) ${YELLOW}Keyboard symbols${NC}"
-            echo -e "2) ${RED}Blocks${NC}"
-        else
-            echo -e "\n${CYAN}󰄛 ¿Qué tipo de ASCII prefieres?${NC}"
-            echo -e "1) ${YELLOW}Símbolos de teclado${NC}"
-            echo -e "2) ${RED}Bloques${NC}"
-        fi
+        echo -e "\n${CYAN}󰄛 Choose ASCII type:${NC}"
+        echo -e "1) ${YELLOW}Keyboard symbols${NC}"
+        echo -e "2) ${RED}Blocks${NC}"
         read -p "Selecciona una opción [1-2]: " ASCII_TYPE_OPTION
         case "$ASCII_TYPE_OPTION" in
             1) MEOW_SIZE="keyboard-symbols" ;;
             2) MEOW_SIZE="block" ;;
             *) MEOW_SIZE="keyboard-symbols" ;;
         esac
+        MEOW_THEME="ascii" # ASCII se trata como tamaño
         ;;
     *) MEOW_THEME="normal" ;;
 esac
 
 # 🐾 Preguntar por el tamaño si no es ASCII
 if [[ "$MEOW_THEME" != "ascii" && "$MEOW_THEME" != "ascii-color" ]]; then
-    if [[ "$LANGUAGE" == "en" ]]; then
-        echo -e "\n${CYAN}󰄛 Choose the size:${NC}"
-        echo -e "1) ${GREEN}Small${NC}"
-        echo -e "2) ${WHITE}Normal${NC}"
-        echo -e "3) ${RED}Large${NC}"
-    else
-        echo -e "\n${CYAN}󰄛 ¿Qué tamaño prefieres?${NC}"
-        echo -e "1) ${GREEN}Pequeño${NC}"
-        echo -e "2) ${WHITE}Normal${NC}"
-        echo -e "3) ${RED}Grande${NC}"
-    fi
+    echo -e "\n${CYAN}󰄛 Choose the size:${NC}"
+    echo -e "1) ${GREEN}Small${NC}"
+    echo -e "2) ${WHITE}Normal${NC}"
+    echo -e "3) ${RED}Large${NC}"
     read -p "Selecciona una opción [1-3]: " SIZE_OPTION
     case "$SIZE_OPTION" in
         1) MEOW_SIZE="small" ;;
@@ -119,9 +85,36 @@ if [[ "$MEOW_THEME" != "ascii" && "$MEOW_THEME" != "ascii-color" ]]; then
     esac
 fi
 
+# 🐾 Preguntar si activar comandos de nombres
+echo -e "\n${CYAN}󰄛 Do you want to enable 'meows-names' and 'meows-show [name]'?${NC}"
+echo -e "y) yes  n) no"
+read -p "Selecciona una opción: " ENABLE_NAMES_OPTION
+
+if [[ "$ENABLE_NAMES_OPTION" =~ ^[yY]$ ]]; then
+    ls "$HOME/.config/meow-colorscripts/colorscripts/$MEOW_THEME/$MEOW_SIZE" | grep ".txt" | sed 's/.txt//' > "$NAMES_FILE"
+    echo -e "${GREEN} File of names generated correctly: ${WHITE}$NAMES_FILE${NC}"
+fi
+
 # 🐾 Guardar configuración en meow.conf
 echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_FILE"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
 
-echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
-echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+echo -e "\n${GREEN} Configuration saved successfully.${NC}"
+echo -e "📁 Config file: ${WHITE}$CONFIG_FILE${NC}"
+
+# 🐾 Preguntar si ejecutar ansi-meow al abrir la terminal
+echo -e "\n${CYAN}󰄛 Do you want ansi-meow to run when opening the terminal?${NC}"
+echo -e "y) yes  n) no"
+read -p "Selecciona una opción: " AUTO_RUN_OPTION
+
+if [[ "$AUTO_RUN_OPTION" =~ ^[yY]$ ]]; then
+    USER_SHELL=$(basename "$SHELL")
+    ALIAS_CMD="bash ~/.config/meow-colorscripts/show-meows.sh"
+
+    case "$USER_SHELL" in
+        "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
+        "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
+        "fish") echo "$ALIAS_CMD" >> "$HOME/.config/fish/config.fish" ;;
+    esac
+    echo -e "${GREEN} ansi-meow will now run when opening the terminal.${NC}"
+fi
