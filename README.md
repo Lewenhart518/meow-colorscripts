@@ -2,110 +2,108 @@
 Customize your terminal with cat-themed ANSI art! 🎨🔥  
 
 ## 📌 Index  
-- [Required](#Required)
-- [available languages](#Languages)
-- [available themes](#Themes)
+- [Required](#required)  
+- [Available Languages](#languages)  
+- [Available Themes](#themes)  
 - [Installation](#installation)  
-- [Configuration](#configuration)
-- [Update](#Update)
+- [Configuration](#configuration)  
+- [Update](#update)  
 - [View Available Cats](#view-available-cats)  
-- [Features](#features)
-- [Credits](#Credits)
+- [Features](#features)  
+- [Credits](#credits)  
 - [Author](#author)  
 
-## Required
-You need **[Nerd Fonts](https://www.nerdfonts.com/)** to display it correctly.
+## Required  
+You need **[Nerd Fonts](https://www.nerdfonts.com/)** to display everything correctly.
 
-## Languages
-The languages ​​currently available are:
-English and Spanish
+## Languages  
+The available languages are: English and Spanish.
 
-## Themes
+## Themes  
+This project supports several themes and color schemes that enhance your terminal’s aesthetics:
 
-This project uses the [Nord Theme](https://github.com/nordtheme),
-[Catppuccin](https://github.com/catppuccin/catppuccin), and 
-[Everforest](https://github.com/sainnhe/everforest) color schemes.
+- **Nord Theme**: A clean, elegant arctic color scheme developed by [Sven Greb](https://www.nordtheme.com).  
+- **Catppuccin**: A community-driven pastel theme offering variants such as Latte, Frappé, Macchiato, and Mocha.  
+- **Everforest**: A soft, low-contrast theme optimized to reduce eye strain.  
 
-- **Nord Theme**: A clean, elegant arctic color scheme developed by [Sven Greb](https://www.nordtheme.com). You can find more information in his [official repository](https://github.com/nordtheme).
-- **Catppuccin**: A community-based pastel theme with four variants (Latte, Frappé, Macchiato, and Mocha), designed for a harmonious visual experience. More details in his [official repository](https://github.com/catppuccin/catppuccin).
-- **Everforest**: A soft, low-contrast theme optimized to reduce eye strain. Explore their ports in their [official repository](https://github.com/sainnhe/everforest).
+Thanks to the creators and communities behind these themes for their amazing work.
 
-Thanks to their respective creators and communities for developing these amazing themes.
+## Installation  
+To install `meow-colorscripts`, run the following commands in your terminal:  
 
-## Installation   
-To install `meow-colorscripts`, run:  
-```bash  
-git clone https://github.com/Lewenhart518/meow-colorscripts.git
-```
 ```bash
+git clone https://github.com/Lewenhart518/meow-colorscripts.git
 cd meow-colorscripts
-```
-```bash 
 chmod +x install.sh
-```
-```bash  
-clear && ./install.sh  
+clear && ./install.sh
 ```  
-This will set everything up automatically.  
-## Configuration   
-Customize your setup using:  
-```bash  
-meow-colorscripts-setup  
-```  
-This allows you to:  
-✅ **Choose cat size** (small, normal, large)  
-✅ **Enable visual effects** (bold, colors)  
-✅ **Automatically run `ansi-meow` when opening a terminal**  
 
-## Update
-first time:
-go to the meow-colorscripts directory and run this:
-```bash 
+The installation script will automatically:  
+- Set up the required configuration folder.  
+- Move the configuration from `~/meow-colorscripts/.config/meow-colorscripts/` to `~/.config/meow-colorscripts/`.  
+- Copy necessary files (like `show-meows.sh`).  
+- Add the alias `ansi-meow` to your shell configuration.  
+- Ask if you want to open the interactive setup immediately.
+
+## Configuration  
+Customize your installation using:  
+
+```bash
+meow-colorscripts-setup
+```  
+
+This command allows you to interactively choose your configuration options:  
+
+- **Select your style** (e.g., *normal*, *nocolor*, a theme such as *nord*, *catpuccin*, *everforest*, or ASCII-based styles: *ascii* and *ascii-color*).  
+- **Choose the cat size** (small, normal, large) or the ASCII type (keyboard symbols or blocks, which are treated as “size”) for ASCII styles.  
+- **Activate additional commands**:  
+  - `meows-names` displays the list of available cat designs.  
+  - `show-meow [name]` displays the ANSI art for the specified cat design.  
+- **Enable auto-run**: Decide if you want `ansi-meow` to execute automatically when opening a terminal.
+
+During setup, responses are handled interactively:  
+- In Spanish, answer with **s** (sí) or **n** (no).  
+- In English, answer with **y** (yes) or **n** (no).
+
+## Update  
+To update `meow-colorscripts`, follow these steps:
+
+_First time:_
+```bash
 chmod +x update.sh
-```
-```bash 
 ./update.sh
-```
-second and subsequent times:
-go to the meow-colorscripts directory and run this:
-```bash 
-./update.sh
-```
+```  
 
-## View Available Cats
-List all available cat designs:  
-```bash  
-meows-names  
+_Subsequent updates:_
+```bash
+./update.sh
 ```  
-Display a specific cat:  
-```bash  
-meows-show [name]  
+
+## View Available Cats  
+To view all available cat designs, run:
+```bash
+meows-names
 ```  
-Example:  
-```bash  
-meows-show Raspi  
+
+To display the ANSI art for a specific cat (for example, "Raspi"), run:
+```bash
+meows-show Raspi
 ```  
-This will show the ANSI art for **"Raspi"**.  
+
 ## Features  
-✅ High-quality ANSI cat art  
-✅ Easy and fast installation  
-✅ Works across various terminal setups  
-✅ Fully customizable 
+- High-quality ANSI cat art  
+- Easy and fast installation  
+- Works across various terminal setups  
+- Fully customizable configuration  
 
-## Credits
- Credits & Inspiration
+## Credits  
+`meow-colorscripts` was born from the inspiration of amazing terminal customization projects. Special thanks to:
 
-ansi-meow was born thanks to the inspiration of incredible terminal customization projects. 
-A big shout-out to:
+- **[Pokémon-Colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts)** – For its creative take on terminal colorscripts.  
+- **[Meow](https://github.com/PixelSergey/meow)** – For a feline-inspired approach to terminal art.
 
-🔹 **[Pokémon-Colorscripts](https://gitlab.com/phoneybadger/pokemon-colorscripts)** – An amazing project that brought the magic of Pokémon to the terminal with beautifully designed colorscripts. It inspired me to explore creativity in the visual presentation of scripts. 
-
-🔹 **[Meow](https://github.com/PixelSergey/meow)** – A feline project that influenced my approach to effects, ASCII art, and an enthusiast-friendly aesthetic for the terminal. 
-
-Without these projects, ansi-meow wouldn't exist in its current form. Thanks for the inspiration! 🎨🐱✨🚀
+Their projects played a fundamental role in inspiring this work.
 
 ## Author  
 Created by **Lewenhart518** 🐱🔥  
-Follow me on GitHub: [Lewenhart518](https://github.com/Lewenhart518)  
-=======
->>>>>>> Stashed changes
+[Follow me on GitHub](https://github.com/Lewenhart518)
