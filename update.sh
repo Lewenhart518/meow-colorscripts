@@ -1,16 +1,44 @@
 #!/bin/bash
+# ========================================================
+# update.sh - Actualización de meow-colorscripts
+# ========================================================
+# Este script actualiza el repositorio local de meow-colorscripts
+# y, si existen actualizaciones en la carpeta de configuración,
+# las copia a ~/.config/meow-colorscripts.
+#
+# Para que funcione correctamente, asegúrate de tener configurado
+# correctamente el repositorio (mediante git) y una conexión activa.
+# ========================================================
 
-INSTALL_DIR="$HOME/.config/meow-colorscripts"
-CONFIG_FILE="$INSTALL_DIR/meow.conf"
+# Variables de color para mensajes
+GREEN='\033[38;2;94;129;172m'
+RED='\033[38;2;191;97;106m'
+CYAN='\033[38;2;143;188;187m'
+NC='\033[0m'
 
-# Verificar si ya existe el repositorio
-if [ -d "$INSTALL_DIR/.git" ]; then
-    echo -e "\033[38;2;143;188;187m󰠮 Actualizando ansi-meow... \033[0m"
-    git -C "$INSTALL_DIR" pull
+echo -e " ${CYAN}Actualizando meow-colorscripts...${NC}"
+
+# Cambiar al directorio del repositorio local
+cd "$HOME/meow-colorscripts" || { 
+    echo -e " ${RED}Error: No se encontró el repositorio local en $HOME/meow-colorscripts.${NC}"; 
+    exit 1; 
+}
+
+# Actualizar el repositorio con git pull
+git pull origin main
+if [ $? -eq 0 ]; then
+    echo -e " ${GREEN}Actualización completada exitosamente.${NC}"
 else
-    echo -e "\033[38;2;191;97;106m󰄛 Clonando ansi-meow por primera vez... \033[0m"
-    git clone https://github.com/Lewenhart518/meow-colorscripts.git "$INSTALL_DIR"
+    echo -e " ${RED}Error durante la actualización. Revisa tu conexión o configuración.${NC}"
+    exit 1
 fi
 
-# Continuar con la ejecución del setup
-bash "$INSTALL_DIR/setup.sh"
+# Opcional: Actualizar la carpeta de configuración, si se han realizado cambios
+CONFIG_SOURCE="$HOME/meow-colorscripts/.config/meow-colorscripts"
+CONFIG_DEST="$HOME/.config/meow-colorscripts"
+if [ -d "$CONFIG_SOURCE" ]; then
+    cp -r "$CONFIG_SOURCE/"* "$CONFIG_DEST/"
+    echo -e " ${GREEN}La configuración se actualizó correctamente.${NC}"
+else
+    echo -e " ${RED}No se encontró la carpeta de configuración en el repositorio.${NC}"
+fi
