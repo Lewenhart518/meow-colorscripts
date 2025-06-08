@@ -18,18 +18,12 @@ NC='\033[0m'
 
 # 🐾 Selección de idioma
 echo -e "${CYAN} Selecciona tu idioma:${NC}"
-if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "s) sí"
-    echo -e "n) no"
-    read -p "Elige una opción [s/n]: " LANG_OPTION
-else
-    echo -e "y) yes"
-    echo -e "n) no"
-    read -p "Choose an option [y/n]: " LANG_OPTION
-fi
+echo -e "s) sí"
+echo -e "n) no"
+read -p "Elige una opción [s/n]: " LANG_OPTION
 
 LANGUAGE="en"
-if [[ "$LANG_OPTION" == "s" || "$LANG_OPTION" == "y" ]]; then
+if [[ "$LANG_OPTION" == "s" ]]; then
     LANGUAGE="es"
 fi
 echo "$LANGUAGE" > "$LANG_FILE"
@@ -106,14 +100,18 @@ fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
 echo -e "\n${CYAN}󰀅 ¿Quieres abrir la configuración ahora?${NC}"
-if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "s) sí"
-    echo -e "n) no"
-    read -p "Elige una opción [s/n]: " SETUP_OPTION
-else
-    echo -e "y) yes"
-    echo -e "n) no"
-    read -p "Choose an option [y/n]: " SETUP_OPTION
+echo -e "s) sí"
+echo -e "n) no"
+read -p "Elige una opción [s/n]: " SETUP_OPTION
+
+if [[ "$SETUP_OPTION" == "s" ]]; then
+    if [ -f "$SETUP_SCRIPT" ]; then
+        echo -e "${CYAN}󰀅 Abriendo configuración...${NC}"
+        bash "$SETUP_SCRIPT"
+    else
+        echo -e "${RED}󰀅 Error: No se encontró setup.sh en ~/meow-colorscripts/.${NC}"
+    fi
 fi
 
-if [[ "$SETUP_OPTION" == "s" || "$SETUP_OPTION" == "y" ]];
+echo -e "\n${GREEN} Instalación completada exitosamente. ¡Ansi-meow está listo!${NC}"
+echo -e "󰚝 Ubicación de la configuración: ${WHITE}~/.config/meow-colorscripts/${NC}"
