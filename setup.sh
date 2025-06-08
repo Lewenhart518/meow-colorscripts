@@ -15,7 +15,7 @@ NC='\033[0m'
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Detectar idioma configurado en install.sh
+# Detectar idioma configurado en install.sh (default "en")
 if [[ -f "$LANG_FILE" ]]; then
     LANGUAGE=$(cat "$LANG_FILE")
 else
@@ -37,9 +37,9 @@ elif [[ "$USER_SHELL" == "fish" ]]; then
 fi
 
 if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "${GREEN}Duplicate aliases removed successfully.${NC}"
+    echo -e "Duplicate aliases removed successfully."
 else
-    echo -e "${GREEN}Duplicate aliases removed successfully.${NC}"
+    echo -e "Duplicate aliases removed successfully."
 fi
 # ────────────────────────────────────────────────────────────── 
 
@@ -48,15 +48,15 @@ fi
 if [[ -f "$CONFIG_FILE" ]]; then
     rm "$CONFIG_FILE"
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED}Removing previous configuration...${NC}"
+        echo -e "Removing previous configuration..."
     else
-        echo -e "${RED}Removing previous configuration...${NC}"
+        echo -e "Removing previous configuration..."
     fi
 fi
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Preguntar por el estilo
+# Preguntar por el estilo de meow-colorscripts
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "${CYAN}Elige tu estilo de meow-colorscripts:${NC}"
     echo -e "1) ${WHITE}Normal${NC}"
@@ -119,6 +119,98 @@ case "$STYLE_OPTION" in
         ;;
     *) MEOW_THEME="normal" ;;
 esac
+
+# ────────────────────────────────────────────────────────────── 
+# Preguntar por el tamaño si el estilo no es "ascii"
+if [[ "$MEOW_THEME" != "ascii" ]]; then
+    if [[ "$LANGUAGE" == "es" ]]; then
+        echo -e "\n${CYAN}¿Qué tamaño prefieres?${NC}"
+        echo -e "1) ${GREEN}Pequeño${NC}"
+        echo -e "2) ${WHITE}Normal${NC}"
+        echo -e "3) ${RED}Grande${NC}"
+        read -p "Selecciona una opción [1-3]: " SIZE_OPTION
+    else
+        echo -e "\n${CYAN}What size do you prefer?${NC}"
+        echo -e "1) ${GREEN}Small${NC}"
+        echo -e "2) ${WHITE}Normal${NC}"
+        echo -e "3) ${RED}Large${NC}"
+        read -p "Select an option [1-3]: " SIZE_OPTION
+    fi
+    case "$SIZE_OPTION" in
+        1) MEOW_SIZE="small" ;;
+        2) MEOW_SIZE="normal" ;;
+        3) MEOW_SIZE="large" ;;
+        *) MEOW_SIZE="normal" ;;
+    esac
+fi
+# ────────────────────────────────────────────────────────────── 
+
+# ────────────────────────────────────────────────────────────── 
+# Preguntar si activar los comandos de meows-names y meows-show [name]
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "\n${CYAN}¿Deseas activar los comandos 'meows-names' y 'meows-show [name]'?${NC}"
+    echo -e "1) Sí"
+    echo -e "2) No"
+    read -p "Selecciona una opción [1-2]: " ENABLE_NAMES_OPTION
+else
+    echo -e "\n${CYAN}Do you want to activate the commands 'meows-names' and 'meows-show [name]'?${NC}"
+    echo -e "1) Yes"
+    echo -e "2) No"
+    read -p "Select an option [1-2]: " ENABLE_NAMES_OPTION
+fi
+
+if [[ "$ENABLE_NAMES_OPTION" == "1" ]]; then
+    # Se asume que los scripts en la carpeta colorscripts existen según la selección
+    if [[ -d "$HOME/.config/meow-colorscripts/colorscripts/$MEOW_THEME/$MEOW_SIZE" ]]; then
+        ls "$HOME/.config/meow-colorscripts/colorscripts/$MEOW_THEME/$MEOW_SIZE" | grep ".txt" | sed 's/\.txt//' > "$NAMES_FILE"
+        if [[ "$LANGUAGE" == "es" ]]; then
+            echo -e "\n${GREEN}Archivo de nombres generado correctamente: ${WHITE}$NAMES_FILE${NC}"
+        else
+            echo -e "\n${GREEN}Names file generated successfully: ${WHITE}$NAMES_FILE${NC}"
+        fi
+    else
+        if [[ "$LANGUAGE" == "es" ]]; then
+            echo -e "\n${RED}No se encontró la carpeta de scripts de colores.${NC}"
+        else
+            echo -e "\n${RED}Colorscripts folder not found.${NC}"
+        fi
+    fi
+fi
+# ────────────────────────────────────────────────────────────── 
+
+# ────────────────────────────────────────────────────────────── 
+# Preguntar si se desea ejecutar ansi-meow al abrir la terminal
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "\n${CYAN}¿Deseas ejecutar ansi-meow al abrir la terminal?${NC}"
+    echo -e "1) Sí"
+    echo -e "2) No"
+    read -p "Selecciona una opción [1-2]: " AUTO_RUN_OPTION
+else
+    echo -e "\n${CYAN}Do you want to run ansi-meow when the terminal starts?${NC}"
+    echo -e "1) Yes"
+    echo -e "2) No"
+    read -p "Select an option [1-2]: " AUTO_RUN_OPTION
+fi
+
+if [[ "$AUTO_RUN_OPTION" == "1" ]]; then
+    USER_SHELL=$(basename "$SHELL")
+    AUTO_ALIAS_CMD="bash ~/.config/meow-colorscripts/show-meows.sh"
+    case "$USER_SHELL" in
+        "bash") echo "$AUTO_ALIAS_CMD" >> "$HOME/.bashrc" ;;
+        "zsh") echo "$AUTO_ALIAS_CMD" >> "$HOME/.zshrc" ;;
+        "fish")
+            echo -e "function ansi-meow" >> "$HOME/.config/fish/config.fish"
+            echo -e "    bash ~/.config/meow-colorscripts/show-meows.sh" >> "$HOME/.config/fish/config.fish"
+            echo -e "end" >> "$HOME/.config/fish/config.fish"
+            ;;
+    esac
+    if [[ "$LANGUAGE" == "es" ]]; then
+        echo -e "\n${GREEN}El alias se agregó correctamente. Debes reiniciar la terminal para que surta efecto.${NC}"
+    else
+        echo -e "\n${GREEN}Alias added successfully. Restart your terminal for the changes to take effect.${NC}"
+    fi
+fi
+# ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
 # Guardar configuración
