@@ -1,6 +1,7 @@
 #!/bin/bash
 # ========================================================
 # Instalación de meow-colorscripts y comandos sin alias
+# (Sin los comandos de nombres: meow-show y meows-names)
 # ========================================================
 
 # ========================================================
@@ -174,7 +175,7 @@ else
 fi
 
 # ========================================================
-# Mensajes de carga dinámicos (frasas felinas)
+# Mensajes de carga dinámicos (frases felinas)
 # ========================================================
 LOADING_USED=()
 LOADING_MSGS_ES=(" Los gatos se estiran" "󰚝 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
@@ -243,35 +244,6 @@ else
 fi
 
 # ------------------------------------------------------------
-# CREACIÓN DEL COMANDO meow-show (wrapper que invoca meow-colorscripts)
-cat << 'EOF' > "$HOME/.local/bin/meow-show"
-#!/bin/bash
-# Este wrapper verifica si el archivo de nombres ha sido generado.
-if [ ! -f "\$HOME/.config/meow-colorscripts/names.txt" ]; then
-    echo " Setup no ejecutado. Por favor, ejecuta 'meow-colorscripts-setup' para activar el comando 'meow-show [name]'."
-    exit 1
-fi
-# Pasa los argumentos al comando meow-colorscripts.
-meow-colorscripts "\$@"
-EOF
-chmod +x "$HOME/.local/bin/meow-show"
-echo -e " ${GREEN}Comando meow-show instalado correctamente.${NC}"
-
-# ------------------------------------------------------------
-# CREACIÓN DEL COMANDO meows-names (muestra names.txt)
-cat << 'EOF' > "$HOME/.local/bin/meows-names"
-#!/bin/bash
-# Este comando verifica que el archivo de nombres exista.
-if [ ! -f "\$HOME/.config/meow-colorscripts/names.txt" ]; then
-    echo " Setup no ejecutado. Por favor, ejecuta 'meow-colorscripts-setup' para activar el comando 'meows-names'."
-    exit 1
-fi
-cat "\$HOME/.config/meow-colorscripts/names.txt"
-EOF
-chmod +x "$HOME/.local/bin/meows-names"
-echo -e " ${GREEN}Comando meows-names instalado correctamente.${NC}"
-
-# ------------------------------------------------------------
 # INSTALACIÓN DEL COMANDO meow-colorscripts-setup (para ejecutar setup.sh)
 if [ -f "$SETUP_SCRIPT" ]; then
     cp "$SETUP_SCRIPT" "$HOME/.local/bin/meow-colorscripts-setup"
@@ -329,3 +301,4 @@ else
     echo -e "\n ${GREEN}Configuration saved successfully.${NC}"
     echo -e "Configuration file: ${WHITE}$INSTALL_DIR/meow-colorscripts/meow.conf${NC}"
 fi
+
