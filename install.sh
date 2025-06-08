@@ -42,7 +42,7 @@ echo "$LANGUAGE" > "$LANG_FILE"
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Asegurarse de que el directorio de destino exista
+# Asegurarse de que el directorio de destino exista en ~/.config/
 mkdir -p "$HOME/.config/meow-colorscripts"
 
 # Mover el archivo lang a la ubicación final
@@ -59,6 +59,13 @@ else
     else
         echo -e " ${RED}Error: Could not move language file.${NC}"
     fi
+fi
+# ────────────────────────────────────────────────────────────── 
+
+# ────────────────────────────────────────────────────────────── 
+# Copiar show-meows.sh al directorio de configuración
+if [[ -f "$LOCAL_REPO/show-meows.sh" ]]; then
+    cp "$LOCAL_REPO/show-meows.sh" "$HOME/.config/meow-colorscripts/"
 fi
 # ────────────────────────────────────────────────────────────── 
 
@@ -80,7 +87,10 @@ for i in {1..3}; do
         fi
     done
     echo -ne "${CYAN}$LOADING_MSG"
-    for j in {1..3}; do echo -ne "."; sleep 0.5; done
+    for j in {1..3}; do 
+        echo -ne "."
+        sleep 0.5
+    done
     echo -e "${GREEN}${NC}"
 done
 # ────────────────────────────────────────────────────────────── 
