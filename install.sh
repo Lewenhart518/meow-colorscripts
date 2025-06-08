@@ -1,12 +1,9 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.config/meow-colorscripts"
+INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$INSTALL_DIR/lang"
-
-# 🐾 Asegurar que la carpeta de configuración existe
-mkdir -p "$INSTALL_DIR"
+LANG_FILE="$INSTALL_DIR/meow-colorscripts/lang"
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -17,7 +14,7 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 # 🐾 Selección de idioma con opciones `1` y `2`
-echo -e "${CYAN} select your language:${NC}"
+echo -e "${CYAN}  select your language:${NC}"
 echo -e "1) Español"
 echo -e "2) English"
 read -p "Elige una opción [1/2]: " LANG_OPTION
@@ -60,9 +57,9 @@ else
 fi
 
 # 🐾 Verificar que `show-meows.sh` se movió correctamente
-if [[ ! -f "$INSTALL_DIR/show-meows.sh" ]]; then
+if [[ ! -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]]; then
     if [[ -f "$LOCAL_REPO/show-meows.sh" ]]; then
-        cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/"
+        mv "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/meow-colorscripts/"
         echo -e "${GREEN} show-meows.sh movido correctamente.${NC}"
     else
         echo -e "${RED}󰀅 Error: No se encontró show-meows.sh en $LOCAL_REPO. ¿Está en el repositorio correcto?${NC}"
@@ -78,7 +75,7 @@ ALIAS_CMD="alias ansi-meow='bash ~/.config/meow-colorscripts/show-meows.sh'"
 echo -e "${CYAN}󰀅 Detectando shell y agregando alias...${NC}"
 sleep 1
 
-if [ -f "$INSTALL_DIR/show-meows.sh" ]; then
+if [ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]; then
     case "$USER_SHELL" in
         "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
         "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
