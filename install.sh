@@ -16,14 +16,14 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
-# 🐾 Selección de idioma
-echo -e "${CYAN} Selecciona tu idioma:${NC}"
-echo -e "s) sí"
-echo -e "n) no"
-read -p "Elige una opción [s/n]: " LANG_OPTION
+# 🐾 Selección de idioma con opciones `1` y `2`
+echo -e "${CYAN} select your language:${NC}"
+echo -e "1) Español"
+echo -e "2) English"
+read -p "Elige una opción [1/2]: " LANG_OPTION
 
 LANGUAGE="en"
-if [[ "$LANG_OPTION" == "s" ]]; then
+if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
 echo "$LANGUAGE" > "$LANG_FILE"
@@ -100,11 +100,11 @@ fi
 
 # 🐾 Preguntar si abrir configuración después de instalar
 echo -e "\n${CYAN}󰀅 ¿Quieres abrir la configuración ahora?${NC}"
-echo -e "s) sí"
-echo -e "n) no"
-read -p "Elige una opción [s/n]: " SETUP_OPTION
+echo -e "1) Sí"
+echo -e "2) No"
+read -p "Elige una opción [1/2]: " SETUP_OPTION
 
-if [[ "$SETUP_OPTION" == "s" ]]; then
+if [[ "$SETUP_OPTION" == "1" ]]; then
     if [ -f "$SETUP_SCRIPT" ]; then
         echo -e "${CYAN}󰀅 Abriendo configuración...${NC}"
         bash "$SETUP_SCRIPT"
