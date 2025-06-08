@@ -94,7 +94,7 @@ echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_FILE"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
 
 echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
-echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
+echo -e "󰚝 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
 
 # 🐾 Preguntar si ejecutar ansi-meow al abrir la terminal
 echo -e "\n${CYAN}󰄛 ¿Quieres ejecutar ansi-meow al abrir la terminal?${NC}"
@@ -109,7 +109,12 @@ if [[ "$AUTO_RUN_OPTION" == "1" ]]; then
     case "$USER_SHELL" in
         "bash") echo "$ALIAS_CMD" >> "$HOME/.bashrc" ;;
         "zsh") echo "$ALIAS_CMD" >> "$HOME/.zshrc" ;;
-        "fish") echo "$ALIAS_CMD" >> "$HOME/.config/fish/config.fish" ;;
+        "fish") 
+            echo -e "function ansi-meow" >> "$HOME/.config/fish/config.fish"
+            echo -e "    bash ~/.config/meow-colorscripts/show-meows.sh" >> "$HOME/.config/fish/config.fish"
+            echo -e "end" >> "$HOME/.config/fish/config.fish"
+            ;;
     esac
     echo -e "${GREEN} ansi-meow ahora se ejecutará al abrir la terminal.${NC}"
+    echo -e "${YELLOW} Debes reiniciar la terminal para que funcione el alias/comando!${NC}"
 fi
