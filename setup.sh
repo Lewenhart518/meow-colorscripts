@@ -17,6 +17,11 @@ if [[ -f "$LANG_FILE" ]]; then
     LANGUAGE=$(cat "$LANG_FILE")
 fi
 
+# 🐾 Reiniciar configuración
+if [[ -f "$CONFIG_FILE" ]]; then
+    rm "$CONFIG_FILE"
+fi
+
 # 🐾 Preguntar por el estilo
 if [[ "$LANGUAGE" == "en" ]]; then
     echo -e "${CYAN}󰄛 Choose your meow-colorscripts style:${NC}"
@@ -92,25 +97,31 @@ case "$STYLE_OPTION" in
     *) MEOW_THEME="normal" ;;
 esac
 
+# 🐾 Preguntar por el tamaño si no es ASCII
+if [[ "$MEOW_THEME" != "ascii" && "$MEOW_THEME" != "ascii-color" ]]; then
+    if [[ "$LANGUAGE" == "en" ]]; then
+        echo -e "\n${CYAN}󰄛 Choose the size:${NC}"
+        echo -e "1) ${GREEN}Small${NC}"
+        echo -e "2) ${WHITE}Normal${NC}"
+        echo -e "3) ${RED}Large${NC}"
+    else
+        echo -e "\n${CYAN}󰄛 ¿Qué tamaño prefieres?${NC}"
+        echo -e "1) ${GREEN}Pequeño${NC}"
+        echo -e "2) ${WHITE}Normal${NC}"
+        echo -e "3) ${RED}Grande${NC}"
+    fi
+    read -p "Selecciona una opción [1-3]: " SIZE_OPTION
+    case "$SIZE_OPTION" in
+        1) MEOW_SIZE="small" ;;
+        2) MEOW_SIZE="normal" ;;
+        3) MEOW_SIZE="large" ;;
+        *) MEOW_SIZE="normal" ;;
+    esac
+fi
+
 # 🐾 Guardar configuración en meow.conf
 echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_FILE"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_FILE"
 
 echo -e "\n${GREEN} Configuración guardada exitosamente.${NC}"
 echo -e "📁 Archivo de configuración: ${WHITE}$CONFIG_FILE${NC}"
-
-# 🐾 Preguntar si se quiere ejecutar ansi-meow al abrir la terminal
-if [[ "$LANGUAGE" == "en" ]]; then
-    echo -e "\n${CYAN}󰄛 Do you want ansi-meow to run when opening the terminal?${NC}"
-    echo -e "y) yes  n) no"
-else
-    echo -e "\n${CYAN}󰄛 ¿Quieres que ansi-meow se ejecute al abrir la terminal?${NC}"
-    echo -e "s) sí  n) no"
-fi
-read -p "Selecciona una opción: " AUTO_RUN_OPTION
-
-if [[ "$AUTO_RUN_OPTION" =~ ^[sSyY]$ ]]; then
-    echo -e "\n${GREEN} Adding ansi-meow to terminal startup.${NC}"
-    echo "bash ~/.config/meow-colorscripts/show-meows.sh" >> "$HOME/.bashrc"
-    echo -e "${WHITE}📁 Updated ~/.bashrc.${NC}"
-fi
