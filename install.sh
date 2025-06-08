@@ -165,30 +165,34 @@ fi
 # Preguntar si se desea abrir la configuración ahora
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "\n${CYAN} ¿Deseas abrir la configuración ahora?${NC}"
-    echo -e "  1) Sí"
-    echo -e "  2) No"
-    read -p "󰏩 Selecciona una opción [1-2]: " OPEN_CONF
+    echo -e "  s) Sí"
+    echo -e "  n) No"
+    read -p "󰏩 Selecciona una opción [s/n]: " OPEN_CONF
 else
     echo -e "\n${CYAN} Do you want to open the configuration now?${NC}"
-    echo -e "  1) Yes"
-    echo -e "  2) No"
-    read -p "󰏩 Select an option [1-2]: " OPEN_CONF
+    echo -e "  y) Yes"
+    echo -e "  n) No"
+    read -p "󰏩 Select an option [y/n]: " OPEN_CONF
 fi
 
-if [[ "$OPEN_CONF" == "1" ]]; then
-    if [ -f "$SETUP_SCRIPT" ]; then
-        if [[ "$LANGUAGE" == "es" ]]; then
+if [[ "$LANGUAGE" == "es" ]]; then
+    if [[ "$OPEN_CONF" == "s" || "$OPEN_CONF" == "S" ]]; then
+        if [ -f "$SETUP_SCRIPT" ]; then
             echo -e "${CYAN}󰏩 Abriendo configuración...${NC}"
+            bash "$SETUP_SCRIPT"
         else
-            echo -e "${CYAN}󰏩 Opening configuration...${NC}"
-        fi
-        bash "$SETUP_SCRIPT"
-    else
-        if [[ "$LANGUAGE" == "es" ]]; then
             echo -e "${RED}󰀅 Error: No se encontró setup.sh.${NC}"
+        fi
+    fi
+else
+    if [[ "$OPEN_CONF" == "y" || "$OPEN_CONF" == "Y" ]]; then
+        if [ -f "$SETUP_SCRIPT" ]; then
+            echo -e "${CYAN}󰏩 Opening configuration...${NC}"
+            bash "$SETUP_SCRIPT"
         else
             echo -e "${RED}󰀅 Error: setup.sh not found.${NC}"
         fi
     fi
 fi
+
 # ────────────────────────────────────────────────────────────── 
