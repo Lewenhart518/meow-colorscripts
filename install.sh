@@ -1,9 +1,9 @@
 #!/bin/bash
 
+# Variables principales
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-LANG_FILE="$LOCAL_REPO/.config/meow-colorscripts/lang"
 
 # ────────────────────────────────────────────────────────────── 
 # Nerd Fonts Colors and Icons
@@ -14,16 +14,18 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 # Iconos usados:
-#   -> Encabezado o título
-# 󰏩 -> Indicador de entrada/prompt
-# 󰚝 -> Indicador de movimiento/acción
+#   -> Título o encabezado
+# 󰏩 -> Prompt o entrada de usuario
+# 󰚝 -> Acción de movimiento
 #   -> Confirmación
-#   -> Opción adicional o de pregunta
+#   -> Pregunta o instrucción adicional
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Asegurar que la carpeta de configuración existe en el repositorio local
+# Crear la carpeta de configuración dentro del repositorio local
 mkdir -p "$LOCAL_REPO/.config/meow-colorscripts"
+# Definir el archivo de idioma en el repositorio local (donde se almacena la elección)
+LANG_FILE="$LOCAL_REPO/.config/meow-colorscripts/lang"
 touch "$LANG_FILE"
 # ────────────────────────────────────────────────────────────── 
 
@@ -42,30 +44,38 @@ echo "$LANGUAGE" > "$LANG_FILE"
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Asegurarse de que el directorio de destino exista en ~/.config/
-mkdir -p "$HOME/.config/meow-colorscripts"
+# Mover la carpeta completa de configuración del repositorio local a ~/.config/
+# Es decir, mover ~/meow-colorscripts/.config/meow-colorscripts/ a ~/.config/
+mkdir -p "$INSTALL_DIR"  # Asegurarse de que ~/.config exista
+mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
 
-# Mover el archivo lang a la ubicación final
-mv "$LOCAL_REPO/.config/meow-colorscripts/lang" "$HOME/.config/meow-colorscripts/lang"
-if [[ -f "$HOME/.config/meow-colorscripts/lang" ]]; then
+if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e " ${GREEN}Archivo de idioma movido correctamente.${NC}"
+        echo -e " ${GREEN}Archivo de configuración movido correctamente.${NC}"
     else
-        echo -e " ${GREEN}Language file moved successfully.${NC}"
+        echo -e " ${GREEN}Configuration folder moved successfully.${NC}"
     fi
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e " ${RED}Error: No se pudo mover el archivo de idioma.${NC}"
+        echo -e " ${RED}Error: No se pudo mover la carpeta de configuración.${NC}"
     else
-        echo -e " ${RED}Error: Could not move language file.${NC}"
+        echo -e " ${RED}Error: Could not move configuration folder.${NC}"
     fi
 fi
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Copiar show-meows.sh al directorio de configuración
-if [[ -f "$LOCAL_REPO/show-meows.sh" ]]; then
-    cp "$LOCAL_REPO/show-meows.sh" "$HOME/.config/meow-colorscripts/"
+# Asegurar que el archivo show-meows.sh esté en el directorio de configuración
+# Se espera que este archivo se encuentre en la raíz del repositorio LOCAL_REPO;
+# si no está en ~/.config/meow-colorscripts/, se copia
+if [[ ! -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" && -f "$LOCAL_REPO/show-meows.sh" ]]; then
+    cp "$LOCAL_REPO/show-meows.sh" "$INSTALL_DIR/meow-colorscripts/"
+fi
+
+if [[ -f "$INSTALL_DIR/meow-colorscripts/show-meows.sh" ]]; then
+    echo -e " ${GREEN}show-meows.sh copiado correctamente.${NC}"
+else
+    echo -e " ${RED}Error: No se encontró show-meows.sh en el destino.${NC}"
 fi
 # ────────────────────────────────────────────────────────────── 
 
@@ -96,26 +106,22 @@ done
 # ────────────────────────────────────────────────────────────── 
 
 # ────────────────────────────────────────────────────────────── 
-# Mover configuración
+# Mover configuración (la carpeta ya movida se encuentra en ~/.config/)
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
 else
     echo -e "${GREEN}󰚝 Moving meow-colorscripts configuration...${NC}"
 fi
 sleep 1
-if [[ -d "$LOCAL_REPO/.config/meow-colorscripts" ]]; then
-    mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
-else
-    if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración en el repositorio.${NC}"
-    else
-        echo -e "${RED}󰀅 Error: Configuration folder not found in repository.${NC}"
-    fi
-fi
-if [[ "$LANGUAGE" == "es" ]]; then
+# (La carpeta ya se movió previamente, pero se puede realizar alguna verificación adicional)
+if [[ -d "$INSTALL_DIR/meow-colorscripts" ]]; then
     echo -e "${GREEN} Configuración movida correctamente.${NC}"
 else
-    echo -e "${GREEN} Configuration moved successfully.${NC}"
+    if [[ "$LANGUAGE" == "es" ]]; then
+        echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración en el destino.${NC}"
+    else
+        echo -e "${RED}󰀅 Error: Configuration folder not found at destination.${NC}"
+    fi
 fi
 # ────────────────────────────────────────────────────────────── 
 
