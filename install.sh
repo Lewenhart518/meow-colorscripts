@@ -3,16 +3,15 @@
 INSTALL_DIR="$HOME/.config"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-
-# Definir rutas para el archivo lang: se crea primero en el repositorio local y luego se mueve a la ruta final.
-LOCAL_LANG_DIR="$LOCAL_REPO/.config/meow-colorscripts"
-LANG_FILE_LOCAL="$LOCAL_LANG_DIR/lang"
+# La ubicación final del archivo lang será:
 FINAL_LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 
-# 🐾  Asegurar que la carpeta de configuración existe en la ruta final y en el repositorio local
-mkdir -p "$HOME/.config/meow-colorscripts"
-mkdir -p "$LOCAL_LANG_DIR"
-touch "$LANG_FILE_LOCAL"
+# ────────────────────────────────────────────────────────────── 
+# En el repositorio, aseguramos que exista el directorio de configuración
+# (que debe estar incluido en el repositorio) y que se cree el archivo lang.
+mkdir -p "$LOCAL_REPO/.config/meow-colorscripts"
+touch "$LOCAL_REPO/.config/meow-colorscripts/lang"
+# ──────────────────────────────────────────────────────────────
 
 # Nord Aurora Colors
 GREEN='\033[38;2;94;129;172m'
@@ -22,7 +21,8 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
-# 🐾  Selección de idioma
+# ────────────────────────────────────────────────────────────── 
+# Selección de idioma
 echo -e "${CYAN} Select your language:${NC}"
 echo -e "1) Español"
 echo -e "2) English"
@@ -32,12 +32,12 @@ LANGUAGE="en"
 if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
 fi
-echo "$LANGUAGE" > "$LANG_FILE_LOCAL"
+# Escribe el idioma en el archivo dentro del repositorio
+echo "$LANGUAGE" > "$LOCAL_REPO/.config/meow-colorscripts/lang"
+# ────────────────────────────────────────────────────────────── 
 
-# Mover el archivo lang a la ubicación final.
-mv "$LANG_FILE_LOCAL" "$FINAL_LANG_FILE"
-
-# 🐾  Mensajes de carga dinámicos
+# ────────────────────────────────────────────────────────────── 
+# Mensajes de carga dinámicos
 LOADING_USED=()
 LOADING_MSGS_ES=(" Los gatos se estiran" "󰄛 Acomodando almohadillas" "󰏩 Afinando maullidos" "󱏿 Ronroneo en progreso" "󰏩 Explorando el código")
 LOADING_MSGS_EN=(" The cats are stretching" "󰄛 Adjusting paw pads" "󰏩 Fine-tuning meows" "󱏿 Purring in progress" "󰏩 Exploring the code")
@@ -57,8 +57,10 @@ for i in {1..3}; do
     for j in {1..3}; do echo -ne "."; sleep 0.5; done
     echo -e "${GREEN}${NC}"
 done
+# ────────────────────────────────────────────────────────────── 
 
-# 🐾 󰚝 Mover configuración
+# ────────────────────────────────────────────────────────────── 
+# Mover el directorio de configuración desde el repositorio a $HOME/.config
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "${GREEN}󰚝 Moviendo configuración de meow-colorscripts...${NC}"
 else
@@ -66,13 +68,14 @@ else
 fi
 sleep 1
 
+# Se asume que el directorio "$LOCAL_REPO/.config/meow-colorscripts" ya existe en el repositorio
 if [[ -d "$LOCAL_REPO/.config/meow-colorscripts" ]]; then
     mv "$LOCAL_REPO/.config/meow-colorscripts" "$INSTALL_DIR/" &> /dev/null
 else
     if [[ "$LANGUAGE" == "es" ]]; then
-        echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración.${NC}"
+        echo -e "${RED}󰀅 Error: No se encontró la carpeta de configuración en el repositorio.${NC}"
     else
-        echo -e "${RED}󰀅 Error: Configuration folder not found.${NC}"
+        echo -e "${RED}󰀅 Error: Configuration folder not found in repository.${NC}"
     fi
 fi
 
@@ -81,8 +84,10 @@ if [[ "$LANGUAGE" == "es" ]]; then
 else
     echo -e "${GREEN} Configuration moved successfully.${NC}"
 fi
+# ────────────────────────────────────────────────────────────── 
 
-# 🐾 󰄛 Detectar shell y agregar alias
+# ────────────────────────────────────────────────────────────── 
+# Detectar shell y agregar alias
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "${CYAN}󰄛 Detectando shell y agregando alias...${NC}"
 else
@@ -117,8 +122,10 @@ else
         echo -e "${RED}󰀅 Error: show-meows.sh not found.${NC}"
     fi
 fi
+# ────────────────────────────────────────────────────────────── 
 
-# 🐾  Abrir configuración
+# ────────────────────────────────────────────────────────────── 
+# Preguntar si abrir configuración
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "\n${CYAN} ¿Quieres abrir la configuración ahora?${NC}"
     echo -e "1) Sí"
