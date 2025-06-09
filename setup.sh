@@ -264,6 +264,43 @@ if [[ "$COMANDOS_OPTION" =~ ^[sSyY]$ ]]; then
   fi
 fi
 
+# Aseguramos que ~/.local/bin exista
+mkdir -p "$HOME/.local/bin"
+
+# Preguntar al usuario si desea activar meow-fact, considerando el idioma.
+if [ "$LANGUAGE" = "es" ]; then
+  printf "\n%b\n" "${CYAN}▸ ¿Deseas activar el comando meow-fact? (s/n): ${NC}"
+else
+  printf "\n%b\n" "${CYAN}▸ Do you want to activate the meow-fact command? (y/n): ${NC}"
+fi
+
+read activate_response
+
+# Dependiendo de la respuesta, mover el archivo
+if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
+  # Verificamos que el archivo exista en la ubicación original
+  if [ -f "$HOME/meow-colorscripts/meow-fact.sh" ]; then
+    mv "$HOME/meow-colorscripts/meow-fact.sh" "$HOME/.local/bin/"
+    if [ "$LANGUAGE" = "es" ]; then
+      printf "%b\n" "${GREEN}▸ El comando meow-fact ha sido activado exitosamente.${NC}"
+    else
+      printf "%b\n" "${GREEN}▸ The meow-fact command has been successfully activated.${NC}"
+    fi
+  else
+    if [ "$LANGUAGE" = "es" ]; then
+      printf "%b\n" "${RED}▸ No se encontró el archivo meow-fact.sh en ~/meow-colorscripts.${NC}"
+    else
+      printf "%b\n" "${RED}▸ Could not find the meow-fact.sh file in ~/meow-colorscripts.${NC}"
+    fi
+  fi
+else
+  if [ "$LANGUAGE" = "es" ]; then
+    printf "%b\n" "${YELLOW}▸ El comando meow-fact no se activará.${NC}"
+  else
+    printf "%b\n" "${YELLOW}▸ The meow-fact command will not be activated.${NC}"
+  fi
+fi
+
 # ---------------------------------------
 # 4. Autorun: activar el comando al iniciar la terminal
 # ---------------------------------------
