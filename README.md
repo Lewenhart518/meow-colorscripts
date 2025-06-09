@@ -96,12 +96,12 @@ cd meow-colorscripts
 ## View Available Cats  
 To view all available cat designs, run:
 ```bash
-meows-names
+meows-names [style] [size (or type in case you chose ascii)] [name]
 ```  
 
-To display the ANSI art for a specific cat (for example, "Raspi"), run:
+To display the ANSI art for a specific cat (for example, "raspi"), run:
 ```bash
-meows-show Raspi
+meows-show normal normal raspi
 ```  
 
 ## Features  
