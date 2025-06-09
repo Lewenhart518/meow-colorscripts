@@ -219,20 +219,19 @@ if [[ "$AUTORUN_OPTION" =~ ^[sS]|[yY]$ ]]; then
     case "$CURRENT_SHELL" in
         fish)
             SHELL_CONFIG="$HOME/.config/fish/config.fish"
-            # Evita duplicados, agrega si no contiene 'meow-colorscripts'
-            grep -q "meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts &" >> "$SHELL_CONFIG"
+            grep -q "^meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts" >> "$SHELL_CONFIG"
             ;;
         bash)
             SHELL_CONFIG="$HOME/.bashrc"
-            grep -q "meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts & # meow autorun" >> "$SHELL_CONFIG"
+            grep -q "^meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts" >> "$SHELL_CONFIG"
             ;;
         zsh)
             SHELL_CONFIG="$HOME/.zshrc"
-            grep -q "meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts & # meow autorun" >> "$SHELL_CONFIG"
+            grep -q "^meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts" >> "$SHELL_CONFIG"
             ;;
         *)
             SHELL_CONFIG="$HOME/.profile"
-            grep -q "meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts & # meow autorun" >> "$SHELL_CONFIG"
+            grep -q "^meow-colorscripts" "$SHELL_CONFIG" || echo "meow-colorscripts" >> "$SHELL_CONFIG"
             ;;
     esac
     print_msg "${GREEN}Autorun activado.${NC}" "${GREEN}Autorun enabled.${NC}"
