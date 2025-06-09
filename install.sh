@@ -5,18 +5,18 @@
 # Este script instala meow-colorscripts siguiendo el proceso:
 # • Selecciona y guarda el idioma en ~/.config/meow-colorscripts/lang.
 # • Verifica las dependencias (Git, fc-list, Nerd Fonts).
-# • Clona el repositorio local (si no existe) en ~/meow-colorscripts y
-#   en caso de encontrar la carpeta de configuración en
-#   ~/meow-colorscripts/.config/meow-colorscripts, se elimina el archivo
-#   meow.conf y lang para preservar la configuración actual del usuario;
-#   luego se mueve dicha carpeta a ~/.config/meow-colorscripts.
+# • Clona el repositorio (si no existe) en ~/meow-colorscripts y,
+#   si se encuentra la carpeta de configuración en
+#   ~/meow-colorscripts/.config/meow-colorscripts, elimina los archivos
+#   meow.conf y lang (para preservar la configuración actual del usuario)
+#   y mueve dicha carpeta a ~/.config/meow-colorscripts.
 # • Instala en ~/.local/bin los siguientes comandos, renombrados con el prefijo:
-#     - meow-colorscripts           (desde show-meows.sh)
-#     - meow-colorscripts-update    (desde update.sh)
-#     - meow-colorscripts-setup     (desde setup.sh)
-# • (Los comandos de nombres se activan en setup.sh).
+#     - meow-colorscripts          (desde show-meows.sh)
+#     - meow-colorscripts-update   (desde update.sh)
+#     - meow-colorscripts-setup    (desde setup.sh)
+# • (Los comandos de nombres se activan en setup.sh.)
 # • Actualiza el PATH según la shell del usuario.
-# • Muestra un mensaje final de reinicio.
+# • Muestra un mensaje final indicando que se debe reiniciar la terminal.
 # ========================================================
 
 export TERM=${TERM:-xterm-256color}
@@ -26,7 +26,7 @@ restart_script() {
     exec "$0" "$@"
 }
 
-# Función para mostrar mensajes dinámicos
+# Función para mostrar mensajes dinámicos con icono de verificación
 print_dynamic_message() {
     local message="$1"
     local delay=0.3
@@ -68,7 +68,7 @@ echo "$LANGUAGE" > "$CONFIG_DIR/lang"
 export LANG="$LANGUAGE"
 
 # --------------------------------------------------------
-# Clonar el repositorio y mover la configuración
+# Clonar el repositorio y mover la carpeta de configuración
 # --------------------------------------------------------
 if [ ! -d "$LOCAL_REPO" ]; then
     printf "%b\n" "${YELLOW}No se encontró $LOCAL_REPO. Clonando repositorio...${NC}"
@@ -76,11 +76,12 @@ if [ ! -d "$LOCAL_REPO" ]; then
     git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO" || { printf "%b\n" "${RED}Error clonando el repositorio.${NC}"; exit 1; }
 fi
 
-# Hacer ejecutables todos los scripts del repositorio
+# Hacer ejecutables todos los scripts en el repositorio
 find "$LOCAL_REPO" -type f -name "*.sh" -exec chmod +x {} \;
 
-# Si existe la carpeta de configuración en el repositorio, eliminar meow.conf y lang y moverla
+# Si existe la carpeta de configuración en el repositorio:
 if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
+    # Eliminar meow.conf y lang para preservar la configuración actual del usuario.
     rm -f "$LOCAL_REPO/.config/meow-colorscripts/meow.conf" "$LOCAL_REPO/.config/meow-colorscripts/lang"
     rm -rf "$CONFIG_DIR" 2>/dev/null
     mv "$LOCAL_REPO/.config/meow-colorscripts" "$CONFIG_DIR"
@@ -137,9 +138,9 @@ fi
 # --------------------------------------------------------
 # Mensaje final: Reinicia la terminal para que los cambios surtan efecto
 # --------------------------------------------------------
-printf "\n%b Reanuda (reinicia) tu terminal para que los cambios surtan efecto.\n" ""
+printf "\n\033[1;33m Por favor, reinicia tu terminal para que los cambios surtan efecto.\033[0m\n"
 printf "\n%b\n" "Instalación completada."
 
-# Opcional: Marcar este script como ejecutable al finalizar (aunque se recomienda hacerlo antes)
+# Opcional: Marcar este script como ejecutable (por si acaso)
 chmod +x "$0"
 
