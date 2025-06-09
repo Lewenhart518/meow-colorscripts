@@ -5,6 +5,8 @@
 # Este script configura meow-colorscripts:
 #   • Lee el idioma a usar desde LANG (o del archivo ~/.config/meow-colorscripts/lang)
 #   • Solicita al usuario que elija estilo y tamaño (o tipo en ascii/ascii-color)
+#   • Pregunta si se desea activar el autorun (por ejemplo, para que se inicie automáticamente
+#     una función o simplemente como configuración adicional)
 #   • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf
 #   • Si se activan los comandos de nombres, genera names.txt (con los nombres de los .txt
 #     en ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/)
@@ -148,7 +150,7 @@ print_msg "Has seleccionado el estilo: ${GREEN}$MEOW_THEME${NC} y el tamaño/tip
 printf "--------------------------------------------------------\n\n"
 
 # --------------------------------------------------------
-# Opción para activar comandos de nombres y generar names.txt
+# Preguntar si se desea activar los comandos de nombres y generar names.txt
 # --------------------------------------------------------
 if [[ "$LANGUAGE" == "es" ]]; then
     printf "%b\n" "${CYAN}¿Deseas activar los comandos 'meows-names' y 'meow-show [nombre]'?${NC}"
@@ -183,6 +185,27 @@ else
 fi
 
 # --------------------------------------------------------
+# Preguntar por autorun
+# --------------------------------------------------------
+if [[ "$LANGUAGE" == "es" ]]; then
+    printf "\n%b\n" "${CYAN}¿Deseas activar el autorun de meow-colorscripts al iniciar la terminal?${NC}"
+    printf "%b\n" "  s) Sí"
+    printf "%b\n" "  n) No"
+    read -p "Selecciona una opción [s/n]: " AUTORUN_OPTION
+else
+    printf "\n%b\n" "${CYAN}Do you want to enable autorun for meow-colorscripts on terminal startup?${NC}"
+    printf "%b\n" "  y) Yes"
+    printf "%b\n" "  n) No"
+    read -p "Select an option [y/n]: " AUTORUN_OPTION
+fi
+
+if [[ "$AUTORUN_OPTION" =~ ^[sSyY]$ ]]; then
+    MEOW_AUTORUN="true"
+else
+    MEOW_AUTORUN="false"
+fi
+
+# --------------------------------------------------------
 # Frases de carga felina (dinámicas)
 # --------------------------------------------------------
 LOADING_MSGS_ES=("Los gatos se estiran" "Acomodando almohadillas" "Afinando maullidos" "Ronroneo en progreso" "Explorando el código")
@@ -213,6 +236,10 @@ done
 # --------------------------------------------------------
 echo "MEOW_THEME=$MEOW_THEME" > "$MEOW_CONF"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$MEOW_CONF"
+echo "MEOW_AUTORUN=$MEOW_AUTORUN" >> "$MEOW_CONF"
+
+printf "\n%b\n" "${GREEN}Configuración guardada exitosamente.${NC}"
+printf "Archivo de configuración: ${WHITE}$MEOW_CONF${NC}\n\n"
 
 printf "\n%b\n" "${GREEN}Configuración guardada exitosamente.${NC}"
 printf "Archivo de configuración: ${WHITE}$MEOW_CONF${NC}\n\n"
