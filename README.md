@@ -9,6 +9,7 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 - [Configuration](#configuration)  
 - [Update](#update)
 - [Command list](#command-list)
+- [How use the commands](#How use the commands)
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
 - [Credits](#credits)  
@@ -73,26 +74,10 @@ During setup, responses are handled interactively:
 - In English, answer with **y** (yes) or **n** (no).
 
 ## Update  
-To update `meow-colorscripts`, follow these steps:
-
-_First time:_
+_To update, follow this simple step:_
 ```bash
-cd meow-colorscripts
+- meow-colorscripts-update
 ``` 
-```bash
-chmod +x update.sh
-``` 
-```bash
-./update.sh
-```  
-
-_Subsequent updates:_
-```bash
-cd meow-colorscripts
-``` 
-```bash
-./update.sh
-```  
 
 ## Command List
 The available commands are:
@@ -102,6 +87,26 @@ The available commands are:
 - meow-colorscripts-setup # Starts the setup process
 - meow-colorscripts-names # Displays the list of available art names
 - meow-colorscripts-show [style] [size/type] [name] # Displays specific art based on parameters
+
+## How use the commands
+1. **meow-colorscripts**  
+   - Simply run `meow-colorscripts` to display a random cat design according to your current configuration.
+2. **meow-colorscripts-update**  
+   - Pulls the latest updates from the repository and refreshes the installed scripts. Use this command regularly to enjoy the latest art and improvements.
+
+3. **meow-colorscripts-setup**  
+   - Launches an interactive menu that guides you through configuring your terminal art preferences. You'll be prompted to select a style (normal, nocolor, theme-based, or ASCII), choose the size or ASCII type, decide on extra features, and set up auto-run.
+
+4. **meow-colorscripts-names**  (It only works if you chose it in the setup.)
+   - Displays a comprehensive list of the available cat designs. Use this command to see what art designs are available and choose one for display.
+
+5. **meow-colorscripts-show [style] [size/type] [name]**  (It only works if you chose it in the setup.)
+   - Use this command to display a specific cat design. For example:
+     
+     meow-colorscripts-show normal normal raspi  
+     
+     This command searches for the file at `~/.config/meow-colorscripts/colorscripts/normal/normal/raspi.txt`.  
+     If the file is missing, an error message will prompt you to check the available names using `meow-colorscripts-names` or visit the repository at [GitHub](https://github.com/Lewenhart518/meow-colorscripts).
 
 ## View Available Cats  
 To view all available cat designs, run:
@@ -118,7 +123,7 @@ meows-show normal normal raspi
 - High-quality ANSI cat art  
 - Easy and fast installation  
 - Works across various terminal setups  
-- Fully customizable configuration  
+- Fully customizable configuration
 
 ## Credits  
 `meow-colorscripts` was born from the inspiration of amazing terminal customization projects. Special thanks to:
