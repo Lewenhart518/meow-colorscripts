@@ -3,21 +3,24 @@
 # setup.sh - Configuración de meow-colorscripts
 # ========================================================
 # Este script configura meow-colorscripts:
-#   • Lee el idioma a usar desde LANG (o del archivo ~/.config/meow-colorscripts/lang)
-#   • Solicita al usuario que elija estilo y tamaño (o tipo en ascii/ascii-color)
-#   • Pregunta si se desea activar los comandos 'meows-names' y 'meow-show [nombre]':
-#         - Si se responde afirmativamente, genera "names.txt" a partir de los archivos
-#           .txt en ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/ y
-#           además instala en ~/.local/bin los comandos correspondientes, siempre que existan.
-#   • Pregunta si deseas activar el autorun de meow-colorscripts al iniciar la terminal.
-#         La respuesta se guarda en MEOW_AUTORUN y se añade en el archivo de configuración;
-#         si se detecta Fish, se añade en su config.fish con el formato adecuado.
-#   • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf, incluyendo:
+# • Detecta el idioma a usar leyendo la variable LANG o el archivo
+#   ~/.config/meow-colorscripts/lang (por defecto "en").
+# • Solicita al usuario que elija el estilo y el tamaño (o tipo, en caso de ascii/ascii-color).
+# • Pregunta si se desea activar los comandos de nombres:
+#       - Si se activa, genera "names.txt" a partir de los archivos .txt en:
+#         ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
+#       - Instala en ~/.local/bin el comando "meows-names". Si no existe un archivo
+#         "show-names.sh", se crea un script básico que simplemente muestra names.txt.
+#       - Instala el comando "meow-show" usando el archivo meow-show.sh (el cual debe estar en ~/.config/meow-colorscripts/).
+# • Pregunta si se desea activar el autorun (para que se ejecute "meow-colorscripts" automáticamente)
+#   y actualiza el archivo de configuración de la shell (Fish, Bash, Zsh u otro) de modo que en el arranque se invoque:
+#         meow-colorscripts
+# • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf con:
 #         MEOW_THEME, MEOW_SIZE y MEOW_AUTORUN.
-#   • Muestra mensajes de carga felina.
+# • Muestra mensajes de carga felina.
 # ========================================================
 
-# Colores ANSI para mensajes
+# --- Definición de colores ANSI ---
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 CYAN='\033[38;2;143;188;187m'
@@ -25,14 +28,16 @@ YELLOW='\033[38;2;235;203;139m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
+# --- Directorios y archivos ---
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 BIN_DIR="$HOME/.local/bin"
 LANG_FILE="$CONFIG_DIR/lang"
 MEOW_CONF="$CONFIG_DIR/meow.conf"
 
+# Asegurarse de que exista la carpeta de configuración
 mkdir -p "$CONFIG_DIR"
 
-# Obtener el idioma de LANG o del archivo lang
+# --- Detección del idioma ---
 if [ -n "$LANG" ]; then
     LANGUAGE="$LANG"
 elif [ -f "$LANG_FILE" ]; then
@@ -41,13 +46,26 @@ else
     LANGUAGE="en"
 fi
 
-# Función para imprimir mensajes según idioma
+# Función para imprimir mensajes según el idioma
 print_msg() {
+    # Uso: print_msg "mensaje en español" "message in English"
     if [ "$LANGUAGE" = "es" ]; then
         printf "%b\n" "$1"
     else
         printf "%b\n" "$2"
     fi
+}
+
+# --- Función para mensajes dinámicos ---
+print_dynamic_message() {
+    local message="$1"
+    local delay=0.3
+    printf "%b" "$message"
+    for i in {1..3}; do
+         printf "."
+         sleep $delay
+    done
+    printf " %b\n" "${GREEN}${NC}"
 }
 
 # --------------------------------------------------------
@@ -181,17 +199,23 @@ if [[ "$NAMES_OPTION" =~ ^[sS]|[yY]$ ]]; then
         print_msg "${YELLOW}Advertencia: No se encontraron archivos .txt en $ART_FOLDER.${NC}" "${YELLOW}Warning: No .txt files found in $ART_FOLDER.${NC}"
     fi
     installed_commands=()
+    # Instalar el comando "meows-names"
     if [ -f "$CONFIG_DIR/show-names.sh" ]; then
         install -Dm755 "$CONFIG_DIR/show-names.sh" "$BIN_DIR/meows-names"
         installed_commands+=( "meows-names" )
     else
-        print_msg "${YELLOW}No se encontró show-names.sh, se omitirá la instalación de meows-names.${NC}" "${YELLOW}show-names.sh not found, skipping installation of meows-names.${NC}"
+        # Si no existe, crear un script básico que solo muestra names.txt
+        echo "#!/bin/bash" > "$BIN_DIR/meows-names"
+        echo "cat $CONFIG_DIR/names.txt" >> "$BIN_DIR/meows-names"
+        chmod +x "$BIN_DIR/meows-names"
+        installed_commands+=( "meows-names" )
     fi
-    if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
-        install -Dm755 "$CONFIG_DIR/show-meows.sh" "$BIN_DIR/meow-show"
+    # Instalar el comando "meow-show" usando el nuevo archivo meow-show.sh
+    if [ -f "$CONFIG_DIR/meow-show.sh" ]; then
+        install -Dm755 "$CONFIG_DIR/meow-show.sh" "$BIN_DIR/meow-show"
         installed_commands+=( "meow-show" )
     else
-        print_msg "${YELLOW}No se encontró show-meows.sh, se omitirá la instalación de meow-show.${NC}" "${YELLOW}show-meows.sh not found, skipping installation of meow-show.${NC}"
+        print_msg "${YELLOW}No se encontró meow-show.sh, se omitirá la instalación de meow-show.${NC}" "${YELLOW}meow-show.sh not found, skipping installation of meow-show.${NC}"
     fi
     if [ ${#installed_commands[@]} -gt 0 ]; then
         print_msg "${GREEN}Comando(s) ${installed_commands[*]} instalado(s) correctamente.${NC}" "${GREEN}Command(s) ${installed_commands[*]} installed successfully.${NC}"
@@ -199,7 +223,7 @@ if [[ "$NAMES_OPTION" =~ ^[sS]|[yY]$ ]]; then
 fi
 
 # --------------------------------------------------------
-# Preguntar por autorun y actualizar la configuración de la shell
+# Preguntar por autorun y actualizar el archivo de configuración de la shell
 # --------------------------------------------------------
 if [[ "$LANGUAGE" == "es" ]]; then
     printf "\n%b\n" "${CYAN}¿Deseas activar el autorun de meow-colorscripts al iniciar la terminal?${NC}"
