@@ -3,7 +3,7 @@
 # Instalación de meow-colorscripts (Versión MiauNord)
 # ========================================================
 # Este script instala meow-colorscripts con toque felino y paleta Nord:
-# • Permite seleccionar y guardar el idioma en ~/.config/meow-colorscripts/lang.
+# • Selecciona y guarda el idioma en ~/.config/meow-colorscripts/lang.
 # • Clona el repositorio (si no existe) en ~/meow-colorscripts y mueve
 #   la carpeta de configuración a ~/.config/meow-colorscripts.
 # • Instala en ~/.local/bin los siguientes comandos:
@@ -13,7 +13,7 @@
 #       - meow-colorscripts-names    (muestra el contenido de names.txt)
 #       - meow-colorscripts-show     (para mostrar arte ASCII específico)
 # • Actualiza el PATH según la shell del usuario.
-# • Muestra mensajes vibrantes, con la paleta Nord, e invita a iniciar la configuración.
+# • Muestra mensajes vibrantes usando la paleta Nord e invita a iniciar la configuración.
 # ========================================================
 
 export TERM=${TERM:-xterm-256color}
@@ -70,7 +70,8 @@ SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
 printf "\n${CYAN}▸ Select your language:${NC}\n"
 printf "  ${YELLOW}1) Español${NC}\n"
 printf "  ${YELLOW}2) English${NC}\n"
-read -p "${CYAN}▸ Choose an option [1/2]: ${NC}" LANG_OPTION
+printf "${CYAN}▸ Choose an option [1/2]: ${NC}"
+read LANG_OPTION
 LANGUAGE="en"
 if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
@@ -189,11 +190,11 @@ fi
 # 9. Mensaje final y pregunta para iniciar la configuración
 # ---------------------------------------
 printf "\n${YELLOW} Reinicia tu terminal para que los cambios surtan efecto.${NC}\n"
-read -r -p "$(echo -e "${YELLOW}▸ ¿Deseas iniciar la configuración ahora? [s/n]: ${NC}")" RUN_CONFIG
+printf "${YELLOW}▸ ¿Deseas iniciar la configuración ahora? [s/n]: ${NC}"
+read RUN_CONFIG
 if [[ "$RUN_CONFIG" =~ ^[sS] ]]; then
     "$BIN_DIR/meow-colorscripts-setup"
 fi
 
 printf "\n${MAGENTA}¡Miau! Instalación completada exitosamente.${NC}\n"
 chmod +x "$0"
-
