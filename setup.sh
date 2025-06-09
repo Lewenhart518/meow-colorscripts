@@ -66,82 +66,130 @@ print_dynamic_message() {
 # ---------------------------------------
 # 1. Seleccionar el estilo
 # ---------------------------------------
-if [ "$LANGUAGE" = "es" ]; then
-  printf "%b\n" "${CYAN}▸ Elige tu estilo de meow-colorscripts:${NC}"
-  printf "%b\n" "  ${YELLOW}1) normal${NC}"
-  printf "%b\n" "  ${YELLOW}2) nocolor${NC}"
-  printf "%b\n" "  ${YELLOW}3) themes (nord, catpuccin, everforest)${NC}"
-  printf "%b" "${BLUE}▸ Selecciona una opción [1-5]: ${NC}"
-  read STYLE_OPTION
-else
-  printf "%b\n" "${CYAN}▸ Choose your meow-colorscripts style:${NC}"
-  printf "%b\n" "  ${YELLOW}1) normal${NC}"
-  printf "%b\n" "  ${YELLOW}2) nocolor${NC}"
-  printf "%b\n" "  ${YELLOW}3) themes (nord, catpuccin, everforest)${NC}"
-  printf "%b" "${BLUE}▸ Select an option [1-5]: ${NC}"
-  read STYLE_OPTION
-fi
-if [ -z "$STYLE_OPTION" ]; then
-  STYLE_OPTION=1
-fi
+while true; do
+  if [ "$LANGUAGE" = "es" ]; then
+    printf "%b\n" "${CYAN}▸ Elige tu estilo de meow-colorscripts:${NC}"
+    printf "%b\n" "  ${YELLOW}1) normal${NC}"
+    printf "%b\n" "  ${YELLOW}2) nocolor${NC}"
+    printf "%b\n" "  ${YELLOW}3) themes${NC}"
+    printf "%b\n" "  ${YELLOW}4) ascii${NC}"
+    printf "%b\n" "  ${YELLOW}5) ascii-color${NC}"
+    printf "%b\n" "  ${RED}q) Salir y volver a seleccionar el estilo${NC}"
+    printf "%b" "${BLUE}▸ Selecciona una opción [1-5/q]: ${NC}"
+    read STYLE_OPTION
+  else
+    printf "%b\n" "${CYAN}▸ Choose your meow-colorscripts style:${NC}"
+    printf "%b\n" "  ${YELLOW}1) normal${NC}"
+    printf "%b\n" "  ${YELLOW}2) nocolor${NC}"
+    printf "%b\n" "  ${YELLOW}3) themes (nord, catpuccin, everforest)${NC}"
+    printf "%b\n" "  ${YELLOW}4) ascii${NC}"
+    printf "%b\n" "  ${YELLOW}5) ascii-color${NC}"
+    printf "%b\n" "  ${RED}q) Exit and re-select the style${NC}"
+    printf "%b" "${BLUE}▸ Select an option [1-5/q]: ${NC}"
+    read STYLE_OPTION
+  fi
 
-MEOW_THEME=""
-case "$STYLE_OPTION" in
-  1) MEOW_THEME="normal" ;;
-  2) MEOW_THEME="nocolor" ;;
-  3)
+  if [ "$STYLE_OPTION" = "q" ]; then
+    clear
+    continue  # Reinicia el bucle y muestra de nuevo las opciones
+  elif [[ ! "$STYLE_OPTION" =~ ^[1-5]$ ]]; then
+    printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
+    sleep 1
+    clear
+  else
+    break  # Sale del bucle si la selección es válida
+  fi
+done
+
+# ---------------------------------------
+# 2. Seleccionar el tema si se elige "themes"
+# ---------------------------------------
+if [ "$STYLE_OPTION" -eq 3 ]; then
+  while true; do
     if [ "$LANGUAGE" = "es" ]; then
       printf "\n%b\n" "${CYAN}▸ ¿Qué tema deseas usar?${NC}"
       printf "%b\n" "  ${YELLOW}1) nord${NC}"
       printf "%b\n" "  ${YELLOW}2) catpuccin${NC}"
       printf "%b\n" "  ${YELLOW}3) everforest${NC}"
-      printf "%b" "${BLUE}▸ Selecciona una opción [1-3]: ${NC}"
+      printf "%b\n" "  ${RED}q) Regresar a la selección de estilos${NC}"
+      printf "%b" "${BLUE}▸ Selecciona una opción [1-3/q]: ${NC}"
       read THEME_OPTION
     else
       printf "\n%b\n" "${CYAN}▸ Which theme do you want?${NC}"
       printf "%b\n" "  ${YELLOW}1) nord${NC}"
       printf "%b\n" "  ${YELLOW}2) catpuccin${NC}"
       printf "%b\n" "  ${YELLOW}3) everforest${NC}"
-      printf "%b" "${BLUE}▸ Select an option [1-3]: ${NC}"
+      printf "%b\n" "  ${RED}q) Return to style selection${NC}"
+      printf "%b" "${BLUE}▸ Select an option [1-3/q]: ${NC}"
       read THEME_OPTION
     fi
-    case "$THEME_OPTION" in
-      1) MEOW_THEME="nord" ;;
-      2) MEOW_THEME="catpuccin" ;;
-      3) MEOW_THEME="everforest" ;;
-      *) MEOW_THEME="nord" ;;  # por defecto
-    esac
-    ;;
-  4) MEOW_THEME="ascii" ;;
-  5) MEOW_THEME="ascii-color" ;;
-  *) MEOW_THEME="normal" ;;
-esac
+
+    if [ "$THEME_OPTION" = "q" ]; then
+      clear
+      continue  # Regresa a la selección de estilo
+    elif [[ ! "$THEME_OPTION" =~ ^[1-3]$ ]]; then
+      printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
+      sleep 1
+      clear
+    else
+      break  # Sale del bucle si la opción es válida
+    fi
+  done
+
+  case "$THEME_OPTION" in
+    1) MEOW_THEME="nord" ;;
+    2) MEOW_THEME="catpuccin" ;;
+    3) MEOW_THEME="everforest" ;;
+    *) MEOW_THEME="nord" ;;  # Por defecto
+  esac
+else
+  case "$STYLE_OPTION" in
+    1) MEOW_THEME="normal" ;;
+    2) MEOW_THEME="nocolor" ;;
+    4) MEOW_THEME="ascii" ;;
+    5) MEOW_THEME="ascii-color" ;;
+    *) MEOW_THEME="normal" ;;
+  esac
+fi
 
 # ---------------------------------------
-# 2. Seleccionar el tamaño o tipo (para ascii/ascii-color)
+# 3. Seleccionar el tamaño o tipo (para ascii/ascii-color)
 # ---------------------------------------
-MEOW_SIZE=""
 if [ "$STYLE_OPTION" -eq 4 ] || [ "$STYLE_OPTION" -eq 5 ]; then
-  if [ "$LANGUAGE" = "es" ]; then
-    printf "\n%b\n" "${CYAN}▸ Selecciona el tipo de ASCII:${NC}"
-    printf "%b\n" "  ${YELLOW}1) keyboard symbols${NC}"
-    printf "%b\n" "  ${YELLOW}2) blocks${NC}"
-    printf "%b" "${BLUE}▸ Selecciona una opción [1-2]: ${NC}"
-    read ASCII_OPTION
-  else
-    printf "\n%b\n" "${CYAN}▸ Select the ASCII type:${NC}"
-    printf "%b\n" "  ${YELLOW}1) keyboard symbols${NC}"
-    printf "%b\n" "  ${YELLOW}2) blocks${NC}"
-    printf "%b" "${BLUE}▸ Select an option [1-2]: ${NC}"
-    read ASCII_OPTION
-  fi
-  if [ "$ASCII_OPTION" == "1" ]; then
-    MEOW_SIZE="keyboard-symbols"
-  elif [ "$ASCII_OPTION" == "2" ]; then
-    MEOW_SIZE="blocks"
-  else
-    MEOW_SIZE="keyboard-symbols"
-  fi
+  while true; do
+    if [ "$LANGUAGE" = "es" ]; then
+      printf "\n%b\n" "${CYAN}▸ Selecciona el tipo de ASCII:${NC}"
+      printf "%b\n" "  ${YELLOW}1) keyboard symbols${NC}"
+      printf "%b\n" "  ${YELLOW}2) blocks${NC}"
+      printf "%b\n" "  ${RED}q) Regresar a la selección de estilos${NC}"
+      printf "%b" "${BLUE}▸ Selecciona una opción [1-2/q]: ${NC}"
+      read ASCII_OPTION
+    else
+      printf "\n%b\n" "${CYAN}▸ Select the ASCII type:${NC}"
+      printf "%b\n" "  ${YELLOW}1) keyboard symbols${NC}"
+      printf "%b\n" "  ${YELLOW}2) blocks${NC}"
+      printf "%b\n" "  ${RED}q) Return to style selection${NC}"
+      printf "%b" "${BLUE}▸ Select an option [1-2/q]: ${NC}"
+      read ASCII_OPTION
+    fi
+
+    if [ "$ASCII_OPTION" = "q" ]; then
+      clear
+      continue  # Regresa a la selección de estilo
+    elif [[ ! "$ASCII_OPTION" =~ ^[1-2]$ ]]; then
+      printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
+      sleep 1
+      clear
+    else
+      break  # Sale del bucle si la opción es válida
+    fi
+  done
+
+  case "$ASCII_OPTION" in
+    1) MEOW_SIZE="keyboard-symbols" ;;
+    2) MEOW_SIZE="blocks" ;;
+    *) MEOW_SIZE="keyboard-symbols" ;;  # Valor por defecto si el usuario ingresa algo incorrecto
+  esac
 else
   if [ "$LANGUAGE" = "es" ]; then
     printf "\n%b\n" "${CYAN}▸ Selecciona el tamaño:${NC}"
@@ -158,6 +206,7 @@ else
     printf "%b" "${BLUE}▸ Select an option [1-3]: ${NC}"
     read SIZE_OPTION
   fi
+
   case "$SIZE_OPTION" in
     1) MEOW_SIZE="small" ;;
     2) MEOW_SIZE="normal" ;;
