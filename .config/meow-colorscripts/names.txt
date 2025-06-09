@@ -1,18 +1,9 @@
 # ========================================================
 # nombres disponibles para meow-colorscripts
 # ========================================================
-╭ normal
-├ raspi
-╰ 
-╭ nocolor
-├ 
-╰ 
-╭ ascii
-├
-╰
-╭ ascii-color
-├
-╰
+╭ normal   ╭ nocolor   ╭ ascii   ╭ ascii-color
+├ raspi    ├           ├         ├
+╰          ╰           ╰         ╰
 ╭ [THEMES]
 ├ ╭ nord 
 | ├
