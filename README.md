@@ -9,7 +9,7 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 - [Configuration](#configuration)  
 - [Update](#update)
 - [Command list](#command-list)
-- [How use the commands](#How use the commands)
+- [How use the commands](#How-use-the-commands)
 - [View Available Cats](#view-available-cats)  
 - [Features](#features)  
 - [Credits](#credits)  
