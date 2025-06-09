@@ -1,8 +1,8 @@
 #!/bin/bash
 # ========================================================
-# Instalación de meow-colorscripts (Versión MiauColor Plus)
+# Instalación de meow-colorscripts (Versión MiauNord)
 # ========================================================
-# Este script instala meow-colorscripts con toque felino:
+# Este script instala meow-colorscripts con toque felino y paleta Nord:
 # • Permite seleccionar y guardar el idioma en ~/.config/meow-colorscripts/lang.
 # • Clona el repositorio (si no existe) en ~/meow-colorscripts y mueve
 #   la carpeta de configuración a ~/.config/meow-colorscripts.
@@ -13,18 +13,40 @@
 #       - meow-colorscripts-names    (muestra el contenido de names.txt)
 #       - meow-colorscripts-show     (para mostrar arte ASCII específico)
 # • Actualiza el PATH según la shell del usuario.
-# • Muestra mensajes vibrantes y felinos, e invita a iniciar la configuración.
+# • Muestra mensajes vibrantes, con la paleta Nord, e invita a iniciar la configuración.
 # ========================================================
 
 export TERM=${TERM:-xterm-256color}
 
-# Función para reiniciar el script (en caso de necesitarlo)
+# --- Definición de la paleta Nord Aurora ---
+NORD0="#2E3440"   # Fondo oscuro
+NORD1="#3B4252"
+NORD2="#434C5E"
+NORD3="#4C566A"
+NORD4="#D8DEE9"   # Texto claro principal
+NORD5="#E5E9F0"
+NORD6="#ECEFF4"
+NORD7="#8FBCBB"   # Verde/acento
+NORD8="#88C0D0"   # Cian/acento
+NORD9="#81A1C1"   # Azul claro
+NORD10="#5E81AC"  # Azul oscuro
+
+# Usa la paleta Nord para los mensajes:
+GREEN="$NORD7"      # Usamos un tono verdoso/acento
+RED="$NORD1"        # Un tono oscuro para errores (sobre fondo claro)
+YELLOW="$NORD9"     # Azul claro, reinterpretado aquí como un acento amarillento
+CYAN="$NORD8"       # Cian para mensajes informativos
+MAGENTA="$NORD10"   # Azul oscuro (para destacar)
+WHITE="$NORD4"
+NC='\033[0m'        # Reset
+
+# --- Función para reiniciar el script (en caso de necesitarlo) ---
 restart_script() {
     printf "%b\n" "Reiniciando el instalador..."
     exec "$0" "$@"
 }
 
-# Función para mostrar mensajes felinos dinámicos con validación
+# --- Función para mostrar mensajes felinos dinámicos con validación ---
 print_dynamic_message() {
     local message="$1"
     local delay=0.2
@@ -36,22 +58,11 @@ print_dynamic_message() {
     printf " %b\n" "${GREEN}${NC}"
 }
 
-# Directorios y archivos base
+# --- Directorios y archivos base ---
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 BIN_DIR="$HOME/.local/bin"
 LOCAL_REPO="$HOME/meow-colorscripts"
 SETUP_SCRIPT="$LOCAL_REPO/setup.sh"
-
-# ---------------------------------------
-# Definición de colores ANSI (usados en mensajes de instalación)
-GREEN='\033[38;2;60;179;113m'       # SeaGreen
-RED='\033[38;2;220;20;60m'           # Crimson
-YELLOW='\033[38;2;255;215;0m'         # Gold
-CYAN='\033[38;2;0;206;209m'           # DarkTurquoise
-MAGENTA='\033[38;2;218;112;214m'
-BLUE='\033[38;2;65;105;225m'          # RoyalBlue
-WHITE='\033[38;2;245;245;245m'
-NC='\033[0m'                        # Reset
 
 # ---------------------------------------
 # 1. Selección de idioma y exportación a LANG
@@ -59,7 +70,7 @@ NC='\033[0m'                        # Reset
 printf "\n${CYAN}▸ Select your language:${NC}\n"
 printf "  ${YELLOW}1) Español${NC}\n"
 printf "  ${YELLOW}2) English${NC}\n"
-read -p "${BLUE}▸ Choose an option [1/2]: ${NC}" LANG_OPTION
+read -p "${CYAN}▸ Choose an option [1/2]: ${NC}" LANG_OPTION
 LANGUAGE="en"
 if [[ "$LANG_OPTION" == "1" ]]; then
     LANGUAGE="es"
@@ -75,13 +86,13 @@ printf "${GREEN}¡Idioma establecido!${NC}\n"
 if [ ! -d "$LOCAL_REPO" ]; then
     printf "\n${YELLOW}▸ No se encontró $LOCAL_REPO. Clonando repositorio...${NC}\n"
     # Reemplaza la URL por la de tu repositorio:
-    git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO" || { 
+    git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO" || {
         printf "${RED}✖ Error clonando el repositorio.${NC}\n"
         exit 1
     }
 fi
 
-# Asegurarse que todos los scripts en el repositorio sean ejecutables
+# Asegurarse de que todos los scripts en el repositorio sean ejecutables
 find "$LOCAL_REPO" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Mover la carpeta de configuración desde el repositorio a ~/.config/meow-colorscripts
@@ -117,8 +128,8 @@ print_dynamic_message "PATH miauctuaizado"
 
 # ---------------------------------------
 # 4. Instalar el comando PRINCIPAL: "meow-colorscripts"
-#    (Muestra un meow RANDOM de la carpeta de arte según la configuración)
-#    Se busca primero en $CONFIG_DIR; de no hallarse, se toma de $LOCAL_REPO.
+#     (Muestra un meow RANDOM de la carpeta de arte según la configuración)
+#     Se busca primero en $CONFIG_DIR; si no se encuentra, se usa $LOCAL_REPO.
 # ---------------------------------------
 if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
     install -Dm755 "$CONFIG_DIR/show-meows.sh" "$BIN_DIR/meow-colorscripts"
@@ -162,7 +173,7 @@ print_dynamic_message "meow-colorscripts-names instalado"
 
 # ---------------------------------------
 # 8. Instalar comando "meow-colorscripts-show" (para mostrar arte ASCII específico)
-#    Se busca primero en $CONFIG_DIR; de no hallarse, se revisa en $LOCAL_REPO.
+#     Se busca primero en $CONFIG_DIR; si no se encuentra, se revisa en $LOCAL_REPO.
 # ---------------------------------------
 if [ -f "$CONFIG_DIR/meow-colorscripts-show.sh" ]; then
     install -Dm755 "$CONFIG_DIR/meow-colorscripts-show.sh" "$BIN_DIR/meow-colorscripts-show"
