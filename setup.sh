@@ -5,11 +5,12 @@
 # Este script configura meow-colorscripts:
 #   • Lee el idioma a usar desde LANG (o del archivo ~/.config/meow-colorscripts/lang)
 #   • Solicita al usuario que elija estilo y tamaño (o tipo en ascii/ascii-color)
-#   • Pregunta si se desea activar el autorun (por ejemplo, para que se inicie automáticamente
-#     una función o simplemente como configuración adicional)
-#   • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf
-#   • Si se activan los comandos de nombres, genera names.txt (con los nombres de los .txt
-#     en ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/)
+#   • Pregunta si desea activar el autorun (para ejecutar meow-colorscripts al inicio)
+#   • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf, incluyendo:
+#         MEOW_THEME, MEOW_SIZE y MEOW_AUTORUN
+#   • Si se activan los comandos de nombres, genera names.txt a 
+#     partir de los .txt en ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/,
+#     y los instala en ~/.local/bin (`meows-names` y `meow-show`).
 #   • Muestra mensajes de carga felina.
 # ========================================================
 
@@ -22,8 +23,12 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
+BIN_DIR="$HOME/.local/bin"
 LANG_FILE="$CONFIG_DIR/lang"
 MEOW_CONF="$CONFIG_DIR/meow.conf"
+
+# Crear la carpeta de configuración si no existe
+mkdir -p "$CONFIG_DIR"
 
 # Obtener el idioma de LANG o del archivo lang
 if [ -n "$LANG" ]; then
@@ -144,102 +149,23 @@ else
     esac
 fi
 
-printf "\n--------------------------------------------------------\n"
-print_msg "Has seleccionado el estilo: ${GREEN}$MEOW_THEME${NC} y el tamaño/tipo: ${GREEN}$MEOW_SIZE${NC}" \
-          "You have selected the style: ${GREEN}$MEOW_THEME${NC} and size/type: ${GREEN}$MEOW_SIZE${NC}"
-printf "--------------------------------------------------------\n\n"
-
 # --------------------------------------------------------
-# Preguntar si se desea activar los comandos de nombres y generar names.txt
+# Activación de comandos de nombres (genera names.txt e instala `meows-names` y `meow-show`)
 # --------------------------------------------------------
-if [[ "$LANGUAGE" == "es" ]]; then
-    printf "%b\n" "${CYAN}¿Deseas activar los comandos 'meows-names' y 'meow-show [nombre]'?${NC}"
-    printf "%b\n" "  s) Sí"
-    printf "%b\n" "  n) No"
-    read -p "Selecciona una opción [s/n]: " ENABLE_NAMES_OPTION
-else
-    printf "%b\n" "${CYAN}Do you want to activate the commands 'meows-names' and 'meow-show [name]'?${NC}"
-    printf "%b\n" "  y) Yes"
-    printf "%b\n" "  n) No"
-    read -p "Select an option [y/n]: " ENABLE_NAMES_OPTION
-fi
-
-# La carpeta de arte se ubicará en:
-# ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
 ART_FOLDER="$CONFIG_DIR/colorscripts/$MEOW_THEME/$MEOW_SIZE"
 
-if [[ "$ENABLE_NAMES_OPTION" =~ ^[sSyY]$ ]]; then
-    if [ ! -d "$ART_FOLDER" ]; then
-        mkdir -p "$ART_FOLDER"
-        printf "%b\n" "${YELLOW}Advertencia: La carpeta para el arte se ha creado: $ART_FOLDER${NC}"
-    fi
-    # Generar names.txt solo si existen archivos .txt en ART_FOLDER
-    if ls "$ART_FOLDER"/*.txt &> /dev/null; then
-        ls "$ART_FOLDER" | grep "\.txt$" | sed 's/\.txt//' > "$CONFIG_DIR/names.txt"
-        printf "%b\n" "${GREEN}Archivo de nombres generado exitosamente:${NC} ${WHITE}$CONFIG_DIR/names.txt${NC}"
-    else
-        printf "%b\n" "${YELLOW}Advertencia: No se encontraron archivos .txt en $ART_FOLDER.${NC}"
-    fi
-else
-    printf "%b\n" "${YELLOW}Los comandos de nombres no se han activado.${NC}"
+if [[ -d "$ART_FOLDER" ]]; then
+    ls "$ART_FOLDER" | grep "\.txt$" | sed 's/\.txt//' > "$CONFIG_DIR/names.txt"
+    print_msg "${GREEN}Archivo de nombres generado correctamente.${NC}" "${GREEN}Names file generated successfully.${NC}"
+    install -Dm755 "$CONFIG_DIR/show-names.sh" "$BIN_DIR/meows-names"
+    install -Dm755 "$CONFIG_DIR/show-meows.sh" "$BIN_DIR/meow-show"
+    print_msg "${GREEN}Comandos 'meows-names' y 'meow-show' instalados correctamente.${NC}" "${GREEN}'meows-names' and 'meow-show' installed successfully.${NC}"
 fi
-
-# --------------------------------------------------------
-# Preguntar por autorun
-# --------------------------------------------------------
-if [[ "$LANGUAGE" == "es" ]]; then
-    printf "\n%b\n" "${CYAN}¿Deseas activar el autorun de meow-colorscripts al iniciar la terminal?${NC}"
-    printf "%b\n" "  s) Sí"
-    printf "%b\n" "  n) No"
-    read -p "Selecciona una opción [s/n]: " AUTORUN_OPTION
-else
-    printf "\n%b\n" "${CYAN}Do you want to enable autorun for meow-colorscripts on terminal startup?${NC}"
-    printf "%b\n" "  y) Yes"
-    printf "%b\n" "  n) No"
-    read -p "Select an option [y/n]: " AUTORUN_OPTION
-fi
-
-if [[ "$AUTORUN_OPTION" =~ ^[sSyY]$ ]]; then
-    MEOW_AUTORUN="true"
-else
-    MEOW_AUTORUN="false"
-fi
-
-# --------------------------------------------------------
-# Frases de carga felina (dinámicas)
-# --------------------------------------------------------
-LOADING_MSGS_ES=("Los gatos se estiran" "Acomodando almohadillas" "Afinando maullidos" "Ronroneo en progreso" "Explorando el código")
-LOADING_MSGS_EN=("The cats are stretching" "Adjusting paw pads" "Fine-tuning meows" "Purring in progress" "Exploring the code")
-LOADING_USED=()
-for i in {1..3}; do 
-    while true; do
-        if [[ "$LANGUAGE" == "es" ]]; then
-            RANDOM_MSG=${LOADING_MSGS_ES[$RANDOM % ${#LOADING_MSGS_ES[@]}]}
-        else
-            RANDOM_MSG=${LOADING_MSGS_EN[$RANDOM % ${#LOADING_MSGS_EN[@]}]}
-        fi
-        if [[ ! " ${LOADING_USED[@]} " =~ " $RANDOM_MSG " ]]; then
-            LOADING_USED+=("$RANDOM_MSG")
-            break
-        fi
-    done
-    printf "%b" "$CYAN$RANDOM_MSG"
-    for j in {1..3}; do 
-         printf "."
-         sleep 0.3
-    done
-    printf " %b\n" "${GREEN}OK${NC}"
-done
 
 # --------------------------------------------------------
 # Guardar la configuración en meow.conf
 # --------------------------------------------------------
 echo "MEOW_THEME=$MEOW_THEME" > "$MEOW_CONF"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$MEOW_CONF"
-echo "MEOW_AUTORUN=$MEOW_AUTORUN" >> "$MEOW_CONF"
 
-printf "\n%b\n" "${GREEN}Configuración guardada exitosamente.${NC}"
-printf "Archivo de configuración: ${WHITE}$MEOW_CONF${NC}\n\n"
-
-printf "\n%b\n" "${GREEN}Configuración guardada exitosamente.${NC}"
-printf "Archivo de configuración: ${WHITE}$MEOW_CONF${NC}\n\n"
+print_msg "${GREEN}Configuración guardada exitosamente.${NC}" "${GREEN}Configuration saved successfully.${NC}"
