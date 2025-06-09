@@ -11,20 +11,20 @@
 #         4) ascii
 #         5) ascii-color
 #
-#   • Según el estilo seleccionado, se pregunta por:
+#   • Según el estilo se pregunta por:
 #         - Tamaño: small, normal, large (para estilos distintos a ascii)
-#         - Tipo: keyboard symbols o block (para ascii o ascii-color)
+#         - Tipo: keyboard-symbols o block (para ascii o ascii-color)
 #
 #   • Opcionalmente, se pregunta si se activan los comandos de nombres,
 #     que generan el archivo names.txt basado en los archivos .txt en:
-#         $HOME/.config/meow-colorscripts/<MEOW_THEME>/<MEOW_SIZE>
+#       ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
 #
-#   • Se guardan las variables en:
-#         $HOME/.config/meow-colorscripts/meow.conf
+#   • Se guarda la configuración en ~/.config/meow-colorscripts/meow.conf
+#   • Se guarda el idioma en ~/.config/meow-colorscripts/lang
 # ========================================================
 
 # ---------------------------
-# Colores ANSI (para terminal compatible)
+# Colores ANSI para mensajes
 GREEN='\033[38;2;94;129;172m'
 RED='\033[38;2;191;97;106m'
 CYAN='\033[38;2;143;188;187m'
@@ -33,25 +33,38 @@ WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 # ---------------------------
 
-# ========================================================
-# Determinar idioma (leer archivo lang; por defecto "en")
-# ========================================================
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 mkdir -p "$CONFIG_DIR"
-LANGUAGE="en"
+
+# ========================================================
+# Determinar idioma (si ya existe se usa el valor guardado)
+# ========================================================
 LANG_FILE="$CONFIG_DIR/lang"
+LANGUAGE="en"
 if [ -f "$LANG_FILE" ]; then
     LANGUAGE=$(cat "$LANG_FILE")
 fi
 
+# Solicitar siempre el idioma (o mantener el existente)
+echo -e "${CYAN} Select your language:${NC}"
+echo -e "  1) Español"
+echo -e "  2) English"
+read -p "󰏩 Choose an option [1/2]: " LANG_OPTION
+if [[ "$LANG_OPTION" == "1" ]]; then
+    LANGUAGE="es"
+else
+    LANGUAGE="en"
+fi
+echo "$LANGUAGE" > "$LANG_FILE"
+
 # Función para imprimir mensajes según idioma
 print_msg() {
-  # Uso: print_msg "mensaje en español" "message in English"
-  if [[ "$LANGUAGE" == "es" ]]; then
-    echo -e "$1"
-  else
-    echo -e "$2"
-  fi
+    # Uso: print_msg "mensaje en español" "message in English"
+    if [ "$LANGUAGE" = "es" ]; then
+        echo -e "$1"
+    else
+        echo -e "$2"
+    fi
 }
 
 # ========================================================
@@ -74,8 +87,6 @@ else
     echo -e "  5) ascii-color"
     read -p "󰏩 Select an option [1-5]: " STYLE_OPTION
 fi
-
-# Si la entrada está vacía se asigna por defecto 1 ("normal")
 if [[ -z "$STYLE_OPTION" ]]; then
     STYLE_OPTION=1
 fi
@@ -102,7 +113,7 @@ case "$STYLE_OPTION" in
             1) MEOW_THEME="nord" ;;
             2) MEOW_THEME="catpuccin" ;;
             3) MEOW_THEME="everforest" ;;
-            *) MEOW_THEME="nord" ;;  # Valor por defecto
+            *) MEOW_THEME="nord" ;;
         esac
         ;;
     4) MEOW_THEME="ascii" ;;
@@ -115,16 +126,15 @@ esac
 # ========================================================
 MEOW_SIZE=""
 if [[ "$STYLE_OPTION" -eq 4 || "$STYLE_OPTION" -eq 5 ]]; then
-    # Para ascii/ascii-color preguntamos por tipo
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "\n Selecciona el tipo de ASCII:"
-        echo -e "  1) Keyboard symbols"
-        echo -e "  2) Blocks"
+        echo -e "  1) keyboard symbols"
+        echo -e "  2) blocks"
         read -p "󰏩 Selecciona una opción [1-2]: " ASCII_OPTION
     else
         echo -e "\n Select the ASCII type:"
-        echo -e "  1) Keyboard symbols"
-        echo -e "  2) Blocks"
+        echo -e "  1) keyboard symbols"
+        echo -e "  2) blocks"
         read -p "󰏩 Select an option [1-2]: " ASCII_OPTION
     fi
     if [[ "$ASCII_OPTION" == "1" ]]; then
@@ -135,7 +145,6 @@ if [[ "$STYLE_OPTION" -eq 4 || "$STYLE_OPTION" -eq 5 ]]; then
         MEOW_SIZE="keyboard-symbols"
     fi
 else
-    # Para otros estilos, se pregunta por tamaño
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "\n Selecciona el tamaño:"
         echo -e "  1) Small"
@@ -157,14 +166,13 @@ else
     esac
 fi
 
-# Mostrar confirmación de selección.
 echo -e "\n--------------------------------------------------------------------------------"
 print_msg "Has seleccionado el estilo: ${GREEN}$MEOW_THEME${NC}\nY el tamaño/tipo: ${GREEN}$MEOW_SIZE${NC}" \
           "You have selected the style: ${GREEN}$MEOW_THEME${NC}\nAnd size/type: ${GREEN}$MEOW_SIZE${NC}"
 echo -e "--------------------------------------------------------------------------------\n"
 
 # ========================================================
-# Activación de comandos de nombres (opcional)
+# Comandos de nombres (opcional)
 # ========================================================
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "${CYAN} ¿Deseas activar los comandos 'meows-names' y 'meow-show [nombre]'?${NC}"
@@ -178,17 +186,15 @@ else
     read -p "󰏩 Select an option [y/n]: " ENABLE_NAMES_OPTION
 fi
 
-# Ruta para el arte (usada para generar el archivo names.txt)
-ART_FOLDER="$CONFIG_DIR/$MEOW_THEME/$MEOW_SIZE"
+# Definir la carpeta de arte usando el subdirectorio "colorscripts"
+ART_FOLDER="$CONFIG_DIR/colorscripts/$MEOW_THEME/$MEOW_SIZE"
 
-# Si se activa y si la carpeta no existe, la creamos para evitar error
 if [[ "$ENABLE_NAMES_OPTION" =~ ^[sSyY]$ ]]; then
     if [ ! -d "$ART_FOLDER" ]; then
         mkdir -p "$ART_FOLDER"
         print_msg "\n${YELLOW} Advertencia: La carpeta para el arte no existía y se ha creado: $ART_FOLDER${NC}" \
                   "\n${YELLOW}Warning: Art folder did not exist and has been created: $ART_FOLDER${NC}"
     fi
-    # Comprobar si hay archivos .txt; si no, se muestra una advertencia y no se genera names.txt
     if ls "$ART_FOLDER"/*.txt &> /dev/null; then
         ls "$ART_FOLDER" | grep "\.txt$" | sed 's/\.txt//' > "$CONFIG_DIR/names.txt"
         print_msg "\n ${GREEN}Archivo de nombres generado correctamente:${NC} ${WHITE}$CONFIG_DIR/names.txt${NC}" \
@@ -199,11 +205,11 @@ if [[ "$ENABLE_NAMES_OPTION" =~ ^[sSyY]$ ]]; then
     fi
 else
     print_msg "\n${YELLOW} Los comandos de nombres no se han activado.${NC}" \
-              "\n${YELLOW} Names commands not activated.${NC}"
+              "\n${YELLOW}Names commands not activated.${NC}"
 fi
 
 # ========================================================
-# Mostrar mensajes de carga felina (3 mensajes aleatorios)
+# Frases de carga felinas
 # ========================================================
 LOADING_MSGS_ES=("Los gatos se estiran" "Acomodando almohadillas" "Afinando maullidos" "Ronroneo en progreso" "Explorando el código")
 LOADING_MSGS_EN=("The cats are stretching" "Adjusting paw pads" "Fine-tuning meows" "Purring in progress" "Exploring the code")
@@ -233,6 +239,5 @@ done
 # ========================================================
 echo "MEOW_THEME=$MEOW_THEME" > "$CONFIG_DIR/meow.conf"
 echo "MEOW_SIZE=$MEOW_SIZE" >> "$CONFIG_DIR/meow.conf"
-
 print_msg "\n ${GREEN}Configuración guardada exitosamente.${NC}\nArchivo de configuración: ${WHITE}$CONFIG_DIR/meow.conf${NC}" \
           "\n ${GREEN}Configuration saved successfully.${NC}\nConfiguration file: ${WHITE}$CONFIG_DIR/meow.conf${NC}"
