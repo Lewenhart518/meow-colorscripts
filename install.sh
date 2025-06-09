@@ -2,13 +2,14 @@
 # ========================================================
 # Instalación de meow-colorscripts
 # ========================================================
-# Este script instala meow-colorscripts siguiendo el proceso:
-#   • Selección de idioma y guardado en ~/.config/meow-colorscripts/lang
-#   • Verificación de dependencias (Git, fc-list, Nerd Fonts)
-#   • Clonación del repositorio local (si falta)
-#   • Movimiento de la carpeta de configuración (incluyendo "colorscripts")
-#   • Instalación de comandos en ~/.local/bin usando install -Dm755
-#   • Frases de carga felinas durante el proceso
+# Este script instala meow-colorscripts ejecutando:
+# • Selección y guardado del idioma en ~/.config/meow-colorscripts/lang
+# • Verificación de dependencias (Git, fc-list, Nerd Fonts)
+# • Clonación del repositorio local (si no existe)
+# • Movimiento de la carpeta de configuración (incluyendo "colorscripts")
+# • Instalación de comandos en ~/.local/bin usando install -Dm755
+# • Frases de carga felinas durante el proceso
+# • Pregunta final para abrir la configuración (setup.sh)
 # ========================================================
 
 export TERM=${TERM:-xterm-256color}
@@ -30,9 +31,7 @@ CYAN='\033[38;2;143;188;187m'
 WHITE='\033[38;2;216;222;233m'
 NC='\033[0m'
 
-# ========================================================
-# Selección de idioma
-# ========================================================
+# --- Selección de idioma ---
 echo -e "${CYAN} Select your language:${NC}"
 echo -e "  1) Español"
 echo -e "  2) English"
@@ -45,9 +44,7 @@ fi
 mkdir -p "$CONFIG_DIR"
 echo "$LANGUAGE" > "$CONFIG_DIR/lang"
 
-# ========================================================
-# Verificar dependencias
-# ========================================================
+# --- Verificar dependencias ---
 if ! command -v git &> /dev/null; then
     if [[ "$LANGUAGE" == "es" ]]; then
         echo -e "${RED} Git no está instalado.${NC}"
@@ -126,9 +123,7 @@ if [ -z "$NERD_FONT_INSTALLED" ]; then
     fi
 fi
 
-# ========================================================
-# Instalación del repositorio y configuración local
-# ========================================================
+# --- Instalación del repositorio y configuración local ---
 if [ ! -d "$LOCAL_REPO" ]; then
     echo -e "${YELLOW} No se encontró $LOCAL_REPO. Clonando repositorio...${NC}"
     # Ajusta la URL de tu repositorio
@@ -145,15 +140,13 @@ else
     echo -e "${YELLOW} No se encontró carpeta de configuración en el repositorio.${NC}"
 fi
 
-# ========================================================
-# Instalación de comandos en ~/.local/bin (estilo fastfetch)
-# ========================================================
+# --- Instalación de comandos en ~/.local/bin (estilo fastfetch) ---
 mkdir -p "$HOME/.local/bin"
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 fi
 
-# Instalar meow-colorscripts (usando show-meows.sh)
+# Instalar meow-colorscripts (basado en show-meows.sh)
 if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
     install -Dm755 "$CONFIG_DIR/show-meows.sh" "$HOME/.local/bin/meow-colorscripts"
     if [[ "$LANGUAGE" == "es" ]]; then
@@ -201,9 +194,7 @@ else
     fi
 fi
 
-# ========================================================
-# Frases de carga felinas
-# ========================================================
+# --- Frases de carga felinas ---
 LOADING_MSGS_ES=("Los gatos se estiran" "Acomodando almohadillas" "Afinando maullidos" "Ronroneo en progreso" "Explorando el código")
 LOADING_MSGS_EN=("The cats are stretching" "Adjusting paw pads" "Fine-tuning meows" "Purring in progress" "Exploring the code")
 LOADING_USED=()
@@ -226,5 +217,24 @@ for i in {1..3}; do
     done
     echo -e " ${GREEN}${NC}"
 done
+
+# --- Preguntar si se desea abrir la configuración ahora ---
+if [[ "$LANGUAGE" == "es" ]]; then
+    echo -e "\n ${CYAN} ¿Deseas abrir la configuración ahora?${NC}"
+    echo -e "  s) Sí"
+    echo -e "  n) No"
+    read -p "󰏩 Selecciona una opción [s/n]: " OPEN_CONF
+    if [[ "$OPEN_CONF" =~ ^[sS]$ ]]; then
+        bash "$SETUP_SCRIPT"
+    fi
+else
+    echo -e "\n ${CYAN} Do you want to open the configuration now?${NC}"
+    echo -e "  y) Yes"
+    echo -e "  n) No"
+    read -p "󰏩 Select an option [y/n]: " OPEN_CONF
+    if [[ "$OPEN_CONF" =~ ^[yY]$ ]]; then
+        bash "$SETUP_SCRIPT"
+    fi
+fi
 
 echo -e "\n Instalación completada."
