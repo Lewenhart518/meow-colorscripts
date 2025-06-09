@@ -4,18 +4,15 @@
 # ========================================================
 # Este script muestra arte ASCII de meow-colorscripts.
 #
-# - Carga la configuración desde:
-#       ~/.config/meow-colorscripts/meow.conf
-# - Carga el idioma desde:
-#       ~/.config/meow-colorscripts/lang (por defecto "en")
-# - Define la carpeta de arte utilizando:
+# • Carga la configuración desde ~/.config/meow-colorscripts/meow.conf
+# • Carga el idioma desde ~/.config/meow-colorscripts/lang (por defecto "en")
+# • La carpeta de arte se define como:
 #       ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
-# - Si se pasa un parámetro, busca el archivo <parámetro>.txt;
-#   de lo contrario, selecciona uno aleatorio.
-# - Si la carpeta no tiene archivos .txt, se muestra el contenido de:
-#       ~/.config/meow-colorscripts/colorscripts/error.txt
-#   (este archivo contiene arte ANSI de error)
-# - Se usa echo -e para interpretar los códigos de escape ANSI.
+# • Si se pasa un parámetro, busca el archivo <parámetro>.txt; de lo contrario,
+#   selecciona uno aleatorio.
+# • Si no se detectan archivos .txt en la carpeta de arte, se muestra el contenido
+#   de ~/.config/meow-colorscripts/colorscripts/error.txt (este archivo debe existir y contener arte ANSI de error).
+# • Se usa echo -e para que se interpreten los códigos ANSI.
 # ========================================================
 
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
@@ -49,14 +46,14 @@ print_msg() {
     fi
 }
 
-# Definir la carpeta de arte (usando la estructura correcta)
+# Definir la carpeta de arte correctamente:
 ART_DIR="$CONFIG_DIR/colorscripts/$MEOW_THEME/$MEOW_SIZE"
 if [ ! -d "$ART_DIR" ]; then
     print_msg "La carpeta de arte \"$ART_DIR\" no existe." "Art folder \"$ART_DIR\" not found."
     exit 1
 fi
 
-# Función para mostrar el contenido del archivo (usando echo -e)
+# Función para mostrar el contenido del archivo usando echo -e
 show_art() {
     local file="$1"
     echo -e "$(<"$file")"
@@ -73,7 +70,7 @@ if [ -n "$1" ]; then
 else
     FILES=("$ART_DIR"/*.txt)
     if [ ${#FILES[@]} -eq 0 ]; then
-        # Si no se encontraron archivos, usar el error.txt en colorscripts
+        # Si no se encuentran archivos .txt, usar error.txt
         ERROR_FILE="$CONFIG_DIR/colorscripts/error.txt"
         if [ -f "$ERROR_FILE" ]; then
             show_art "$ERROR_FILE"
