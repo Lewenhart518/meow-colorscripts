@@ -276,4 +276,3 @@ printf "\n%b\n" "${MAGENTA}¡Miau! Configuración guardada exitosamente.${NC}\n"
   echo "MEOW_SIZE=$MEOW_SIZE"
   echo "MEOW_AUTORUN=$MEOW_AUTORUN"
 } > "$MEOW_CONF"
-
