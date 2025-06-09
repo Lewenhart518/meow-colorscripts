@@ -18,27 +18,27 @@
 
 export TERM=${TERM:-xterm-256color}
 
-# --- Definición de la paleta Nord Aurora ---
-NORD0="#2E3440"   # Fondo oscuro
-NORD1="#3B4252"
-NORD2="#434C5E"
-NORD3="#4C566A"
-NORD4="#D8DEE9"   # Texto claro principal
-NORD5="#E5E9F0"
-NORD6="#ECEFF4"
-NORD7="#8FBCBB"   # Verde/acento
-NORD8="#88C0D0"   # Cian/acento
-NORD9="#81A1C1"   # Azul claro
-NORD10="#5E81AC"  # Azul oscuro
+# --- Definición de la paleta Nord Aurora con ANSI escapes ---
+NORD0="\033[38;2;46;52;64m"    # Fondo oscuro
+NORD1="\033[38;2;59;66;82m"
+NORD2="\033[38;2;67;76;94m"
+NORD3="\033[38;2;76;86;106m"
+NORD4="\033[38;2;216;222;233m"  # Texto claro principal
+NORD5="\033[38;2;229;233;240m"
+NORD6="\033[38;2;236;239;244m"
+NORD7="\033[38;2;143;188;187m"  # Verde/acento
+NORD8="\033[38;2;136;192;208m"  # Cian/acento
+NORD9="\033[38;2;129;161;193m"  # Azul claro
+NORD10="\033[38;2;94;129;172m"  # Azul oscuro
 
-# Usa la paleta Nord para los mensajes:
-GREEN="$NORD7"      # Usamos un tono verdoso/acento
-RED="$NORD1"        # Un tono oscuro para errores (sobre fondo claro)
-YELLOW="$NORD9"     # Azul claro, reinterpretado aquí como un acento amarillento
-CYAN="$NORD8"       # Cian para mensajes informativos
-MAGENTA="$NORD10"   # Azul oscuro (para destacar)
+# Usamos la paleta Nord para nuestros mensajes:
+GREEN="$NORD7"
+RED="$NORD1"
+YELLOW="$NORD9"
+CYAN="$NORD8"
+MAGENTA="$NORD10"
 WHITE="$NORD4"
-NC='\033[0m'        # Reset
+NC='\033[0m'  # Reset
 
 # --- Función para reiniciar el script (en caso de necesitarlo) ---
 restart_script() {
@@ -196,3 +196,4 @@ fi
 
 printf "\n${MAGENTA}¡Miau! Instalación completada exitosamente.${NC}\n"
 chmod +x "$0"
+
