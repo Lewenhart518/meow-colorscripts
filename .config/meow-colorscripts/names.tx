@@ -1,0 +1,28 @@
+# ========================================================
+# nombres disponibles para meow-colorscripts
+# ========================================================
+╭ normal
+├ raspi
+╰ 
+╭ nocolor
+├ 
+╰ 
+╭ ascii
+├
+╰
+╭ ascii-color
+├
+╰
+╭ [THEMES]
+├ ╭ nord 
+| ├
+| ╰
+├ ╭ catpuccin
+| ├
+| ╰
+├ ╭ everforest
+| ├
+╰ ╰
+╭ special
+├ kasane-teto (Only martinitin/winis has access to this file)
+╰
