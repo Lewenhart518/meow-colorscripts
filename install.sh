@@ -1,9 +1,3 @@
-chmod +x install.sh
-```):
-
----
-
-```bash
 #!/bin/bash
 # ========================================================
 # Instalación de meow-colorscripts
@@ -16,10 +10,12 @@ chmod +x install.sh
 #   elimina los archivos meow.conf y lang para preservar la configuración actual del usuario,
 #   y mueve dicha carpeta a ~/.config/meow-colorscripts.
 # • Instala en ~/.local/bin los siguientes comandos, renombrados con el prefijo:
-#       - meow-colorscripts          (desde show-meows.sh)
 #       - meow-colorscripts-update   (desde update.sh)
 #       - meow-colorscripts-setup    (desde setup.sh)
-# • (Los comandos de nombres se activan en setup.sh).
+#       - meow-colorscripts-show     (desde meow-colorscripts-show.sh)  
+#         *(Nota: el comando principal para mostrar meows específicos se instala
+#         desde el archivo meow-colorscripts-show.sh, ya que el antiguo show-meows.sh 
+#         fue reemplazado)*
 # • Actualiza el PATH según la shell del usuario.
 # • Muestra un mensaje final (en amarillo) indicando que se debe reiniciar la terminal.
 # ========================================================
@@ -81,7 +77,7 @@ if [ ! -d "$LOCAL_REPO" ]; then
     git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO" || { printf "%b\n" "${RED}Error clonando el repositorio.${NC}"; exit 1; }
 fi
 
-# Hacer que todos los scripts del repositorio sean ejecutables
+# Hacer ejecutables todos los scripts del repositorio
 find "$LOCAL_REPO" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Si existe la carpeta de configuración en el repositorio:
@@ -118,12 +114,6 @@ fi
 
 print_dynamic_message "PATH actualizado"
 
-# Instalar comando principal "meow-colorscripts" (basado en show-meows.sh)
-if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
-    install -Dm755 "$CONFIG_DIR/show-meows.sh" "$BIN_DIR/meow-colorscripts"
-    print_dynamic_message "Comando meow-colorscripts instalado correctamente"
-fi
-
 # Instalar comando de actualización renombrado a "meow-colorscripts-update"
 if [ -f "$LOCAL_REPO/update.sh" ]; then
     install -Dm755 "$LOCAL_REPO/update.sh" "$BIN_DIR/meow-colorscripts-update"
@@ -140,11 +130,19 @@ else
     printf "%b\n" "${YELLOW}No se encontró setup.sh en el repositorio.${NC}"
 fi
 
+# Instalar comando "meow-colorscripts-show" desde el archivo "meow-colorscripts-show.sh"
+if [ -f "$CONFIG_DIR/meow-colorscripts-show.sh" ]; then
+    install -Dm755 "$CONFIG_DIR/meow-colorscripts-show.sh" "$BIN_DIR/meow-colorscripts-show"
+    print_dynamic_message "Comando meow-colorscripts-show instalado correctamente"
+else
+    printf "%b\n" "${YELLOW}No se encontró 'meow-colorscripts-show.sh' en la carpeta de configuración.${NC}"
+fi
+
 # --------------------------------------------------------
 # Mensaje final: Reinicia la terminal para que los cambios surtan efecto
 # --------------------------------------------------------
 printf "\n\033[1;33m Por favor, reinicia tu terminal para que los cambios surtan efecto.\033[0m\n"
 printf "\n%b\n" "Instalación completada."
 
-# Opcional: Asegurarse de que este script se marque como ejecutable (por precaución)
+# Opcional: Marcar este script como ejecutable (por precaución)
 chmod +x "$0"
