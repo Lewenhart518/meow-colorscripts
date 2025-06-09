@@ -8,40 +8,38 @@
 #       ~/.config/meow-colorscripts/meow.conf
 # - Carga el idioma desde:
 #       ~/.config/meow-colorscripts/lang (por defecto "en")
-# - Define la carpeta de arte usando las variables MEOW_THEME y MEOW_SIZE,
-#   considerando la carpeta "colorscripts".
-#       Ruta: ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
-# - Si se pasa un parámetro, busca un archivo cuyo nombre (sin extensión) coincida.
-#   Sino, elige un archivo aleatorio.
+# - Define la carpeta de arte utilizando:
+#       ~/.config/meow-colorscripts/colorscripts/<MEOW_THEME>/<MEOW_SIZE>/
+# - Si se pasa un parámetro, busca el archivo <parámetro>.txt;
+#   de lo contrario, selecciona uno aleatorio.
+# - Si la carpeta no tiene archivos .txt, se muestra el contenido de:
+#       ~/.config/meow-colorscripts/colorscripts/error.txt
+#   (este archivo contiene arte ANSI de error)
+# - Se usa echo -e para interpretar los códigos de escape ANSI.
 # ========================================================
 
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 CONFIG_FILE="$CONFIG_DIR/meow.conf"
 LANG_FILE="$CONFIG_DIR/lang"
 
-# Verificar existencia del archivo de configuración
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "No se encontró el archivo de configuración."
     echo "Por favor, ejecuta 'meow-colorscripts-setup' primero."
     exit 1
 fi
 
-# Cargar la configuración (formato KEY=VALUE)
 source "$CONFIG_FILE"
 
-# Verificar las variables
 if [ -z "$MEOW_THEME" ] || [ -z "$MEOW_SIZE" ]; then
     echo "Configuración incompleta. Ejecuta 'meow-colorscripts-setup' para configurarlo."
     exit 1
 fi
 
-# Determinar el idioma (por defecto "en")
 LANGUAGE="en"
 if [ -f "$LANG_FILE" ]; then
     LANGUAGE=$(cat "$LANG_FILE")
 fi
 
-# Función para imprimir mensajes según el idioma
 print_msg() {
     # Uso: print_msg "mensaje en español" "message in English"
     if [ "$LANGUAGE" = "es" ]; then
@@ -51,20 +49,23 @@ print_msg() {
     fi
 }
 
-# Definir la carpeta de arte correctamente (incluyendo "colorscripts")
+# Definir la carpeta de arte (usando la estructura correcta)
 ART_DIR="$CONFIG_DIR/colorscripts/$MEOW_THEME/$MEOW_SIZE"
 if [ ! -d "$ART_DIR" ]; then
     print_msg "La carpeta de arte \"$ART_DIR\" no existe." "Art folder \"$ART_DIR\" not found."
     exit 1
 fi
 
-# Seleccionar arte:
-# Si se pasa un parámetro, se busca el arte con ese nombre (sin extensión);
-# de lo contrario, se selecciona uno aleatorio.
+# Función para mostrar el contenido del archivo (usando echo -e)
+show_art() {
+    local file="$1"
+    echo -e "$(<"$file")"
+}
+
 if [ -n "$1" ]; then
     ART_FILE="$ART_DIR/$1.txt"
     if [ -f "$ART_FILE" ]; then
-        cat "$ART_FILE"
+        show_art "$ART_FILE"
     else
         print_msg "No se encontró el arte para \"$1\"." "Art for \"$1\" not found."
         exit 1
@@ -72,9 +73,18 @@ if [ -n "$1" ]; then
 else
     FILES=("$ART_DIR"/*.txt)
     if [ ${#FILES[@]} -eq 0 ]; then
-        print_msg "No hay archivos de arte disponibles en \"$ART_DIR\"." "No art files found in \"$ART_DIR\"."
-        exit 1
+        # Si no se encontraron archivos, usar el error.txt en colorscripts
+        ERROR_FILE="$CONFIG_DIR/colorscripts/error.txt"
+        if [ -f "$ERROR_FILE" ]; then
+            show_art "$ERROR_FILE"
+            exit 0
+        else
+            print_msg "No hay archivos de arte disponibles en \"$ART_DIR\" ni se encontró error.txt." \
+                      "No art files found in \"$ART_DIR\" and error.txt not found."
+            exit 1
+        fi
+    else
+        RANDOM_FILE=${FILES[RANDOM % ${#FILES[@]}]}
+        show_art "$RANDOM_FILE"
     fi
-    RANDOM_FILE=${FILES[RANDOM % ${#FILES[@]}]}
-    cat "$RANDOM_FILE"
 fi
