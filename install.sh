@@ -1,3 +1,9 @@
+chmod +x install.sh
+```):
+
+---
+
+```bash
 #!/bin/bash
 # ========================================================
 # Instalación de meow-colorscripts
@@ -5,18 +11,17 @@
 # Este script instala meow-colorscripts siguiendo el proceso:
 # • Selecciona y guarda el idioma en ~/.config/meow-colorscripts/lang.
 # • Verifica las dependencias (Git, fc-list, Nerd Fonts).
-# • Clona el repositorio (si no existe) en ~/meow-colorscripts y,
-#   si se encuentra la carpeta de configuración en
-#   ~/meow-colorscripts/.config/meow-colorscripts, elimina los archivos
-#   meow.conf y lang (para preservar la configuración actual del usuario)
+# • Clona el repositorio (si no existe) en ~/meow-colorscripts y, si se encuentra 
+#   la carpeta de configuración en ~/meow-colorscripts/.config/meow-colorscripts,
+#   elimina los archivos meow.conf y lang para preservar la configuración actual del usuario,
 #   y mueve dicha carpeta a ~/.config/meow-colorscripts.
 # • Instala en ~/.local/bin los siguientes comandos, renombrados con el prefijo:
-#     - meow-colorscripts          (desde show-meows.sh)
-#     - meow-colorscripts-update   (desde update.sh)
-#     - meow-colorscripts-setup    (desde setup.sh)
-# • (Los comandos de nombres se activan en setup.sh.)
+#       - meow-colorscripts          (desde show-meows.sh)
+#       - meow-colorscripts-update   (desde update.sh)
+#       - meow-colorscripts-setup    (desde setup.sh)
+# • (Los comandos de nombres se activan en setup.sh).
 # • Actualiza el PATH según la shell del usuario.
-# • Muestra un mensaje final indicando que se debe reiniciar la terminal.
+# • Muestra un mensaje final (en amarillo) indicando que se debe reiniciar la terminal.
 # ========================================================
 
 export TERM=${TERM:-xterm-256color}
@@ -76,12 +81,12 @@ if [ ! -d "$LOCAL_REPO" ]; then
     git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO" || { printf "%b\n" "${RED}Error clonando el repositorio.${NC}"; exit 1; }
 fi
 
-# Hacer ejecutables todos los scripts en el repositorio
+# Hacer que todos los scripts del repositorio sean ejecutables
 find "$LOCAL_REPO" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Si existe la carpeta de configuración en el repositorio:
 if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
-    # Eliminar meow.conf y lang para preservar la configuración actual del usuario.
+    # Se eliminan meow.conf y lang de la copia del repositorio para preservar la configuración del usuario.
     rm -f "$LOCAL_REPO/.config/meow-colorscripts/meow.conf" "$LOCAL_REPO/.config/meow-colorscripts/lang"
     rm -rf "$CONFIG_DIR" 2>/dev/null
     mv "$LOCAL_REPO/.config/meow-colorscripts" "$CONFIG_DIR"
@@ -113,13 +118,13 @@ fi
 
 print_dynamic_message "PATH actualizado"
 
-# Instalar comando principal "meow-colorscripts" (desde show-meows.sh)
+# Instalar comando principal "meow-colorscripts" (basado en show-meows.sh)
 if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
     install -Dm755 "$CONFIG_DIR/show-meows.sh" "$BIN_DIR/meow-colorscripts"
     print_dynamic_message "Comando meow-colorscripts instalado correctamente"
 fi
 
-# Instalar comando update renombrado a "meow-colorscripts-update"
+# Instalar comando de actualización renombrado a "meow-colorscripts-update"
 if [ -f "$LOCAL_REPO/update.sh" ]; then
     install -Dm755 "$LOCAL_REPO/update.sh" "$BIN_DIR/meow-colorscripts-update"
     print_dynamic_message "Comando meow-colorscripts-update instalado correctamente"
@@ -127,7 +132,7 @@ else
     printf "%b\n" "${YELLOW}No se encontró update.sh en el repositorio.${NC}"
 fi
 
-# Instalar comando setup renombrado a "meow-colorscripts-setup"
+# Instalar comando de configuración renombrado a "meow-colorscripts-setup"
 if [ -f "$SETUP_SCRIPT" ]; then
     install -Dm755 "$SETUP_SCRIPT" "$BIN_DIR/meow-colorscripts-setup"
     print_dynamic_message "Comando meow-colorscripts-setup instalado correctamente"
@@ -141,6 +146,6 @@ fi
 printf "\n\033[1;33m Por favor, reinicia tu terminal para que los cambios surtan efecto.\033[0m\n"
 printf "\n%b\n" "Instalación completada."
 
-# Opcional: Marcar este script como ejecutable (por si acaso)
+# Opcional: Asegurarse de que este script se marque como ejecutable (por precaución)
 chmod +x "$0"
 
