@@ -126,6 +126,9 @@ if [ -f "$SETUP_SCRIPT" ]; then
     print_dynamic_message "Comando meow-colorscripts-setup instalado correctamente"
 fi
 
+#hacer ejecutable meow-show.sh
+chmod +x $HOME/meow-colorscipts/meow-show.sh
+
 # --------------------------------------------------------
 # Preguntar si se desea abrir la configuración ahora
 # --------------------------------------------------------
