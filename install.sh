@@ -180,4 +180,3 @@ fi
 
 printf "\n${MAGENTA}¡Miau! Instalación completada exitosamente.${NC}\n"
 chmod +x "$0"
-
