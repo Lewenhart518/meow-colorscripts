@@ -74,8 +74,7 @@ while true; do
     printf "%b\n" "  ${YELLOW}3) themes${NC}"
     printf "%b\n" "  ${YELLOW}4) ascii${NC}"
     printf "%b\n" "  ${YELLOW}5) ascii-color${NC}"
-    printf "%b\n" "  ${RED}q) Salir y volver a seleccionar el estilo${NC}"
-    printf "%b" "${BLUE}▸ Selecciona una opción [1-5/q]: ${NC}"
+    printf "%b" "${BLUE}▸ Selecciona una opción [1-5]: ${NC}"
     read STYLE_OPTION
   else
     printf "%b\n" "${CYAN}▸ Choose your meow-colorscripts style:${NC}"
@@ -84,15 +83,11 @@ while true; do
     printf "%b\n" "  ${YELLOW}3) themes (nord, catpuccin, everforest)${NC}"
     printf "%b\n" "  ${YELLOW}4) ascii${NC}"
     printf "%b\n" "  ${YELLOW}5) ascii-color${NC}"
-    printf "%b\n" "  ${RED}q) Exit and re-select the style${NC}"
-    printf "%b" "${BLUE}▸ Select an option [1-5/q]: ${NC}"
+    printf "%b" "${BLUE}▸ Select an option [1-5]: ${NC}"
     read STYLE_OPTION
   fi
 
-  if [ "$STYLE_OPTION" = "q" ]; then
-    clear
-    continue  # Reinicia el bucle y muestra de nuevo las opciones
-  elif [[ ! "$STYLE_OPTION" =~ ^[1-5]$ ]]; then
+  if [[ ! "$STYLE_OPTION" =~ ^[1-5]$ ]]; then
     printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
     sleep 1
     clear
