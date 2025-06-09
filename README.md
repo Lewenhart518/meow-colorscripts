@@ -97,11 +97,11 @@ cd meow-colorscripts
 ## Command List
 The available commands are:
 
-meow-colorscripts # Displays random ASCII art based on the configuration
-meow-colorscripts-update # Updates the repository and scripts
-meow-colorscripts-setup # Starts the setup process
-meow-colorscripts-names # Displays the list of available art names
-meow-colorscripts-show [style] [size/type] [name] # Displays specific art based on parameters
+- meow-colorscripts # Displays random ASCII art based on the configuration
+- meow-colorscripts-update # Updates the repository and scripts
+- meow-colorscripts-setup # Starts the setup process
+- meow-colorscripts-names # Displays the list of available art names
+- meow-colorscripts-show [style] [size/type] [name] # Displays specific art based on parameters
 
 ## View Available Cats  
 To view all available cat designs, run:
