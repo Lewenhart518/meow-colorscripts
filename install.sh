@@ -5,16 +5,17 @@
 # Este script instala meow-colorscripts con toque felino y paleta Nord:
 # • Selecciona y guarda el idioma en ~/.config/meow-colorscripts/lang.
 # • Clona el repositorio (si no existe) en ~/meow-colorscripts.
-# • Mueve la carpeta de configuración a ~/.config/meow-colorscripts (si existe en el repositorio;
-#   en caso contrario, no se genera mensaje de error).
+# • Mueve la carpeta de configuración a ~/.config/meow-colorscripts (si existe en el repositorio; 
+#   en caso contrario, no se muestra error).
 # • Instala en ~/.local/bin los siguientes comandos (sin la extensión .sh):
-#       - meow-colorscripts          (comando principal que muestra un meow random)
+#       - meow-colorscripts          (comando principal que muestra un meow RANDOM)
 #       - meow-colorscripts-update   (desde update.sh)
 #       - meow-colorscripts-setup    (desde setup.sh)
 #       - meow-colorscripts-names    (muestra el contenido de names.txt)
 #       - meow-colorscripts-show     (para mostrar arte ASCII específico)
+#       - meow-colorscripts-uninstall (desde uninstall.sh)
 # • Actualiza el PATH según la shell del usuario.
-# • Muestra mensajes vibrantes usando la paleta Nord e invita a iniciar la configuración.
+# • Muestra mensajes vibrantes usando la paleta Nord e íconos de Nerd Fonts.
 # ========================================================
 
 export TERM=${TERM:-xterm-256color}
@@ -40,13 +41,19 @@ MAGENTA="$NORD10"
 WHITE="$NORD4"
 NC='\033[0m'  # Reset
 
-# Función para reiniciar el script (si fuera necesario)
-restart_script() {
-  printf "%b\n" "Reiniciando el instalador..."
-  exec "$0" "$@"
+# ------------------------------
+# Funciones de mensajes bilingües
+# ------------------------------
+# Uso: print_msg "Mensaje en español" "Message in English"
+print_msg() {
+  if [ "$LANGUAGE" = "es" ]; then
+    printf "%b\n" "$1"
+  else
+    printf "%b\n" "$2"
+  fi
 }
 
-# Función para mostrar mensajes dinámicos
+# Función para mensajes dinámicos con ícono (Nerd Fonts)
 print_dynamic_message() {
   local message="$1"
   local delay=0.2
@@ -58,7 +65,9 @@ print_dynamic_message() {
   printf " %b\n" "${GREEN}${NC}"
 }
 
+# ------------------------------
 # Directorios y rutas base
+# ------------------------------
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 BIN_DIR="$HOME/.local/bin"
 LOCAL_REPO="$HOME/meow-colorscripts"
@@ -79,16 +88,20 @@ fi
 mkdir -p "$CONFIG_DIR"
 echo "$LANGUAGE" > "$CONFIG_DIR/lang"
 export LANG="$LANGUAGE"
-printf "${GREEN}¡Idioma establecido!${NC}\n"
+print_msg "¡Idioma establecido!" "Language set!"
 
 # ---------------------------------------
 # 2. Clonar el repositorio y mover la carpeta de configuración
 # ---------------------------------------
 if [ ! -d "$LOCAL_REPO" ]; then
-  printf "\n${YELLOW}▸ No se encontró $LOCAL_REPO. Clonando repositorio...${NC}\n"
+  if [ "$LANGUAGE" = "es" ]; then
+    print_msg "▸ No se encontró $LOCAL_REPO. Clonando repositorio..." ""
+  else
+    print_msg "▸ Repository not found at $LOCAL_REPO. Cloning repository..." ""
+  fi
   # Reemplaza la URL por la de tu repositorio:
   git clone https://github.com/Lewenhart518/meow-colorscripts.git "$LOCAL_REPO" || { 
-    printf "${RED}✖ Error clonando el repositorio.${NC}\n"
+    print_msg "${RED}✖ Error clonando el repositorio." "${RED}✖ Error cloning repository."
     exit 1
   }
 fi
@@ -103,7 +116,7 @@ if [ -d "$LOCAL_REPO/.config/meow-colorscripts" ]; then
   mv "$LOCAL_REPO/.config/meow-colorscripts" "$CONFIG_DIR"
   print_dynamic_message "Carpeta miauctaida a $CONFIG_DIR"
 fi
-# Si no se encuentra la carpeta en el repositorio, no mostramos error.
+# Si no se encuentra la carpeta de configuración en el repositorio, no se muestra error.
 
 # ---------------------------------------
 # 3. Instalación de comandos en ~/.local/bin
@@ -124,7 +137,7 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
   esac
   export PATH="$BIN_DIR:$PATH"
 fi
-print_dynamic_message "PATH miauctuaizado"
+print_dynamic_message "PATH miauctaizado"  # Mensaje sin traducción específica.
 
 # ---------------------------------------
 # 4. Instalar el comando PRINCIPAL: "meow-colorscripts"
@@ -137,8 +150,11 @@ elif [ -f "$LOCAL_REPO/show-meows.sh" ]; then
   install -Dm755 "$LOCAL_REPO/show-meows.sh" "$BIN_DIR/meow-colorscripts"
   print_dynamic_message "meow-colorscripts instalado"
 else
-  printf "\n${YELLOW}▸ No se encontró 'show-meows.sh' para el comando principal, se creará un fallback...${NC}\n"
-  # Crear un fallback inline para show-meows.sh en CONFIG_DIR:
+  if [ "$LANGUAGE" = "es" ]; then
+    print_msg "▸ No se encontró 'show-meows.sh' para el comando principal, se creará un fallback..." ""
+  else
+    print_msg "▸ 'show-meows.sh' not found for main command; creating a fallback..." ""
+  fi
   cat << 'EOF' > "$CONFIG_DIR/show-meows.sh"
 #!/bin/bash
 # Fallback para meow-colorscripts
@@ -178,7 +194,7 @@ if [ -f "$LOCAL_REPO/update.sh" ]; then
   install -Dm755 "$LOCAL_REPO/update.sh" "$BIN_DIR/meow-colorscripts-update"
   print_dynamic_message "meow-colorscripts-update instalado"
 else
-  printf "\n${RED}✖ No se encontró update.sh en el repositorio.${NC}\n"
+  print_msg "${RED}✖ No se encontró update.sh en el repositorio." "${RED}✖ update.sh not found in repository."
 fi
 
 # ---------------------------------------
@@ -188,7 +204,7 @@ if [ -f "$SETUP_SCRIPT" ]; then
   install -Dm755 "$SETUP_SCRIPT" "$BIN_DIR/meow-colorscripts-setup"
   print_dynamic_message "meow-colorscripts-setup instalado"
 else
-  printf "\n${RED}✖ No se encontró setup.sh en el repositorio.${NC}\n"
+  print_msg "${RED}✖ No se encontró setup.sh en el repositorio." "${RED}✖ setup.sh not found in repository."
 fi
 
 # ---------------------------------------
@@ -211,7 +227,7 @@ elif [ -f "$LOCAL_REPO/meow-colorscripts-show.sh" ]; then
   install -Dm755 "$LOCAL_REPO/meow-colorscripts-show.sh" "$BIN_DIR/meow-colorscripts-show"
   print_dynamic_message "meow-colorscripts-show instalado"
 else
-  printf "\n${RED}✖ No se encontró 'meow-colorscripts-show.sh'.${NC}\n"
+  print_msg "${RED}✖ No se encontró 'meow-colorscripts-show.sh'." "${RED}✖ 'meow-colorscripts-show.sh' not found."
 fi
 
 # ---------------------------------------
@@ -221,23 +237,23 @@ if [ -f "$LOCAL_REPO/uninstall.sh" ]; then
   install -Dm755 "$LOCAL_REPO/uninstall.sh" "$BIN_DIR/meow-colorscripts-uninstall"
   print_dynamic_message "meow-colorscripts-uninstall instalado"
 else
-  if [ "$LANGUAGE" = "es" ]; then
-    printf "\n${RED}✖ No se encontró uninstall.sh en el repositorio.${NC}\n"
-  else
-    printf "\n${RED}✖ uninstall.sh not found in repository.${NC}\n"
-  fi
+  print_msg "${RED}✖ No se encontró uninstall.sh en el repositorio." "${RED}✖ uninstall.sh not found in repository."
 fi
-
 
 # ---------------------------------------
 # 10. Mensaje final y pregunta para iniciar la configuración
 # ---------------------------------------
-printf "\n${YELLOW} Reinicia tu terminal para que los cambios surtan efecto.${NC}\n"
-printf "${YELLOW}▸ ¿Deseas iniciar la configuración ahora? [s/n]: ${NC}"
+print_msg "▸ Reinicia tu terminal para que los cambios surtan efecto." "▸ Restart your terminal for changes to take effect."
+printf "${YELLOW}▸ " 
+if [ "$LANGUAGE" = "es" ]; then
+  printf "¿Deseas iniciar la configuración ahora? [s/n]: ${NC}"
+else
+  printf "Do you want to start the setup now? [y/n]: ${NC}"
+fi
 read RUN_CONFIG
-if [[ "$RUN_CONFIG" =~ ^[sS] ]]; then
+if [[ "$RUN_CONFIG" =~ ^[sSyY]$ ]]; then
   "$BIN_DIR/meow-colorscripts-setup"
 fi
 
-printf "\n${MAGENTA}¡Miau! Instalación completada exitosamente.${NC}\n"
+print_msg "¡Miau! Instalación completada exitosamente." "Meow! Installation completed successfully."
 chmod +x "$0"
