@@ -338,9 +338,18 @@ fi
 read activate_response
 
 if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
+  # Buscar el archivo en dos posibles nombres:
   if [ -f "$HOME/meow-colorscripts/meow-fact.sh" ]; then
-    mv "$HOME/meow-colorscripts/meow-fact.sh" "$HOME/.local/bin/meow-fact"
-    chmod +x "$HOME/.local/bin/meow-fact"
+    TARGET="$HOME/meow-colorscripts/meow-fact.sh"
+  elif [ -f "$HOME/meow-colorscripts/meow-fact" ]; then
+    TARGET="$HOME/meow-colorscripts/meow-fact"
+  else
+    TARGET=""
+  fi
+
+  if [ -n "$TARGET" ]; then
+    mv "$TARGET" "$HOME/.local/bin/meow-fact"
+    chmod +x "$HOME/.local/bin/meow-fact"  # Asegurar que sea ejecutable
     if [ "$LANGUAGE" = "es" ]; then
       printf "%b\n" "${GREEN}▸ El comando meow-fact ha sido activado exitosamente.${NC}"
     else
@@ -348,9 +357,9 @@ if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
     fi
   else
     if [ "$LANGUAGE" = "es" ]; then
-      printf "%b\n" "${RED}▸ No se encontró el archivo meow-fact.sh en ~/meow-colorscripts.${NC}"
+      printf "%b\n" "${RED}▸ No se encontró ni 'meow-fact.sh' ni 'meow-fact' en ~/meow-colorscripts.${NC}"
     else
-      printf "%b\n" "${RED}▸ Could not find the meow-fact.sh file in ~/meow-colorscripts.${NC}"
+      printf "%b\n" "${RED}▸ Could not find 'meow-fact.sh' or 'meow-fact' in ~/meow-colorscripts.${NC}"
     fi
   fi
 else
