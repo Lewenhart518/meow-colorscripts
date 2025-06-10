@@ -7,7 +7,7 @@
 # • Clona el repositorio (si no existe) en ~/meow-colorscripts.
 # • Mueve la carpeta de configuración a ~/.config/meow-colorscripts (si existe en el repositorio;
 #   en caso contrario, no se genera mensaje de error).
-# • Instala en ~/.local/bin los siguientes comandos:
+# • Instala en ~/.local/bin los siguientes comandos (sin la extensión .sh):
 #       - meow-colorscripts          (comando principal que muestra un meow random)
 #       - meow-colorscripts-update   (desde update.sh)
 #       - meow-colorscripts-setup    (desde setup.sh)
@@ -129,7 +129,6 @@ print_dynamic_message "PATH miauctuaizado"
 # ---------------------------------------
 # 4. Instalar el comando PRINCIPAL: "meow-colorscripts"
 #     (Muestra un meow RANDOM de la carpeta de arte)
-#     Se busca primero en CONFIG_DIR; si no, en LOCAL_REPO; de lo contrario se crea un fallback.
 # ---------------------------------------
 if [ -f "$CONFIG_DIR/show-meows.sh" ]; then
   install -Dm755 "$CONFIG_DIR/show-meows.sh" "$BIN_DIR/meow-colorscripts"
@@ -150,17 +149,20 @@ if [ ! -f "$CONFIG_FILE" ]; then
   echo "No se encontró el archivo de configuración. Ejecuta meow-colorscripts-setup primero."
   exit 1
 fi
+
 source "$CONFIG_FILE"
 ART_DIR="$CONFIG_DIR/colorscripts/$MEOW_THEME/$MEOW_SIZE"
 if [ ! -d "$ART_DIR" ]; then
   echo "La carpeta de arte ($ART_DIR) no existe."
   exit 1
 fi
+
 FILES=("$ART_DIR"/*.txt)
 if [ ${#FILES[@]} -eq 0 ]; then
   echo "No hay archivos de arte en $ART_DIR."
   exit 1
 fi
+
 RANDOM_FILE=${FILES[RANDOM % ${#FILES[@]}]}
 echo -e "$(<"$RANDOM_FILE")"
 EOF
@@ -201,7 +203,6 @@ print_dynamic_message "meow-colorscripts-names instalado"
 
 # ---------------------------------------
 # 8. Instalar comando "meow-colorscripts-show" (para mostrar arte específico)
-#     Se busca primero en CONFIG_DIR; si no, en LOCAL_REPO.
 # ---------------------------------------
 if [ -f "$CONFIG_DIR/meow-colorscripts-show.sh" ]; then
   install -Dm755 "$CONFIG_DIR/meow-colorscripts-show.sh" "$BIN_DIR/meow-colorscripts-show"
