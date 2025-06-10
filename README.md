@@ -108,6 +108,11 @@ The available commands are:
      This command searches for the file at `~/.config/meow-colorscripts/colorscripts/normal/normal/raspi.txt`.  
      If the file is missing, an error message will prompt you to check the available names using `meow-colorscripts-names` or visit the repository at [GitHub](https://github.com/Lewenhart518/meow-colorscripts).
 
+6. **meow-fact** (It only works if you chose it in the setup.)
+   - This command works as follows:
+     [command] && meow-fact 
+     and this command works for English and Spanish
+   
 ## View Available Cats  
 To view all available cat designs, run:
 ```bash
