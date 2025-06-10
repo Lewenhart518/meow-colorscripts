@@ -87,6 +87,7 @@ The available commands are:
 - meow-colorscripts-setup # Starts the setup process
 - meow-colorscripts-names # Displays the list of available art names
 - meow-colorscripts-show [style] [size/type] [name] # Displays specific art based on parameters
+- meow-colorscripts-uninstall #This command removes meow-colorscripts if you don't want it anymore.
 
 ## How use the commands
 1. **meow-colorscripts**  
@@ -112,6 +113,8 @@ The available commands are:
    - This command works as follows:
      [command] && meow-fact 
      and this command works for English and Spanish
+7. **meow-colorscripts-uninstall**
+   just run it to uninstall meow-colorscipts
    
 ## View Available Cats  
 To view all available cat designs, run:
