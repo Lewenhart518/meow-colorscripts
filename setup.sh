@@ -317,8 +317,12 @@ mkdir -p "$HOME/.local/bin"
 # Preguntar al usuario si desea activar meow-fact, considerando el idioma.
 if [ "$LANGUAGE" = "es" ]; then
   printf "\n%b\n" "${CYAN}▸ ¿Deseas activar el comando meow-fact? (s/n): ${NC}"
+  printf "%b\n" "  ${YELLOW}s) Sí${NC}"
+  printf "%b\n" "  ${YELLOW}n) No${NC}"
 else
   printf "\n%b\n" "${CYAN}▸ Do you want to activate the meow-fact command? (y/n): ${NC}"
+  printf "%b\n" "  ${YELLOW}y) Yes${NC}"
+  printf "%b\n" "  ${YELLOW}n) No${NC}"
 fi
 
 read activate_response
