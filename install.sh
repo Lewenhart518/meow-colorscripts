@@ -215,7 +215,22 @@ else
 fi
 
 # ---------------------------------------
-# 9. Mensaje final y pregunta para iniciar la configuración
+# 9. Instalar comando "meow-colorscripts-uninstall" (desde uninstall.sh)
+# ---------------------------------------
+if [ -f "$LOCAL_REPO/uninstall.sh" ]; then
+  install -Dm755 "$LOCAL_REPO/uninstall.sh" "$BIN_DIR/meow-colorscripts-uninstall"
+  print_dynamic_message "meow-colorscripts-uninstall instalado"
+else
+  if [ "$LANGUAGE" = "es" ]; then
+    printf "\n${RED}✖ No se encontró uninstall.sh en el repositorio.${NC}\n"
+  else
+    printf "\n${RED}✖ uninstall.sh not found in repository.${NC}\n"
+  fi
+fi
+
+
+# ---------------------------------------
+# 10. Mensaje final y pregunta para iniciar la configuración
 # ---------------------------------------
 printf "\n${YELLOW} Reinicia tu terminal para que los cambios surtan efecto.${NC}\n"
 printf "${YELLOW}▸ ¿Deseas iniciar la configuración ahora? [s/n]: ${NC}"
