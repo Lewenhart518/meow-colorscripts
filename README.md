@@ -10,7 +10,8 @@ Customize your terminal with cat-themed ANSI art! 🎨🔥
 - [Update](#update)
 - [Command list](#command-list)
 - [How use the commands](#How-use-the-commands)
-- [View Available Cats](#view-available-cats)  
+- [View Available Cats](#view-available-cats)
+- [Custom](##Custom-meows)
 - [Features](#features)  
 - [Credits](#credits)  
 - [Author](#author)  
@@ -115,17 +116,23 @@ The available commands are:
      and this command works for English and Spanish
 7. **meow-colorscripts-uninstall**
    just run it to uninstall meow-colorscipts
+
+meows-colorscipts-show [style] [size (or type in case you chose ascii)] [name]
+```  
    
 ## View Available Cats  
 To view all available cat designs, run:
 ```bash
-meows-names [style] [size (or type in case you chose ascii)] [name]
+meows-colorscipts-names
 ```  
 
 To display the ANSI art for a specific cat (for example, "raspi"), run:
 ```bash
-meows-show normal normal raspi
+meows-colorscripts-show normal normal raspi
 ```  
+
+## Custom meows
+you can make your own meow if you put your meow inside the directory ~/.config/meow-colorscripts/colorscripts/[style you chose]/[size/type (if you chose ascii)] or to ~/.config/meow-colorscripts/colorscripts/custom/custom/ and view it with meow-colorscripts-show [name of your carpet] [name of your carpet] [name of your meow]
 
 ## Features  
 - High-quality ANSI cat art  
