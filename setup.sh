@@ -330,8 +330,8 @@ read activate_response
 # Dependiendo de la respuesta, mover el archivo
 if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
   # Verificamos que el archivo exista en la ubicación original
-  if [ -f "$HOME/meow-colorscripts/meow-fact.sh" ]; then
-    mv "$HOME/meow-colorscripts/meow-fact.sh" "$HOME/.local/bin/"
+  if [ -f "$HOME/meow-colorscripts/meow-fact" ]; then
+    mv "$HOME/meow-colorscripts/meow-fact" "$HOME/.local/bin/"
     if [ "$LANGUAGE" = "es" ]; then
       printf "%b\n" "${GREEN}▸ El comando meow-fact ha sido activado exitosamente.${NC}"
     else
@@ -339,9 +339,9 @@ if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
     fi
   else
     if [ "$LANGUAGE" = "es" ]; then
-      printf "%b\n" "${RED}▸ No se encontró el archivo meow-fact.sh en ~/meow-colorscripts.${NC}"
+      printf "%b\n" "${RED}▸ No se encontró el archivo meow-fact en ~/meow-colorscripts.${NC}"
     else
-      printf "%b\n" "${RED}▸ Could not find the meow-fact.sh file in ~/meow-colorscripts.${NC}"
+      printf "%b\n" "${RED}▸ Could not find the meow-fact file in ~/meow-colorscripts.${NC}"
     fi
   fi
 else
