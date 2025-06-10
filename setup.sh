@@ -317,21 +317,19 @@ mkdir -p "$HOME/.local/bin"
 # Preguntar al usuario si desea activar meow-fact, considerando el idioma.
 if [ "$LANGUAGE" = "es" ]; then
   printf "\n%b\n" "${CYAN}▸ ¿Deseas activar el comando meow-fact? (s/n): ${NC}"
-  printf "%b\n" "  ${YELLOW}s) Sí${NC}"
-  printf "%b\n" "  ${YELLOW}n) No${NC}"
 else
   printf "\n%b\n" "${CYAN}▸ Do you want to activate the meow-fact command? (y/n): ${NC}"
-  printf "%b\n" "  ${YELLOW}y) Yes${NC}"
-  printf "%b\n" "  ${YELLOW}n) No${NC}"
 fi
 
 read activate_response
 
-# Dependiendo de la respuesta, mover el archivo
+# Dependiendo de la respuesta, mover y renombrar el archivo
 if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
   # Verificamos que el archivo exista en la ubicación original
-  if [ -f "$HOME/meow-colorscripts/meow-fact" ]; then
-    mv "$HOME/meow-colorscripts/meow-fact" "$HOME/.local/bin/"
+  if [ -f "$HOME/meow-colorscripts/meow-fact.sh" ]; then
+    mv "$HOME/meow-colorscripts/meow-fact.sh" "$HOME/.local/bin/meow-fact"
+    chmod +x "$HOME/.local/bin/meow-fact"  # Asegurar que sea ejecutable
+
     if [ "$LANGUAGE" = "es" ]; then
       printf "%b\n" "${GREEN}▸ El comando meow-fact ha sido activado exitosamente.${NC}"
     else
@@ -339,9 +337,9 @@ if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
     fi
   else
     if [ "$LANGUAGE" = "es" ]; then
-      printf "%b\n" "${RED}▸ No se encontró el archivo meow-fact en ~/meow-colorscripts.${NC}"
+      printf "%b\n" "${RED}▸ No se encontró el archivo meow-fact.sh en ~/meow-colorscripts.${NC}"
     else
-      printf "%b\n" "${RED}▸ Could not find the meow-fact file in ~/meow-colorscripts.${NC}"
+      printf "%b\n" "${RED}▸ Could not find the meow-fact.sh file in ~/meow-colorscripts.${NC}"
     fi
   fi
 else
@@ -351,7 +349,6 @@ else
     printf "%b\n" "${YELLOW}▸ The meow-fact command will not be activated.${NC}"
   fi
 fi
-
 
 # ---------------------------------------
 # 6. Mensaje final y guardar la configuración
