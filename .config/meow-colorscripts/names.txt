@@ -12,5 +12,6 @@
 | ├
 ╰ ╰
 ╭ special
-├ raspi
+├ raspi (only me have this file)
 ╰ kasane-teto (Only martinitin/winis has access to this file)
+(It does not show sizes because if it is in names it means that it has the 3 sizes available)
