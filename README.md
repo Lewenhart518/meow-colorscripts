@@ -102,7 +102,7 @@ The available commands are:
 4. **meow-colorscripts-names**  (It only works if you chose it in the setup.)
    - Displays a comprehensive list of the available cat designs. Use this command to see what art designs are available and choose one for display.
 
-5. **meow-colorscripts-show [style] [size/type] [name]**  (It only works if you chose it in the setup.)
+5. **meow-colorscripts-show [style] [size] [name]**  (It only works if you chose it in the setup.)
    - Use this command to display a specific cat design. For example:
      
      meow-colorscripts-show normal normal raspi  
@@ -117,7 +117,7 @@ The available commands are:
 7. **meow-colorscripts-uninstall**
    just run it to uninstall meow-colorscipts
 
-meows-colorscipts-show [style] [size (or type in case you chose ascii)] [name]
+meows-colorscipts-show [style] [size] [name]
 ```  
    
 ## View Available Cats  
