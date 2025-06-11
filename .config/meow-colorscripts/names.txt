@@ -1,6 +1,9 @@
 ╭ normal   ╭ nocolor   ╭ ascii   ╭ ascii-color
 ├ raspi    ├           ├         ├
-╰          ╰           ╰         ╰
+├ wilson   ╰           ╰         ╰
+├ cookie
+╰ luna
+
 ╭ [THEMES]
 ├ ╭ nord 
 | ├
