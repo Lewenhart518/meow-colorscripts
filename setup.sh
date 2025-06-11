@@ -4,12 +4,12 @@
 # ========================================================
 # Este script configura meow-colorscripts:
 # • Carga el idioma (usando LANG o ~/.config/meow-colorscripts/lang; "en" por defecto)
-# • Permite seleccionar el estilo y el tamaño o tipo (para ASCII)
-# • Si se selecciona "themes", pregunta por el tema (nord, catpuccin, everforest)
+# • Permite seleccionar el estilo (normal, memes, themes)
+# • Si se selecciona "themes", pregunta por el tema (Nord, Catppuccin, Everforest)
 # • Muestra un resumen de la configuración elegida
 # • Pregunta si se desean activar los comandos:
 #       - meow-colorscripts-names (que muestra el contenido de names.txt)
-#       - meow-colorscripts-show (para mostrar arte ASCII específico)
+#       - meow-colorscripts-show (para mostrar arte de gatos específico)
 # • Pregunta si activar autorun (añadiendo "meow-colorscripts" al inicio de la terminal)
 # • Pregunta si se desea activar el comando meow-fact (moviendo y renombrando su script de ~/meow-colorscripts a ~/.local/bin/meow-fact)
 # • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf
@@ -45,8 +45,8 @@ else
 fi
 
 # Función para imprimir mensajes según el idioma
+# Uso: print_msg "mensaje en español" "message in English"
 print_msg() {
-  # Uso: print_msg "mensaje en español" "message in English"
   if [ "$LANGUAGE" = "es" ]; then
     printf "%b\n" "$1"
   else
@@ -73,29 +73,29 @@ while true; do
   if [ "$LANGUAGE" = "es" ]; then
     printf "%b\n" "${CYAN}▸ Elige tu estilo de meow-colorscripts:${NC}"
     printf "%b\n" "  ${YELLOW}1) normal${NC}"
-    printf "%b\n" "  ${YELLOW}2) nocolor${NC}"
-    printf "%b\n" "  ${YELLOW}3) themes${NC}"
-    printf "%b\n" "  ${YELLOW}4) ascii${NC}"
-    printf "%b\n" "  ${YELLOW}5) ascii-color${NC}"
+    printf "%b\n" "  ${YELLOW}2) memes${NC}"
+    printf "%b\n" "  ${YELLOW}3) themes (Nord, Catppuccin, Everforest)${NC}"
+    printf "%b\n" "  ${YELLOW}4) (Con tamaño) small${NC}"
+    printf "%b\n" "  ${YELLOW}5) (Con tamaño) normal${NC}"
     printf "%b" "${BLUE}▸ Selecciona una opción [1-5]: ${NC}"
     read STYLE_OPTION
   else
     printf "%b\n" "${CYAN}▸ Choose your meow-colorscripts style:${NC}"
     printf "%b\n" "  ${YELLOW}1) normal${NC}"
-    printf "%b\n" "  ${YELLOW}2) nocolor${NC}"
-    printf "%b\n" "  ${YELLOW}3) themes (nord, catpuccin, everforest)${NC}"
-    printf "%b\n" "  ${YELLOW}4) ascii${NC}"
-    printf "%b\n" "  ${YELLOW}5) ascii-color${NC}"
+    printf "%b\n" "  ${YELLOW}2) memes${NC}"
+    printf "%b\n" "  ${YELLOW}3) themes (Nord, Catppuccin, Everforest)${NC}"
+    printf "%b\n" "  ${YELLOW}4) (With size) small${NC}"
+    printf "%b\n" "  ${YELLOW}5) (With size) normal${NC}"
     printf "%b" "${BLUE}▸ Select an option [1-5]: ${NC}"
     read STYLE_OPTION
   fi
 
   if [[ ! "$STYLE_OPTION" =~ ^[1-5]$ ]]; then
-    printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
+    print_msg "${RED}Opción inválida. Intenta nuevamente.${NC}" "${RED}Invalid option. Try again.${NC}"
     sleep 1
     clear
   else
-    break  # Salir del bucle si la selección es válida.
+    break
   fi
 done
 
@@ -126,7 +126,7 @@ if [ "$STYLE_OPTION" -eq 3 ]; then
       clear
       continue  # Regresa a la selección de estilo.
     elif [[ ! "$THEME_OPTION" =~ ^[1-3]$ ]]; then
-      printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
+      print_msg "${RED}Opción inválida. Intenta nuevamente.${NC}" "${RED}Invalid option. Try again.${NC}"
       sleep 1
       clear
     else
@@ -140,98 +140,42 @@ if [ "$STYLE_OPTION" -eq 3 ]; then
     3) MEOW_THEME="everforest" ;;
     *) MEOW_THEME="nord" ;;  # Por defecto
   esac
-else
-  case "$STYLE_OPTION" in
-    1) MEOW_THEME="normal" ;;
-    2) MEOW_THEME="nocolor" ;;
-    4) MEOW_THEME="ascii" ;;
-    5) MEOW_THEME="ascii-color" ;;
-    *) MEOW_THEME="normal" ;;
-  esac
+elif [ "$STYLE_OPTION" -eq 1 ]; then
+  MEOW_THEME="normal"
+elif [ "$STYLE_OPTION" -eq 2 ]; then
+  MEOW_THEME="memes"
+elif [ "$STYLE_OPTION" -eq 4 ]; then
+  MEOW_THEME="normal"
+  MEOW_SIZE="small"
+elif [ "$STYLE_OPTION" -eq 5 ]; then
+  MEOW_THEME="normal"
+  MEOW_SIZE="normal"
+fi
+
+# Si no se ha definido MEOW_SIZE por selección, por defecto se establece en "normal"
+if [ -z "$MEOW_SIZE" ]; then
+  MEOW_SIZE="normal"
 fi
 
 # ----------------------------------------------------
-# 3. Seleccionar el tamaño o tipo
-# ----------------------------------------------------
-if [ "$STYLE_OPTION" -eq 4 ] || [ "$STYLE_OPTION" -eq 5 ]; then
-  while true; do
-    if [ "$LANGUAGE" = "es" ]; then
-      printf "\n%b\n" "${CYAN}▸ Selecciona el tipo de ASCII:${NC}"
-      printf "%b\n" "  ${YELLOW}1) keyboard symbols${NC}"
-      printf "%b\n" "  ${YELLOW}2) blocks${NC}"
-      printf "%b\n" "  ${RED}q) Regresar a la selección de estilos${NC}"
-      printf "%b" "${BLUE}▸ Selecciona una opción [1-2/q]: ${NC}"
-      read ASCII_OPTION
-    else
-      printf "\n%b\n" "${CYAN}▸ Select the ASCII type:${NC}"
-      printf "%b\n" "  ${YELLOW}1) keyboard symbols${NC}"
-      printf "%b\n" "  ${YELLOW}2) blocks${NC}"
-      printf "%b\n" "  ${RED}q) Return to style selection${NC}"
-      printf "%b" "${BLUE}▸ Select an option [1-2/q]: ${NC}"
-      read ASCII_OPTION
-    fi
-
-    if [ "$ASCII_OPTION" = "q" ]; then
-      clear
-      continue  # Regresa a la selección de estilo.
-    elif [[ ! "$ASCII_OPTION" =~ ^[1-2]$ ]]; then
-      printf "%b\n" "${RED}Opción inválida. Intenta nuevamente.${NC}"
-      sleep 1
-      clear
-    else
-      break
-    fi
-  done
-
-  case "$ASCII_OPTION" in
-    1) MEOW_SIZE="keyboard-symbols" ;;
-    2) MEOW_SIZE="blocks" ;;
-    *) MEOW_SIZE="keyboard-symbols" ;;
-  esac
-else
-  if [ "$LANGUAGE" = "es" ]; then
-    printf "\n%b\n" "${CYAN}▸ Selecciona el tamaño:${NC}"
-    printf "%b\n" "  ${YELLOW}1) Small${NC}"
-    printf "%b\n" "  ${YELLOW}2) Normal${NC}"
-    printf "%b\n" "  ${YELLOW}3) Large${NC}"
-    printf "%b" "${BLUE}▸ Selecciona una opción [1-3]: ${NC}"
-    read SIZE_OPTION
-  else
-    printf "\n%b\n" "${CYAN}▸ Select the size:${NC}"
-    printf "%b\n" "  ${YELLOW}1) Small${NC}"
-    printf "%b\n" "  ${YELLOW}2) Normal${NC}"
-    printf "%b\n" "  ${YELLOW}3) Large${NC}"
-    printf "%b" "${BLUE}▸ Select an option [1-3]: ${NC}"
-    read SIZE_OPTION
-  fi
-
-  case "$SIZE_OPTION" in
-    1) MEOW_SIZE="small" ;;
-    2) MEOW_SIZE="normal" ;;
-    3) MEOW_SIZE="large" ;;
-    *) MEOW_SIZE="normal" ;;
-  esac
-fi
-
-# ----------------------------------------------------
-# 4. Resumen de la configuración
+# 3. Resumen de la configuración
 # ----------------------------------------------------
 printf "\n--------------------------------------------------------\n"
-print_msg "Has seleccionado el estilo: ${GREEN}$MEOW_THEME${NC} y el tamaño/tipo: ${GREEN}$MEOW_SIZE${NC}" \
-          "You have selected the style: ${GREEN}$MEOW_THEME${NC} and size/type: ${GREEN}$MEOW_SIZE${NC}"
+print_msg "Has seleccionado el estilo: ${GREEN}$MEOW_THEME${NC} con tamaño: ${GREEN}$MEOW_SIZE${NC}" \
+          "You have selected the style: ${GREEN}$MEOW_THEME${NC} with size: ${GREEN}$MEOW_SIZE${NC}"
 printf "--------------------------------------------------------\n\n"
 
 # ----------------------------------------------------
-# 5. Guardar la configuración en meow.conf
+# 4. Guardar la configuración en meow.conf
 # ----------------------------------------------------
 {
   echo "export MEOW_THEME=\"$MEOW_THEME\""
   echo "export MEOW_SIZE=\"$MEOW_SIZE\""
 } > "$MEOW_CONF"
-printf "%b\n" "${GREEN}▸ La configuración se guardó en $MEOW_CONF${NC}"
+print_msg "${GREEN}▸ La configuración se guardó en $MEOW_CONF${NC}" "${GREEN}▸ Configuration saved in $MEOW_CONF${NC}"
 
 # ----------------------------------------------------
-# 6. Activar comandos adicionales (names y show)
+# 5. Activar comandos adicionales (names y show)
 # ----------------------------------------------------
 if [ "$LANGUAGE" = "es" ]; then
   printf "%b\n" "${CYAN}▸ ¿Deseas activar los comandos 'meow-colorscripts-names' y 'meow-colorscripts-show [nombre]'?${NC}"
@@ -277,7 +221,7 @@ if [[ "$COMANDOS_OPTION" =~ ^[sSyY]$ ]]; then
 fi
 
 # ----------------------------------------------------
-# 7. Autorun: activar el comando al iniciar la terminal
+# 6. Autorun: activar el comando al iniciar la terminal
 # ----------------------------------------------------
 if [ "$LANGUAGE" = "es" ]; then
   printf "\n%b\n" "${CYAN}▸ ¿Deseas activar el autorun de meow-colorscripts al iniciar la terminal?${NC}"
@@ -320,7 +264,7 @@ else
 fi
 
 # ----------------------------------------------------
-# 8. Activación del comando meow-fact
+# 7. Activación del comando meow-fact
 # ----------------------------------------------------
 # Aseguramos que ~/.local/bin exista
 mkdir -p "$HOME/.local/bin"
@@ -371,7 +315,7 @@ else
 fi
 
 # ----------------------------------------------------
-# 9. Mensaje final y guardar la configuración
+# 8. Mensaje final y guardar la configuración
 # ----------------------------------------------------
 printf "\n%b\n" "${YELLOW} Recuerda: usa 'meow-colorscripts-show' para ver arte específico y 'meow-colorscripts-names' para consultar nombres.${NC}"
 printf "%b\n" "${YELLOW} Reinicia tu terminal para que los cambios surtan efecto.${NC}"
