@@ -59,8 +59,8 @@ print_msg() {
 # ----------------------------------------------------
 while true; do
   print_msg \
-    "${CYAN}▸ Elige tu estilo de meow-colorscripts:${NC}\n  ${YELLOW}1) normal${NC}\n  ${YELLOW}2) nocolor${NC}\n  ${YELLOW}3) themes (Nord, Catppuccin, Everforest)${NC}" \
-    "${CYAN}▸ Choose your meow-colorscripts style:${NC}\n  ${YELLOW}1) normal${NC}\n  ${YELLOW}2) nocolor${NC}\n  ${YELLOW}3) themes (Nord, Catppuccin, Everforest)${NC}"
+    "${CYAN}▸ Elige tu estilo de meow-colorscripts:${NC}\n  ${YELLOW}1) normal${NC}\n  ${YELLOW}2) memes${NC}\n  ${YELLOW}3) themes (Nord, Catppuccin, Everforest)${NC}" \
+    "${CYAN}▸ Choose your meow-colorscripts style:${NC}\n  ${YELLOW}1) normal${NC}\n  ${YELLOW}2) memes${NC}\n  ${YELLOW}3) themes (Nord, Catppuccin, Everforest)${NC}"
 
   printf "%b" "${BLUE}▸ Selecciona una opción [1-3]: ${NC}"
   read STYLE_OPTION
