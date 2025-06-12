@@ -116,7 +116,7 @@ The available commands are:
      and this command works for English and Spanish
 7. **meow-colorscripts-uninstall**
    just run it to uninstall meow-colorscipts
-
+```bash
 meows-colorscipts-show [style] [size] [name]
 ```  
    
