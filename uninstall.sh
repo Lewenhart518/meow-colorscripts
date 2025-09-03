@@ -1,19 +1,5 @@
 #!/bin/bash
-# ========================================================
-# Uninstall de meow-colorscripts
-# ========================================================
-# Este script desinstala meow-colorscripts y elimina todos
-# los comandos instalados en ~/.local/bin que contengan "meow"
-# en su nombre.
-#
-# También elimina la carpeta de configuración en ~/.config/meow-colorscripts
-# y la carpeta del repositorio local ~/meow-colorscripts.
-#
-# Lee el idioma del archivo $HOME/.config/meow-colorscripts/lang (si existe),
-# de lo contrario asume inglés.
-# ========================================================
 
-# Detectar el idioma configurado (si está)
 LANGUAGE="en"
 LANG_FILE="$HOME/.config/meow-colorscripts/lang"
 if [ -f "$LANG_FILE" ]; then
@@ -37,23 +23,21 @@ ask_confirmation() {
     fi
 }
 
-# Mensaje de inicio según idioma
+
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "\n Iniciando desinstalación de meow-colorscripts..."
 else
     echo -e "\n Starting uninstallation of meow-colorscripts..."
 fi
 
-# Preguntar confirmación
+
 if [[ "$LANGUAGE" == "es" ]]; then
     ask_confirmation "¿Estás seguro de que deseas desinstalar meow-colorscripts?"
 else
     ask_confirmation "Are you sure you want to uninstall meow-colorscripts?"
 fi
 
-# ------------------------------------------------------------
-# Eliminar todos los comandos en ~/.local/bin que tengan "meow" en el nombre
-# ------------------------------------------------------------
+
 BIN_DIR="$HOME/.local/bin"
 if ls "$BIN_DIR"/*meow* 1> /dev/null 2>&1; then
     for file in "$BIN_DIR"/*meow*; do
@@ -74,9 +58,7 @@ else
     fi
 fi
 
-# ------------------------------------------------------------
-# Eliminar la carpeta de configuración en ~/.config/meow-colorscripts
-# ------------------------------------------------------------
+
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 if [ -d "$CONFIG_DIR" ]; then
     rm -rf "$CONFIG_DIR"
@@ -93,9 +75,7 @@ else
     fi
 fi
 
-# ------------------------------------------------------------
-# Eliminar la carpeta del repositorio local ~/meow-colorscripts
-# ------------------------------------------------------------
+
 LOCAL_REPO="$HOME/meow-colorscripts"
 if [ -d "$LOCAL_REPO" ]; then
     rm -rf "$LOCAL_REPO"
@@ -112,9 +92,7 @@ else
     fi
 fi
 
-# ------------------------------------------------------------
-# Mensaje final y recordatorio para revisar configuración de PATH
-# ------------------------------------------------------------
+
 if [[ "$LANGUAGE" == "es" ]]; then
     echo -e "\n Desinstalación completada."
     echo -e " Revisa tu archivo .bashrc o .zshrc y elimina la línea que agrega ~/.local/bin al PATH, si así lo deseas."
