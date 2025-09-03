@@ -1,21 +1,5 @@
 #!/bin/bash
-# ========================================================
-# setup.sh - Configuración de meow-colorscripts (Versión MiauNord)
-# ========================================================
-# Este script configura meow-colorscripts:
-# • Carga el idioma (usando LANG o ~/.config/meow-colorscripts/lang; "en" por defecto)
-# • Permite seleccionar el estilo (normal, memes, themes)
-# • Si se selecciona "themes", pregunta por el tema (Nord, Catppuccin, Everforest)
-# • Muestra un resumen de la configuración elegida
-# • Pregunta si se desean activar los comandos:
-#       - meow-colorscripts-names (que muestra el contenido de names.txt)
-#       - meow-colorscripts-show (para mostrar arte de gatos específico)
-# • Pregunta si activar autorun (añadiendo "meow-colorscripts" al inicio de la terminal)
-# • Pregunta si se desea activar el comando meow-fact (moviendo y renombrando su script de ~/meow-colorscripts a ~/.local/bin/meow-fact)
-# • Guarda la configuración en ~/.config/meow-colorscripts/meow.conf
-# ========================================================
 
-# --- Definición de colores ANSI (paleta Nord) ---
 GREEN="\033[38;2;143;188;187m"       # NORD7 – verde/acento
 RED="\033[38;2;59;66;82m"              # NORD1 – gris oscuro (para errores)
 YELLOW="\033[38;2;129;161;193m"        # NORD9 – azul claro (acento)
@@ -25,17 +9,14 @@ BLUE="\033[38;2;65;105;225m"            # Azul para prompts
 WHITE="\033[38;2;216;222;233m"          # NORD4 – texto claro
 NC="\033[0m"                          # Reset
 
-# --- Directorios y rutas ---
 CONFIG_DIR="$HOME/.config/meow-colorscripts"
 LANG_FILE="$CONFIG_DIR/lang"
 MEOW_CONF="$CONFIG_DIR/meow.conf"
 BIN_DIR="$HOME/.local/bin"
 LOCAL_REPO="$HOME/meow-colorscripts"
 
-# Aseguramos que exista la carpeta de configuración
 mkdir -p "$CONFIG_DIR"
 
-# --- Detección del idioma ---
 if [ -n "$LANG" ]; then
   LANGUAGE="$LANG"
 elif [ -f "$LANG_FILE" ]; then
@@ -44,8 +25,7 @@ else
   LANGUAGE="en"
 fi
 
-# Función para imprimir mensajes según el idioma
-# Uso: print_msg "mensaje en español" "message in English"
+
 print_msg() {
   if [ "$LANGUAGE" = "es" ]; then
     printf "%b\n" "$1"
@@ -54,7 +34,7 @@ print_msg() {
   fi
 }
 
-# Función para mostrar mensajes dinámicos
+
 print_dynamic_message() {
   local message="$1"
   local delay=0.2
@@ -66,9 +46,7 @@ print_dynamic_message() {
   printf " %b\n" "${GREEN}${NC}"
 }
 
-# ----------------------------------------------------
-# 1. Seleccionar el estilo de meow-colorscripts
-# ----------------------------------------------------
+
 while true; do
   if [ "$LANGUAGE" = "es" ]; then
     printf "%b\n" "${CYAN}▸ Elige tu estilo de meow-colorscripts:${NC}"
@@ -99,9 +77,7 @@ while true; do
   fi
 done
 
-# ----------------------------------------------------
-# 2. Seleccionar el tema si se elige "themes" (opción 3)
-# ----------------------------------------------------
+
 if [ "$STYLE_OPTION" -eq 3 ]; then
   while true; do
     if [ "$LANGUAGE" = "es" ]; then
@@ -124,7 +100,7 @@ if [ "$STYLE_OPTION" -eq 3 ]; then
 
     if [ "$THEME_OPTION" = "q" ]; then
       clear
-      continue  # Regresa a la selección de estilo.
+      continue 
     elif [[ ! "$THEME_OPTION" =~ ^[1-3]$ ]]; then
       print_msg "${RED}Opción inválida. Intenta nuevamente.${NC}" "${RED}Invalid option. Try again.${NC}"
       sleep 1
@@ -138,7 +114,7 @@ if [ "$STYLE_OPTION" -eq 3 ]; then
     1) MEOW_THEME="nord" ;;
     2) MEOW_THEME="catpuccin" ;;
     3) MEOW_THEME="everforest" ;;
-    *) MEOW_THEME="nord" ;;  # Por defecto
+    *) MEOW_THEME="nord" ;;  
   esac
 elif [ "$STYLE_OPTION" -eq 1 ]; then
   MEOW_THEME="normal"
@@ -152,31 +128,25 @@ elif [ "$STYLE_OPTION" -eq 5 ]; then
   MEOW_SIZE="normal"
 fi
 
-# Si no se ha definido MEOW_SIZE por selección, por defecto se establece en "normal"
+
 if [ -z "$MEOW_SIZE" ]; then
   MEOW_SIZE="normal"
 fi
 
-# ----------------------------------------------------
-# 3. Resumen de la configuración
-# ----------------------------------------------------
+
 printf "\n--------------------------------------------------------\n"
 print_msg "Has seleccionado el estilo: ${GREEN}$MEOW_THEME${NC} con tamaño: ${GREEN}$MEOW_SIZE${NC}" \
           "You have selected the style: ${GREEN}$MEOW_THEME${NC} with size: ${GREEN}$MEOW_SIZE${NC}"
 printf "--------------------------------------------------------\n\n"
 
-# ----------------------------------------------------
-# 4. Guardar la configuración en meow.conf
-# ----------------------------------------------------
+
 {
   echo "export MEOW_THEME=\"$MEOW_THEME\""
   echo "export MEOW_SIZE=\"$MEOW_SIZE\""
 } > "$MEOW_CONF"
 print_msg "${GREEN}▸ La configuración se guardó en $MEOW_CONF${NC}" "${GREEN}▸ Configuration saved in $MEOW_CONF${NC}"
 
-# ----------------------------------------------------
-# 5. Activar comandos adicionales (names y show)
-# ----------------------------------------------------
+
 if [ "$LANGUAGE" = "es" ]; then
   printf "%b\n" "${CYAN}▸ ¿Deseas activar los comandos 'meow-colorscripts-names' y 'meow-colorscripts-show [nombre]'?${NC}"
   printf "%b\n" "  ${YELLOW}s) Sí${NC}"
@@ -220,9 +190,7 @@ if [[ "$COMANDOS_OPTION" =~ ^[sSyY]$ ]]; then
   fi
 fi
 
-# ----------------------------------------------------
-# 6. Autorun: activar el comando al iniciar la terminal
-# ----------------------------------------------------
+
 if [ "$LANGUAGE" = "es" ]; then
   printf "\n%b\n" "${CYAN}▸ ¿Deseas activar el autorun de meow-colorscripts al iniciar la terminal?${NC}"
   printf "%b\n" "  ${YELLOW}s) Sí${NC}"
@@ -263,10 +231,7 @@ else
   MEOW_AUTORUN="false"
 fi
 
-# ----------------------------------------------------
-# 7. Activación del comando meow-fact
-# ----------------------------------------------------
-# Aseguramos que ~/.local/bin exista
+
 mkdir -p "$HOME/.local/bin"
 
 if [ "$LANGUAGE" = "es" ]; then
@@ -293,7 +258,7 @@ if [[ "$activate_response" =~ ^(s|S|y|Y)$ ]]; then
 
   if [ -n "$TARGET" ]; then
     mv "$TARGET" "$HOME/.local/bin/meow-fact"
-    chmod +x "$HOME/.local/bin/meow-fact"  # Asegurar que sea ejecutable
+    chmod +x "$HOME/.local/bin/meow-fact"
     if [ "$LANGUAGE" = "es" ]; then
       printf "%b\n" "${GREEN}▸ El comando meow-fact ha sido activado exitosamente.${NC}"
     else
@@ -314,14 +279,12 @@ else
   fi
 fi
 
-# ----------------------------------------------------
-# 8. Mensaje final y guardar la configuración
-# ----------------------------------------------------
+
 printf "\n%b\n" "${YELLOW} Recuerda: usa 'meow-colorscripts-show' para ver arte específico y 'meow-colorscripts-names' para consultar nombres.${NC}"
 printf "%b\n" "${YELLOW} Reinicia tu terminal para que los cambios surtan efecto.${NC}"
 printf "\n%b\n" "${MAGENTA}¡Miau! Configuración guardada exitosamente.${NC}\n"
 
-# Guardar la configuración en meow.conf (incluyendo el valor de autorun)
+
 {
   echo "export MEOW_THEME=\"$MEOW_THEME\""
   echo "export MEOW_SIZE=\"$MEOW_SIZE\""
